@@ -278,7 +278,7 @@
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
-                Select Account Type
+                Select Account Type (Tourist or Tour Guide Only)
               </label>
               <input type="hidden" id="reg-role" value="tourist">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2080,9 +2080,12 @@
     }
 
     function selectAccountRole(role) {
+      if (role !== 'guide') role = 'tourist';
       document.getElementById('reg-role').value = role;
       const touristCard = document.getElementById('role-card-tourist');
       const guideCard = document.getElementById('role-card-guide');
+      const adminCard = document.getElementById('role-card-admin');
+      if (adminCard) adminCard.remove();
 
       const activeClass = "p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2.5";
       const inactiveClass = "p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2.5";
