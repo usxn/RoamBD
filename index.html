@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>RoamBD — Discover Bangladesh | Official Travel &amp; Safety Portal</title>
   
   <!-- Tailwind CSS CDN -->
@@ -39,6 +39,13 @@
   </script>
 
   <style>
+    /* Prevent horizontal overflow on mobile */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     /* Wireframe Mode for Prototype Evaluation */
     body.low-fi {
       filter: grayscale(100%);
@@ -78,8 +85,10 @@
     body.dark-mode #screen-auth {
       background-color: #090d16 !important;
     }
-    body.dark-mode #main-navbar {
-      background-color: rgba(15, 23, 42, 0.92) !important;
+    body.dark-mode #main-navbar,
+    body.dark-mode #mobile-bottom-nav,
+    body.dark-mode #mobile-drawer-panel {
+      background-color: rgba(15, 23, 42, 0.96) !important;
       border-color: #1e293b !important;
     }
     body.dark-mode .bg-white,
@@ -153,45 +162,55 @@
     }
 
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 9999px;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white transition-colors duration-200 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white transition-colors duration-200 min-h-screen flex flex-col pb-16 md:pb-0">
 
   <!-- ================= TOP EVALUATION UTILITY BAR ================= -->
-  <div class="bg-slate-950 text-slate-300 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
-    <div class="flex items-center gap-3">
+  <div class="bg-slate-950 text-slate-300 px-3 sm:px-6 py-2 text-xs flex items-center justify-between border-b border-slate-800 sticky top-0 z-50">
+    <div class="flex items-center gap-2">
       <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold tracking-wide">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> RoamBD Portal
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>RoamBD</span>
       </span>
-      <span class="text-slate-400 hidden lg:inline">Bangladesh Heritage, Discovery &amp; Traveler Safety Companion</span>
+      <span class="text-slate-400 hidden lg:inline">— Bangladesh Heritage, Discovery &amp; Traveler Safety Companion</span>
     </div>
     
-    <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-1 sm:mt-0">
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
       <!-- Fidelity Switcher (High-Fi vs Wireframe) -->
       <div class="flex items-center bg-slate-900 p-0.5 rounded-lg border border-slate-800">
-        <button id="btn-highfi" onclick="setFidelity('high')" class="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-700 text-white transition">
-          <i class="fa-solid fa-gem mr-1"></i> High-Fi
+        <button id="btn-highfi" onclick="setFidelity('high')" class="px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-semibold bg-emerald-700 text-white transition flex items-center gap-1">
+          <i class="fa-solid fa-gem"></i>
+          <span>High-Fi</span>
         </button>
-        <button id="btn-lowfi" onclick="setFidelity('low')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-drafting-compass mr-1"></i> Wireframe
+        <button id="btn-lowfi" onclick="setFidelity('low')" class="px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1">
+          <i class="fa-solid fa-drafting-compass"></i>
+          <span>Wireframe</span>
         </button>
       </div>
 
       <!-- Dark Mode Toggle Button -->
-      <button id="btn-darkmode" onclick="toggleDarkMode()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Toggle Dark / Light Mode">
+      <button id="btn-darkmode" onclick="toggleDarkMode()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition" title="Toggle Dark / Light Mode">
         <i id="darkmode-icon" class="fa-solid fa-moon text-amber-400"></i>
-        <span id="darkmode-text">Dark Mode</span>
+        <span id="darkmode-text" class="hidden sm:inline">Dark Mode</span>
       </button>
 
       <!-- Quick Emergency Trigger -->
-      <button onclick="openModal('emergency-modal')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition animate-pulse">
+      <button onclick="openModal('emergency-modal')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-sm transition animate-pulse">
         <i class="fa-solid fa-phone-volume"></i>
         <span>SOS 999</span>
       </button>
@@ -199,21 +218,27 @@
   </div>
 
   <!-- ================= TOP NAVIGATION BAR (SHOWN AFTER SIGN-IN) ================= -->
-  <nav id="main-navbar" class="hidden bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-3.5 sticky top-9 z-40">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <!-- Brand Logo -->
-      <button onclick="navigateHomeByRole()" class="flex items-center gap-3 text-left group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-bengal-900 to-bengal-700 flex items-center justify-center text-white text-lg shadow-sm">
-          <i class="fa-solid fa-mountain-sun"></i>
-        </div>
-        <div>
-          <span class="text-2xl font-extrabold tracking-tight text-slate-950 font-serif">Roam<span class="text-emerald-700">BD</span></span>
-          <span class="block text-[9px] text-slate-500 font-bold tracking-widest uppercase">Explore Bangladesh</span>
-        </div>
-      </button>
+  <nav id="main-navbar" class="hidden bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 sm:px-8 py-3 sticky top-[37px] z-40">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <!-- Left: Hamburger (Mobile/Tablet) + Brand Logo -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="toggleMobileDrawer(true)" class="lg:hidden w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:scale-95 transition" aria-label="Open Menu">
+          <i class="fa-solid fa-bars text-base"></i>
+        </button>
 
-      <!-- Center Navigation Links -->
-      <div id="tourist-nav-links" class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
+        <button onclick="navigateHomeByRole()" class="flex items-center gap-2.5 text-left group">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-bengal-900 to-bengal-700 flex items-center justify-center text-white text-base sm:text-lg shadow-sm flex-shrink-0">
+            <i class="fa-solid fa-mountain-sun"></i>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-950 font-serif leading-none block">Roam<span class="text-emerald-700">BD</span></span>
+            <span class="block text-[9px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">Explore Bangladesh</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Center Navigation Links (Desktop) -->
+      <div id="tourist-nav-links" class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
         <a href="#destinations-section" onclick="showScreen('home')" class="hover:text-emerald-700 transition">Destinations</a>
         <a href="#ai-planner-section" onclick="showScreen('home')" class="hover:text-emerald-700 transition flex items-center gap-1">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-xs"></i> RoamAI
@@ -225,71 +250,153 @@
       </div>
 
       <!-- Right Actions -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-2.5">
         <!-- Admin Desk Button (Shown only if logged in user is an Administrator) -->
-        <button id="btn-return-admin-portal" onclick="showScreen('admin')" class="hidden bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-300 px-3 py-1.5 rounded-xl text-xs font-bold transition items-center gap-1.5">
+        <button id="btn-return-admin-portal" onclick="showScreen('admin')" class="hidden bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition items-center gap-1.5">
           <i class="fa-solid fa-sliders text-purple-700"></i>
-          <span>Admin Desk</span>
+          <span class="hidden sm:inline">Admin Desk</span>
         </button>
 
         <!-- Guide Portal Button (Shown only if logged in user is a Tour Guide) -->
-        <button id="btn-return-guide-portal" onclick="showScreen('guide')" class="hidden bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1.5 rounded-xl text-xs font-bold transition items-center gap-1.5">
+        <button id="btn-return-guide-portal" onclick="showScreen('guide')" class="hidden bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition items-center gap-1.5">
           <i class="fa-solid fa-compass text-amber-700"></i>
-          <span>Guide Portal</span>
+          <span class="hidden sm:inline">Guide Portal</span>
         </button>
 
-        <button onclick="openModal('ai-modal')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition">
-          <i class="fa-solid fa-sparkles text-emerald-700"></i>
+        <button onclick="openModal('ai-modal')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-700"></i>
           <span class="hidden sm:inline">Trip Assistant</span>
         </button>
 
         <!-- Explorer Profile Trigger -->
-        <button onclick="openModal('profile-modal')" class="flex items-center gap-2 p-1 pr-3 rounded-full border border-slate-200 hover:bg-slate-100 transition" title="Open Explorer Profile">
+        <button onclick="openModal('profile-modal')" class="flex items-center gap-2 p-1 sm:pr-3 rounded-full border border-slate-200 hover:bg-slate-100 transition" title="Open Explorer Profile">
           <img id="nav-user-avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-600/30" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Traveler Profile">
-          <span id="nav-user-name" class="text-xs font-bold text-slate-700 hidden sm:inline">Tanvir A.</span>
+          <span id="nav-user-name" class="text-xs font-bold text-slate-700 hidden sm:inline">Tanvir</span>
         </button>
       </div>
     </div>
   </nav>
 
+  <!-- ================= SLIDE-OUT MOBILE & TABLET DRAWER ================= -->
+  <div id="mobile-drawer" class="hidden fixed inset-0 z-50 lg:hidden">
+    <!-- Backdrop -->
+    <div onclick="toggleMobileDrawer(false)" class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"></div>
+
+    <!-- Drawer Panel -->
+    <div id="mobile-drawer-panel" class="relative w-72 max-w-[82vw] bg-white h-full shadow-2xl border-r border-slate-200 flex flex-col justify-between p-5 overflow-y-auto">
+      <div class="space-y-6">
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-bengal-900 text-white flex items-center justify-center text-base">
+              <i class="fa-solid fa-mountain-sun"></i>
+            </div>
+            <div>
+              <span class="text-lg font-extrabold text-slate-900 font-serif block leading-none">Roam<span class="text-emerald-700">BD</span></span>
+              <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Mobile Navigation</span>
+            </div>
+          </div>
+          <button onclick="toggleMobileDrawer(false)" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Active User Mini Banner -->
+        <div onclick="toggleMobileDrawer(false); openModal('profile-modal');" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-3 cursor-pointer">
+          <img id="drawer-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User" class="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500">
+          <div class="min-w-0 flex-1">
+            <p id="drawer-user-name" class="text-xs font-bold text-slate-900 truncate">Tanvir Ahmed</p>
+            <p id="drawer-user-role" class="text-[10px] text-emerald-700 font-mono font-bold">Verified Traveler</p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="space-y-1 text-xs font-bold text-slate-700">
+          <p class="text-[10px] font-mono uppercase tracking-wider text-slate-400 px-3 mb-1.5">Explore Sections</p>
+          <a href="#destinations-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-compass w-5 text-emerald-700"></i> Iconic Destinations
+          </a>
+          <a href="#ai-planner-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-wand-magic-sparkles w-5 text-amber-500"></i> RoamAI Route Planner
+          </a>
+          <a href="#accommodations-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-bed w-5 text-sky-600"></i> Stays &amp; Regional Food
+          </a>
+          <a href="#guides-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-id-badge w-5 text-emerald-700"></i> Certified Local Guides
+          </a>
+          <a href="#map-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-map-location-dot w-5 text-emerald-700"></i> Interactive Safety Map
+          </a>
+          <a href="#reviews-section" onclick="mobileNavClick('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-800 transition">
+            <i class="fa-solid fa-comments w-5 text-emerald-700"></i> Community Field Notes
+          </a>
+        </div>
+
+        <!-- Role Portals (Dynamic) -->
+        <div id="drawer-role-shortcuts" class="space-y-2 pt-2 border-t border-slate-100">
+          <button id="drawer-btn-guide" onclick="mobileNavClick('guide')" class="hidden w-full bg-amber-50 text-amber-900 border border-amber-200 px-3.5 py-2.5 rounded-xl text-xs font-bold items-center gap-2">
+            <i class="fa-solid fa-compass text-amber-700"></i> Open Tour Guide Portal
+          </button>
+          <button id="drawer-btn-admin" onclick="mobileNavClick('admin')" class="hidden w-full bg-purple-50 text-purple-900 border border-purple-200 px-3.5 py-2.5 rounded-xl text-xs font-bold items-center gap-2">
+            <i class="fa-solid fa-sliders text-purple-700"></i> Open Admin Desk
+          </button>
+        </div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="pt-4 border-t border-slate-200 space-y-2">
+        <button onclick="toggleMobileDrawer(false); openModal('emergency-modal');" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-phone-volume"></i> Emergency 999 &amp; Police
+        </button>
+        <button onclick="toggleMobileDrawer(false); signOut();" class="w-full bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================================================================== -->
   <!-- SCREEN 1: SIGN IN & REGISTRATION PORTAL (DEFAULT INITIAL LANDING)     -->
   <!-- ===================================================================== -->
-  <div id="screen-auth" class="flex-grow flex flex-col justify-center items-center p-4 sm:p-6 lg:p-10 bg-slate-100/70">
-    <div class="max-w-xl w-full mb-4 flex items-center justify-between">
+  <div id="screen-auth" class="flex-grow flex flex-col justify-center items-center px-3 py-6 sm:p-6 lg:p-10 bg-slate-100/70">
+    <div class="max-w-xl w-full mb-3 sm:mb-4 flex items-center justify-between px-1">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-xl bg-bengal-900 text-white flex items-center justify-center text-base shadow-sm">
           <i class="fa-solid fa-mountain-sun"></i>
         </div>
         <div>
-          <span class="text-xl font-extrabold tracking-tight text-slate-950 font-serif">Roam<span class="text-emerald-700">BD</span></span>
+          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-950 font-serif">Roam<span class="text-emerald-700">BD</span></span>
           <span class="block text-[9px] text-slate-500 font-bold uppercase tracking-widest">Official Tourism &amp; Safety Gateway</span>
         </div>
       </div>
-      <span class="text-xs font-semibold text-slate-500 hidden sm:inline"><i class="fa-solid fa-shield-halved text-emerald-700 mr-1"></i> Tourist Police 24/7 Helpline: 01320-169999</span>
+      <a href="tel:01320169999" class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 flex items-center gap-1">
+        <i class="fa-solid fa-shield-halved text-emerald-700"></i>
+        <span class="hidden sm:inline">Tourist Police:</span> <span>01320-169999</span>
+      </a>
     </div>
 
     <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden">
-      
       <!-- INTERACTIVE AUTHENTICATION PANEL -->
-      <div class="p-6 sm:p-10 flex flex-col justify-between">
+      <div class="p-5 sm:p-10 flex flex-col justify-between">
         <div>
           <!-- Tab Navigation: Sign In vs Register -->
-          <div class="flex items-center p-1 bg-slate-100 rounded-2xl mb-6">
-            <button id="tab-btn-signin" onclick="switchAuthTab('signin')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition">
+          <div class="flex items-center p-1 bg-slate-100 rounded-2xl mb-5 sm:mb-6">
+            <button id="tab-btn-signin" onclick="switchAuthTab('signin')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition">
               <i class="fa-solid fa-lock mr-1.5 text-emerald-700"></i> Sign In
             </button>
-            <button id="tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition">
+            <button id="tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition">
               <i class="fa-solid fa-user-plus mr-1.5"></i> Create Account
             </button>
           </div>
 
           <!-- NOTIFICATION BANNER (SUCCESS OR ERROR) -->
-          <div id="auth-alert" class="hidden mb-5 bg-emerald-100 border border-emerald-300 text-emerald-900 p-4 rounded-2xl text-xs flex items-start gap-3">
+          <div id="auth-alert" class="hidden mb-5 bg-emerald-100 border border-emerald-300 text-emerald-900 p-3.5 sm:p-4 rounded-2xl text-xs flex items-start gap-3">
             <i id="auth-alert-icon" class="fa-solid fa-circle-check text-emerald-700 text-base mt-0.5"></i>
             <div>
-              <p class="font-bold text-sm" id="auth-alert-title">Authentication Successful!</p>
-              <p class="mt-0.5" id="auth-alert-msg">Entering RoamBD Discovery Portal...</p>
+              <p class="font-bold text-xs sm:text-sm" id="auth-alert-title">Authentication Successful!</p>
+              <p class="mt-0.5 leading-relaxed" id="auth-alert-msg">Entering RoamBD Discovery Portal...</p>
             </div>
           </div>
 
@@ -303,7 +410,7 @@
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <i class="fa-regular fa-envelope"></i>
                 </span>
-                <input id="signin-email" type="email" required placeholder="tanvir.ahmed@example.com" class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <input id="signin-email" type="email" required placeholder="tanvir.ahmed@example.com" class="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
               </div>
             </div>
 
@@ -320,7 +427,7 @@
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <i class="fa-solid fa-lock"></i>
                 </span>
-                <input id="signin-password" type="password" required placeholder="••••••••••••" class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <input id="signin-password" type="password" required placeholder="••••••••••••" class="w-full pl-10 pr-10 py-3 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
                 <button type="button" onclick="togglePasswordVisibility('signin-password', 'toggle-icon-signin')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
                   <i id="toggle-icon-signin" class="fa-regular fa-eye"></i>
                 </button>
@@ -332,10 +439,10 @@
                 <input type="checkbox" class="rounded border-slate-300 text-emerald-700 focus:ring-emerald-600 w-4 h-4" checked>
                 <span class="text-xs text-slate-600 font-medium">Keep me signed in</span>
               </label>
-              <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-lock text-emerald-700 mr-1"></i> TLS 256-bit Encrypted</span>
+              <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-lock text-emerald-700 mr-1"></i> Encrypted</span>
             </div>
 
-            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
+            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 active:scale-[0.99] text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
               <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to RoamBD
             </button>
           </form>
@@ -346,7 +453,7 @@
               <label for="reg-name" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
                 Full Legal Name
               </label>
-              <input id="reg-name" type="text" required placeholder="e.g. Tanvir Ahmed Chowdhury" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              <input id="reg-name" type="text" required placeholder="e.g. Tanvir Ahmed Chowdhury" class="w-full px-3.5 py-2.5 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -354,13 +461,13 @@
                 <label for="reg-email" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
                   Email Address
                 </label>
-                <input id="reg-email" type="email" required placeholder="tanvir@example.com" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <input id="reg-email" type="email" required placeholder="tanvir@example.com" class="w-full px-3.5 py-2.5 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
               </div>
               <div>
                 <label for="reg-phone" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
                   Phone (+880 Bangladesh)
                 </label>
-                <input id="reg-phone" type="tel" required placeholder="+880 17XX-XXXXXX" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <input id="reg-phone" type="tel" required placeholder="+880 17XX-XXXXXX" class="w-full px-3.5 py-2.5 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
               </div>
             </div>
 
@@ -369,14 +476,14 @@
                 Select Account Type
               </label>
               <input type="hidden" id="reg-role" value="tourist">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
                 <button type="button" id="role-card-tourist" onclick="selectAccountRole('tourist')" class="p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2.5">
                   <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                     <i class="fa-solid fa-compass"></i>
                   </div>
                   <div>
                     <span class="block text-xs font-bold text-slate-900">Tourist</span>
-                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Explore &amp; plan trips across Bangladesh</span>
+                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Explore &amp; plan trips</span>
                   </div>
                 </button>
                 <button type="button" id="role-card-guide" onclick="selectAccountRole('guide')" class="p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2.5">
@@ -385,7 +492,7 @@
                   </div>
                   <div>
                     <span class="block text-xs font-bold text-slate-900">Tour Guide</span>
-                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Certified local guide &amp; naturalist</span>
+                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Certified local guide</span>
                   </div>
                 </button>
               </div>
@@ -396,7 +503,7 @@
                 Create Secure Password
               </label>
               <div class="relative">
-                <input id="reg-password" type="password" oninput="checkPasswordStrength(this.value)" required placeholder="At least 8 characters" class="w-full px-3.5 pr-10 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <input id="reg-password" type="password" oninput="checkPasswordStrength(this.value)" required placeholder="At least 8 characters" class="w-full px-3.5 pr-10 py-2.5 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
                 <button type="button" onclick="togglePasswordVisibility('reg-password', 'toggle-icon-reg')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
                   <i id="toggle-icon-reg" class="fa-regular fa-eye"></i>
                 </button>
@@ -416,7 +523,7 @@
               </span>
             </label>
 
-            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
+            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 active:scale-[0.99] text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
               <i class="fa-solid fa-user-plus"></i> Register Account
             </button>
           </form>
@@ -427,7 +534,7 @@
             <span class="relative px-3 bg-white text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Or continue with</span>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             <button type="button" onclick="handleSocialAuth('Google')" class="flex items-center justify-center gap-2.5 py-2.5 px-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition">
               <i class="fa-brands fa-google text-emerald-700"></i>
               <span>Login with Google</span>
@@ -439,12 +546,11 @@
           </div>
         </div>
 
-        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+        <div class="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
           <span>Official Bangladesh Tourism Gateway</span>
-          <button onclick="showScreen('home')" class="font-bold text-emerald-800 hover:underline">Continue as Guest &rarr;</button>
+          <button onclick="showScreen('home')" class="font-bold text-emerald-800 hover:underline py-1">Continue as Guest &rarr;</button>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -460,62 +566,64 @@
         <div class="absolute inset-0 bg-gradient-to-r from-bengal-950 via-bengal-950/90 to-transparent"></div>
       </div>
 
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 py-14 sm:py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-7 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-800/70 border border-emerald-500/40 text-emerald-200 text-xs font-medium backdrop-blur-sm">
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div class="lg:col-span-7 space-y-5 sm:space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/70 border border-emerald-500/40 text-emerald-200 text-[11px] sm:text-xs font-medium backdrop-blur-sm">
             <i class="fa-solid fa-compass text-amber-400"></i>
             <span>National Cultural &amp; Ecological Guidebook</span>
           </div>
 
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-serif tracking-tight leading-[1.12]">
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-serif tracking-tight leading-[1.15]">
             Journey Through the <span class="text-emerald-400 italic font-normal">Rivers &amp; Hills</span> of Bengal.
           </h1>
 
-          <p class="text-base sm:text-lg text-slate-200 max-w-2xl leading-relaxed font-normal">
+          <p class="text-sm sm:text-lg text-slate-200 max-w-2xl leading-relaxed font-normal">
             Explore the Sundarbans mangrove delta, misty Sylhet tea valleys, ancient terracotta ruins, and coastal horizons—supported by AI route planning, verified cultural guides, and 24/7 safety coverage.
           </p>
 
-          <!-- Search & Filter Bar -->
-          <div class="bg-white p-2 sm:p-3 rounded-2xl shadow-2xl max-w-2xl text-slate-800 flex flex-col sm:flex-row items-center gap-2">
-            <div class="flex items-center gap-2.5 w-full sm:w-auto flex-grow px-3 py-2 border-b sm:border-b-0 sm:border-r border-slate-200">
+          <!-- Search & Filter Bar (Responsive Stack on Mobile) -->
+          <div class="bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl max-w-2xl text-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="flex items-center gap-2.5 flex-grow px-3 py-2.5 border-b sm:border-b-0 sm:border-r border-slate-200">
               <i class="fa-solid fa-magnifying-glass text-emerald-700"></i>
-              <input id="search-input" oninput="filterDestinations()" type="text" placeholder="Search Cox's Bazar, Sundarbans, Sajek, Lalbagh..." class="w-full text-sm font-medium focus:outline-none bg-transparent">
+              <input id="search-input" oninput="filterDestinations()" type="text" placeholder="Search Cox's Bazar, Sundarbans, Sajek..." class="w-full text-sm font-medium focus:outline-none bg-transparent">
             </div>
             
-            <div class="flex items-center gap-2 w-full sm:w-auto px-3 py-2">
-              <i class="fa-solid fa-cloud-sun text-amber-600 text-sm"></i>
-              <select id="season-select" onchange="filterDestinations()" class="text-xs sm:text-sm font-semibold text-slate-700 bg-transparent focus:outline-none cursor-pointer">
-                <option value="all">All Seasons</option>
-                <option value="winter">Winter (Nov–Feb)</option>
-                <option value="monsoon">Monsoon Lush (Jun–Sep)</option>
-                <option value="year-round">Year-Round</option>
-              </select>
+            <div class="flex items-center justify-between sm:justify-start gap-2 px-3 py-2">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cloud-sun text-amber-600 text-sm"></i>
+                <select id="season-select" onchange="filterDestinations()" class="text-xs sm:text-sm font-semibold text-slate-700 bg-transparent focus:outline-none cursor-pointer">
+                  <option value="all">All Seasons</option>
+                  <option value="winter">Winter (Nov–Feb)</option>
+                  <option value="monsoon">Monsoon (Jun–Sep)</option>
+                  <option value="year-round">Year-Round</option>
+                </select>
+              </div>
             </div>
 
-            <a href="#destinations-section" class="w-full sm:w-auto bg-bengal-700 hover:bg-bengal-800 text-white font-bold px-6 py-3 rounded-xl text-sm transition text-center whitespace-nowrap shadow-md">
+            <a href="#destinations-section" class="bg-bengal-700 hover:bg-bengal-800 text-white font-bold px-6 py-3 rounded-xl text-xs sm:text-sm transition text-center whitespace-nowrap shadow-md">
               Explore Guide
             </a>
           </div>
 
           <!-- Key Trust Badges -->
-          <div class="pt-3 flex flex-wrap items-center gap-6 text-xs text-emerald-200/90">
-            <div class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-400"></i> 64 Districts Covered</div>
-            <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Direct Tourist Police Link</div>
-            <div class="flex items-center gap-2"><i class="fa-solid fa-book-open text-emerald-400"></i> 100% Non-Commercial Directory</div>
+          <div class="pt-1 flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs text-emerald-200/90">
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-check-circle text-emerald-400"></i> 64 Districts</div>
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Tourist Police Sync</div>
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-emerald-400"></i> 100% Non-Commercial</div>
           </div>
         </div>
 
         <!-- Right Quick AI Card -->
         <div class="lg:col-span-5">
-          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-white shadow-2xl space-y-5">
-            <div class="flex items-center justify-between border-b border-white/15 pb-4">
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-5 sm:p-6 text-white shadow-2xl space-y-4 sm:space-y-5">
+            <div class="flex items-center justify-between border-b border-white/15 pb-3.5">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-amber-300">
-                  <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-amber-300">
+                  <i class="fa-solid fa-wand-magic-sparkles text-base sm:text-lg"></i>
                 </div>
                 <div>
-                  <h2 class="font-bold text-base">RoamAI Route Assistant</h2>
-                  <p class="text-xs text-emerald-200">Personalized Cultural &amp; Nature Itineraries</p>
+                  <h2 class="font-bold text-sm sm:text-base">RoamAI Route Assistant</h2>
+                  <p class="text-[11px] text-emerald-200">Personalized Cultural &amp; Nature Itineraries</p>
                 </div>
               </div>
               <span class="text-[10px] font-mono uppercase bg-emerald-500/30 px-2.5 py-1 rounded-full text-emerald-200 border border-emerald-400/30">Smart Guide</span>
@@ -525,24 +633,24 @@
               <div>
                 <label class="block text-emerald-200 mb-1.5 font-semibold">Select Your Travel Style:</label>
                 <div class="grid grid-cols-3 gap-2">
-                  <button onclick="selectQuickPersona(this, 'Heritage')" class="persona-btn bg-emerald-700/80 border border-emerald-400 py-2 px-2 rounded-xl font-bold text-center transition">🏛️ Heritage</button>
-                  <button onclick="selectQuickPersona(this, 'Wilderness')" class="persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2 px-2 rounded-xl font-medium text-center transition">🌿 Wilderness</button>
-                  <button onclick="selectQuickPersona(this, 'Coastal')" class="persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2 px-2 rounded-xl font-medium text-center transition">🌊 Coastal</button>
+                  <button onclick="selectQuickPersona(this, 'Heritage')" class="persona-btn bg-emerald-700/80 border border-emerald-400 py-2.5 px-2 rounded-xl font-bold text-center transition">🏛️ Heritage</button>
+                  <button onclick="selectQuickPersona(this, 'Wilderness')" class="persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2.5 px-2 rounded-xl font-medium text-center transition">🌿 Nature</button>
+                  <button onclick="selectQuickPersona(this, 'Coastal')" class="persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2.5 px-2 rounded-xl font-medium text-center transition">🌊 Coastal</button>
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 pt-1">
-                <div class="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span class="text-slate-300 block text-[11px]">TravelPace</span>
-                  <select id="quick-pace" class="bg-transparent font-bold text-sm text-white focus:outline-none w-full mt-0.5">
+              <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <div class="bg-white/5 p-2.5 sm:p-3 rounded-xl border border-white/10">
+                  <span class="text-slate-300 block text-[10px]">Travel Pace</span>
+                  <select id="quick-pace" class="bg-transparent font-bold text-xs sm:text-sm text-white focus:outline-none w-full mt-0.5">
                     <option class="text-slate-900" value="Relaxed Scenic">Relaxed Scenic</option>
                     <option class="text-slate-900" value="Immersive Cultural">Immersive Cultural</option>
                     <option class="text-slate-900" value="Backpacker Trail">Backpacker Trail</option>
                   </select>
                 </div>
-                <div class="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span class="text-slate-300 block text-[11px]">Duration</span>
-                  <select id="quick-days" class="bg-transparent font-bold text-sm text-white focus:outline-none w-full mt-0.5">
+                <div class="bg-white/5 p-2.5 sm:p-3 rounded-xl border border-white/10">
+                  <span class="text-slate-300 block text-[10px]">Duration</span>
+                  <select id="quick-days" class="bg-transparent font-bold text-xs sm:text-sm text-white focus:outline-none w-full mt-0.5">
                     <option class="text-slate-900" value="3 Days">3 Days / 2 Nights</option>
                     <option class="text-slate-900" value="5 Days">5 Days / 4 Nights</option>
                     <option class="text-slate-900" value="7 Days">7 Days Expedition</option>
@@ -551,16 +659,16 @@
               </div>
 
               <div id="quick-ai-output" class="bg-slate-950/75 rounded-2xl p-3.5 border border-emerald-500/30 space-y-1.5">
-                <div class="flex items-center justify-between text-[11px] text-emerald-400 font-mono">
+                <div class="flex items-center justify-between text-[10px] text-emerald-400 font-mono">
                   <span>SUGGESTED ROUTE:</span>
                   <span>98% AFFINITY</span>
                 </div>
-                <p id="quick-ai-title" class="text-sm font-bold text-white">Srimangal Tea Estates &amp; Lawachara Rainforest</p>
+                <p id="quick-ai-title" class="text-xs sm:text-sm font-bold text-white">Srimangal Tea Estates &amp; Lawachara Rainforest</p>
                 <p id="quick-ai-desc" class="text-[11px] text-slate-300 leading-normal">Includes Madhabpur Lake lotus trail, Monipuri weaving village visit, and Gibbons canopy walk.</p>
               </div>
             </div>
 
-            <button onclick="generateQuickAI()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2">
+            <button onclick="generateQuickAI()" class="w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-extrabold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2">
               <i class="fa-solid fa-rotate"></i> Generate Curated Route
             </button>
           </div>
@@ -569,67 +677,68 @@
     </header>
 
     <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-12 space-y-20">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12 space-y-14 sm:space-y-20">
 
       <!-- 1. TOURIST DESTINATION DISCOVERY -->
       <section id="destinations-section" class="scroll-mt-24">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">Curated Atlas</span>
-            <h2 class="text-3xl font-extrabold text-slate-900 font-serif mt-1">Iconic Destinations of Bangladesh</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif mt-1">Iconic Destinations of Bangladesh</h2>
           </div>
 
-          <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
-            <button onclick="filterCategory('all')" class="cat-pill active-pill px-4 py-2 rounded-xl text-xs font-bold bg-bengal-800 text-white transition whitespace-nowrap">All Regions</button>
-            <button onclick="filterCategory('beach')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">🌊 Beaches &amp; Islands</button>
-            <button onclick="filterCategory('forest')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">🐅 Mangroves &amp; Forests</button>
-            <button onclick="filterCategory('hill')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">⛰️ Hill Tracts</button>
-            <button onclick="filterCategory('historical')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">🏛️ Archaeology &amp; Heritage</button>
-            <button onclick="filterCategory('tea')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">🍃 Tea Valleys</button>
+          <!-- Swipeable Category Pills on Mobile -->
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+            <button onclick="filterCategory('all')" class="cat-pill active-pill px-4 py-2.5 rounded-xl text-xs font-bold bg-bengal-800 text-white transition whitespace-nowrap flex-shrink-0">All Regions</button>
+            <button onclick="filterCategory('beach')" class="cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0">🌊 Beaches &amp; Islands</button>
+            <button onclick="filterCategory('forest')" class="cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0">🐅 Mangroves &amp; Forests</button>
+            <button onclick="filterCategory('hill')" class="cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0">⛰️ Hill Tracts</button>
+            <button onclick="filterCategory('historical')" class="cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0">🏛️ Heritage</button>
+            <button onclick="filterCategory('tea')" class="cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0">🍃 Tea Valleys</button>
           </div>
         </div>
 
-        <div id="destinations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div id="destinations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
           <!-- Populated dynamically via JS -->
         </div>
       </section>
 
       <!-- 2. AI TRAVEL PLANNER BANNER -->
-      <section id="ai-planner-section" class="scroll-mt-24 bg-gradient-to-br from-bengal-900 via-bengal-800 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-7 space-y-4">
+      <section id="ai-planner-section" class="scroll-mt-24 bg-gradient-to-br from-bengal-900 via-bengal-800 to-slate-900 rounded-3xl p-5 sm:p-10 text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+          <div class="lg:col-span-7 space-y-3 sm:space-y-4">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold border border-amber-400/30 font-mono">
               <i class="fa-solid fa-microchip"></i> RoamAI Assistant
             </div>
-            <h2 class="text-3xl sm:text-4xl font-bold font-serif leading-tight">
+            <h2 class="text-2xl sm:text-4xl font-bold font-serif leading-tight">
               Not Sure Which Region Fits Your Season?
             </h2>
-            <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-xl">
+            <p class="text-slate-200 text-xs sm:text-base leading-relaxed max-w-xl">
               Our intelligent route planner evaluates monsoon water levels in Sylhet, winter sea calmness in Saint Martin, and festival calendars in the Chittagong Hill Tracts to craft a day-by-day cultural guide.
             </p>
-            <div class="flex flex-wrap gap-4 pt-2">
-              <button onclick="openModal('ai-modal')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition shadow-lg">
+            <div class="pt-1">
+              <button onclick="openModal('ai-modal')" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition shadow-lg">
                 Launch Interactive Planner
               </button>
             </div>
           </div>
 
-          <div class="lg:col-span-5 bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/15 space-y-4">
+          <div class="lg:col-span-5 bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15 space-y-4">
             <div class="flex items-center justify-between text-xs border-b border-white/10 pb-3">
               <span class="font-bold text-emerald-300">REGIONAL SUITABILITY INDEX</span>
-              <span class="font-mono text-amber-300">LIVE ADVISORY</span>
+              <span class="font-mono text-amber-300 text-[11px]">LIVE ADVISORY</span>
             </div>
             <div class="space-y-3 text-xs">
               <div>
-                <div class="flex justify-between mb-1"><span>Sylhet &amp; Srimangal (Tea &amp; Haor Wetlands)</span><span class="font-bold text-emerald-400">96% Ideal</span></div>
+                <div class="flex justify-between mb-1"><span>Sylhet &amp; Srimangal (Tea &amp; Wetlands)</span><span class="font-bold text-emerald-400">96% Ideal</span></div>
                 <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden"><div class="bg-emerald-400 h-full rounded-full" style="width: 96%"></div></div>
               </div>
               <div>
-                <div class="flex justify-between mb-1"><span>Sundarbans Mangrove Expedition (Khulna)</span><span class="font-bold text-amber-300">91% Ideal</span></div>
+                <div class="flex justify-between mb-1"><span>Sundarbans Mangrove (Khulna)</span><span class="font-bold text-amber-300">91% Ideal</span></div>
                 <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden"><div class="bg-amber-400 h-full rounded-full" style="width: 91%"></div></div>
               </div>
               <div>
-                <div class="flex justify-between mb-1"><span>Paharpur &amp; Mahasthangarh Heritage</span><span class="font-bold text-sky-300">88% Ideal</span></div>
+                <div class="flex justify-between mb-1"><span>Paharpur &amp; Mahasthangarh</span><span class="font-bold text-sky-300">88% Ideal</span></div>
                 <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden"><div class="bg-sky-400 h-full rounded-full" style="width: 88%"></div></div>
               </div>
             </div>
@@ -638,9 +747,9 @@
       </section>
 
       <!-- 3. ACCOMMODATION DIRECTORY & REGIONAL FOOD CULTURE -->
-      <section id="accommodations-section" class="scroll-mt-24 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <section id="accommodations-section" class="scroll-mt-24 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10">
         <!-- Stays & Sanctuaries Information Directory -->
-        <div class="lg:col-span-7 space-y-6">
+        <div class="lg:col-span-7 space-y-5 sm:space-y-6">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">Accommodations Directory</span>
             <h3 class="text-2xl font-extrabold text-slate-900 font-serif mt-0.5">Verified Stays &amp; Eco-Sanctuaries</h3>
@@ -649,17 +758,17 @@
 
           <div class="space-y-4">
             <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row gap-4 items-center">
-              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80" alt="Sayeman Beach Resort" class="w-full sm:w-36 h-32 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Sayeman+Resort'">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80" alt="Sayeman Beach Resort" class="w-full sm:w-36 h-40 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Sayeman+Resort'">
               <div class="flex-grow space-y-1.5 w-full">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-1">
                   <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Marine Drive • Cox's Bazar</span>
-                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.8 (410 Reviews)</span>
+                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.8 (410)</span>
                 </div>
                 <h4 class="font-bold text-slate-900 text-base">Sayeman Beach Heritage Resort</h4>
                 <p class="text-xs text-slate-500">Oceanfront panorama, infinity swimming deck, tourist help desk &amp; airport shuttle support.</p>
-                <div class="pt-1 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
-                  <span class="text-[11px] text-slate-600 font-medium"><i class="fa-solid fa-phone text-emerald-700 mr-1"></i> +880 9610-777888</span>
-                  <button onclick="openDirectoryModal('Sayeman Beach Heritage Resort', 'Marine Drive, Kolatoli, Cox\'s Bazar', '+880 9610-777888', 'info@sayemanresort.com', '24/7 Front Desk, Medical On-Call, Private Beach Access, Safe Locker')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
+                  <a href="tel:+8809610777888" class="text-xs text-emerald-700 font-bold"><i class="fa-solid fa-phone mr-1"></i> +880 9610-777888</a>
+                  <button onclick="openDirectoryModal('Sayeman Beach Heritage Resort', 'Marine Drive, Kolatoli, Cox\'s Bazar', '+880 9610-777888', 'info@sayemanresort.com', '24/7 Front Desk, Medical On-Call, Private Beach Access, Safe Locker')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition">
                     View Directory Info
                   </button>
                 </div>
@@ -667,17 +776,17 @@
             </div>
 
             <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row gap-4 items-center">
-              <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80" alt="Grand Sultan Tea Resort" class="w-full sm:w-36 h-32 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Grand+Sultan'">
+              <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80" alt="Grand Sultan Tea Resort" class="w-full sm:w-36 h-40 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Grand+Sultan'">
               <div class="flex-grow space-y-1.5 w-full">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-1">
                   <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Srimangal • Sylhet Division</span>
-                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.9 (530 Reviews)</span>
+                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.9 (530)</span>
                 </div>
                 <h4 class="font-bold text-slate-900 text-base">Grand Sultan Tea Resort &amp; Golf</h4>
                 <p class="text-xs text-slate-500">Surrounded by 135 acres of lush tea gardens near Lawachara National Park.</p>
-                <div class="pt-1 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
-                  <span class="text-[11px] text-slate-600 font-medium"><i class="fa-solid fa-phone text-emerald-700 mr-1"></i> +880 8626-73000</span>
-                  <button onclick="openDirectoryModal('Grand Sultan Tea Resort & Golf', 'Radhanagar, Srimangal, Moulvibazar', '+880 8626-73000', 'concierge@grandsultanresort.com', 'Tea Estate Guided Walks, Helipad, Library, Family Recreation Zone')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
+                  <a href="tel:+880862673000" class="text-xs text-emerald-700 font-bold"><i class="fa-solid fa-phone mr-1"></i> +880 8626-73000</a>
+                  <button onclick="openDirectoryModal('Grand Sultan Tea Resort & Golf', 'Radhanagar, Srimangal, Moulvibazar', '+880 8626-73000', 'concierge@grandsultanresort.com', 'Tea Estate Guided Walks, Helipad, Library, Family Recreation Zone')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition">
                     View Directory Info
                   </button>
                 </div>
@@ -685,17 +794,17 @@
             </div>
 
             <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row gap-4 items-center">
-              <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80" alt="Meghpunji Cloud Resort" class="w-full sm:w-36 h-32 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Meghpunji+Sajek'">
+              <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80" alt="Meghpunji Cloud Resort" class="w-full sm:w-36 h-40 sm:h-28 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/300x200/047857/ffffff?text=Meghpunji+Sajek'">
               <div class="flex-grow space-y-1.5 w-full">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-1">
                   <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">Ruilui Para • Sajek Valley</span>
-                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.7 (290 Reviews)</span>
+                  <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-star"></i> 4.7 (290)</span>
                 </div>
                 <h4 class="font-bold text-slate-900 text-base">Meghpunji Eco-Lodge Sanctuary</h4>
                 <p class="text-xs text-slate-500">Indigenous bamboo architecture overlooking the Lusai Hills cloud horizon.</p>
-                <div class="pt-1 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
-                  <span class="text-[11px] text-slate-600 font-medium"><i class="fa-solid fa-phone text-emerald-700 mr-1"></i> +880 1815-112233</span>
-                  <button onclick="openDirectoryModal('Meghpunji Eco-Lodge Sanctuary', 'Ruilui Para, Sajek Union, Baghaichhari', '+880 1815-112233', 'sajek.eco@roambd.org', 'Solar Backup Power, Viewing Veranda, Army Escort Coordination Info')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
+                  <a href="tel:+8801815112233" class="text-xs text-emerald-700 font-bold"><i class="fa-solid fa-phone mr-1"></i> +880 1815-112233</a>
+                  <button onclick="openDirectoryModal('Meghpunji Eco-Lodge Sanctuary', 'Ruilui Para, Sajek Union, Baghaichhari', '+880 1815-112233', 'sajek.eco@roambd.org', 'Solar Backup Power, Viewing Veranda, Army Escort Coordination Info')" class="bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition">
                     View Directory Info
                   </button>
                 </div>
@@ -705,58 +814,58 @@
         </div>
 
         <!-- Restaurant & Food Discovery -->
-        <div class="lg:col-span-5 space-y-6">
+        <div class="lg:col-span-5 space-y-5 sm:space-y-6">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-amber-700 font-mono">Culinary Traditions</span>
             <h3 class="text-2xl font-extrabold text-slate-900 font-serif mt-0.5">Regional Flavors &amp; Dining Guide</h3>
             <p class="text-xs text-slate-500 mt-1">Explore Bangladesh's iconic culinary heritage across major travel hubs.</p>
           </div>
 
-          <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm space-y-4">
-            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
+          <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex items-start sm:items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
               <img src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=200&q=80" alt="Old Dhaka Kacchi" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/150x150/9a3412/ffffff?text=Kacchi'">
-              <div class="flex-grow">
-                <div class="flex items-center justify-between">
-                  <h4 class="font-bold text-slate-900 text-sm">Old Dhaka Mughlai Kacchi</h4>
-                  <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Nazirabazar</span>
+              <div class="flex-grow min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <h4 class="font-bold text-slate-900 text-sm truncate">Old Dhaka Mughlai Kacchi</h4>
+                  <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded flex-shrink-0">Old Dhaka</span>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">Slow-cooked aromatic basmati rice with saffron mutton &amp; traditional Borhani.</p>
+                <p class="text-xs text-slate-500 mt-0.5 line-clamp-2">Slow-cooked aromatic basmati rice with saffron mutton &amp; traditional Borhani.</p>
                 <div class="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.9 Rating</span>
+                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.9</span>
                   <span>•</span>
                   <button onclick="openFoodModal('Old Dhaka Mughlai Kacchi', 'Nazirabazar & Lalbagh, Old Dhaka', 'Kacchi Biryani, Shahi Morog Polao, Saffron Borhani, Bakarkhani', 'Haji Biriyani, Nanna Miya, Fakhruddin Heritage Kitchen')" class="text-emerald-700 font-bold hover:underline">Food Guide &rarr;</button>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
+            <div class="flex items-start sm:items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
               <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80" alt="Coastal Seafood" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/150x150/0369a1/ffffff?text=Seafood'">
-              <div class="flex-grow">
-                <div class="flex items-center justify-between">
-                  <h4 class="font-bold text-slate-900 text-sm">Bay of Bengal Coral BBQ &amp; Bhorta</h4>
-                  <span class="text-[11px] font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded">Cox's Bazar</span>
+              <div class="flex-grow min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <h4 class="font-bold text-slate-900 text-sm truncate">Coral BBQ &amp; Coastal Bhorta</h4>
+                  <span class="text-[10px] font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded flex-shrink-0">Cox's Bazar</span>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">Freshly grilled Red Snapper, Rupchanda, Loitta fry, and spicy coastal Shutki Bhorta.</p>
+                <p class="text-xs text-slate-500 mt-0.5 line-clamp-2">Freshly grilled Red Snapper, Rupchanda, Loitta fry, and spicy Shutki Bhorta.</p>
                 <div class="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.8 Rating</span>
+                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.8</span>
                   <span>•</span>
                   <button onclick="openFoodModal('Bay of Bengal Coral BBQ & Bhorta', 'Kolatoli & Laboni Point, Cox\'s Bazar', 'Grilled Coral Fish, Rupchanda Fry, 12-item Bhorta Platter, Coconut Pudding', 'Poushee Restaurant, Jhawban Dining, Mermaid Eco Kitchen')" class="text-emerald-700 font-bold hover:underline">Food Guide &rarr;</button>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
+            <div class="flex items-start sm:items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 transition border border-slate-100">
               <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80" alt="Seven Layer Tea" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/150x150/065f46/ffffff?text=7+Layer+Tea'">
-              <div class="flex-grow">
-                <div class="flex items-center justify-between">
-                  <h4 class="font-bold text-slate-900 text-sm">Seven-Layer Artisanal Tea &amp; Shatkora</h4>
-                  <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Sylhet</span>
+              <div class="flex-grow min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <h4 class="font-bold text-slate-900 text-sm truncate">Seven-Layer Tea &amp; Shatkora</h4>
+                  <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded flex-shrink-0">Sylhet</span>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">Iconic multi-layered spiced tea alongside Sylheti citrus Shatkora beef curry.</p>
+                <p class="text-xs text-slate-500 mt-0.5 line-clamp-2">Iconic multi-layered spiced tea alongside Sylheti citrus Shatkora beef curry.</p>
                 <div class="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.7 Rating</span>
+                  <span><i class="fa-solid fa-star text-amber-400"></i> 4.7</span>
                   <span>•</span>
-                  <button onclick="openFoodModal('Sylheti Shatkora & Artisanal Tea', 'Srimangal & Zindabazar, Sylhet', '7-Layer Spiced Tea, Beef Shatkora Curry,Akhni Polao, Chunga Pitha', 'Nilkantha Tea Cabin, Panshi Inn Sylhet, Pach Bhai Restaurant')" class="text-emerald-700 font-bold hover:underline">Food Guide &rarr;</button>
+                  <button onclick="openFoodModal('Sylheti Shatkora & Artisanal Tea', 'Srimangal & Zindabazar, Sylhet', '7-Layer Spiced Tea, Beef Shatkora Curry, Akhni Polao, Chunga Pitha', 'Nilkantha Tea Cabin, Panshi Inn Sylhet, Pach Bhai Restaurant')" class="text-emerald-700 font-bold hover:underline">Food Guide &rarr;</button>
                 </div>
               </div>
             </div>
@@ -766,32 +875,30 @@
 
       <!-- 4. VERIFIED LOCAL TOUR GUIDES DIRECTORY -->
       <section id="guides-section" class="scroll-mt-24">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">Community Cultural Stewards</span>
-            <h2 class="text-3xl font-extrabold text-slate-900 font-serif mt-1">Certified Local Tour Guides &amp; Naturalists</h2>
-            <p class="text-sm text-slate-500 mt-1">Connect directly with government-registered regional guides for forestry permits, heritage storytelling, and hill trekking safety.</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif mt-1">Certified Local Tour Guides &amp; Naturalists</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Connect directly with government-registered regional guides for forestry permits, heritage storytelling, and hill trekking safety.</p>
           </div>
-          <div class="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl">
+          <div class="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl self-start md:self-auto">
             <i class="fa-solid fa-id-card-clip text-emerald-600"></i>
-            <span>All Guides Verified via National ID &amp; BPC Registry</span>
+            <span>Verified via National ID &amp; BPC Registry</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           <!-- Guide 1 -->
-          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="flex items-start justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Mahmudul Hasan" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=MH'">
-                  <div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                      <i class="fa-solid fa-circle-check"></i> Forest Dept Certified
-                    </span>
-                    <h4 class="font-bold text-slate-900 text-lg mt-1">Mahmudul Hasan</h4>
-                    <p class="text-xs text-slate-500">Sundarbans &amp; Bagerhat Heritage</p>
-                  </div>
+              <div class="flex items-center gap-3.5">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Mahmudul Hasan" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600 flex-shrink-0" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=MH'">
+                <div>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    <i class="fa-solid fa-circle-check"></i> Forest Dept Certified
+                  </span>
+                  <h4 class="font-bold text-slate-900 text-base sm:text-lg mt-1">Mahmudul Hasan</h4>
+                  <p class="text-xs text-slate-500">Sundarbans &amp; Bagerhat Heritage</p>
                 </div>
               </div>
 
@@ -811,24 +918,22 @@
               </div>
             </div>
 
-            <button onclick="openGuideContactModal('Mahmudul Hasan', 'Sundarbans & Bagerhat Region', '+880 1712-987654', 'mahmud.sundarban@roambd-guides.org', 'BPC-2018-KHULNA-084')" class="mt-6 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+            <button onclick="openGuideContactModal('Mahmudul Hasan', 'Sundarbans & Bagerhat Region', '+880 1712-987654', 'mahmud.sundarban@roambd-guides.org', 'BPC-2018-KHULNA-084')" class="mt-5 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
               <i class="fa-solid fa-address-card"></i> View Guide Contact &amp; Credentials
             </button>
           </div>
 
           <!-- Guide 2 -->
-          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="flex items-start justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="Mong Prue Marma" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=MP'">
-                  <div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                      <i class="fa-solid fa-circle-check"></i> Hill Tract Specialist
-                    </span>
-                    <h4 class="font-bold text-slate-900 text-lg mt-1">Mong Prue Marma</h4>
-                    <p class="text-xs text-slate-500">Bandarban, Rangamati &amp; Sajek</p>
-                  </div>
+              <div class="flex items-center gap-3.5">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="Mong Prue Marma" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600 flex-shrink-0" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=MP'">
+                <div>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    <i class="fa-solid fa-circle-check"></i> Hill Tract Specialist
+                  </span>
+                  <h4 class="font-bold text-slate-900 text-base sm:text-lg mt-1">Mong Prue Marma</h4>
+                  <p class="text-xs text-slate-500">Bandarban, Rangamati &amp; Sajek</p>
                 </div>
               </div>
 
@@ -848,24 +953,22 @@
               </div>
             </div>
 
-            <button onclick="openGuideContactModal('Mong Prue Marma', 'Bandarban & Rangamati Hill Tracts', '+880 1823-456789', 'mong.marma@roambd-guides.org', 'CHT-2020-BANDAR-119')" class="mt-6 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+            <button onclick="openGuideContactModal('Mong Prue Marma', 'Bandarban & Rangamati Hill Tracts', '+880 1823-456789', 'mong.marma@roambd-guides.org', 'CHT-2020-BANDAR-119')" class="mt-5 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
               <i class="fa-solid fa-address-card"></i> View Guide Contact &amp; Credentials
             </button>
           </div>
 
           <!-- Guide 3 -->
-          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between sm:col-span-2 lg:col-span-1">
             <div>
-              <div class="flex items-start justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                  <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Nusrat Jahan" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=NJ'">
-                  <div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                      <i class="fa-solid fa-circle-check"></i> Heritage Historian
-                    </span>
-                    <h4 class="font-bold text-slate-900 text-lg mt-1">Nusrat Jahan</h4>
-                    <p class="text-xs text-slate-500">Old Dhaka, Sonargaon &amp; Sylhet</p>
-                  </div>
+              <div class="flex items-center gap-3.5">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Nusrat Jahan" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-600 flex-shrink-0" onerror="this.src='https://placehold.co/150x150/047857/ffffff?text=NJ'">
+                <div>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    <i class="fa-solid fa-circle-check"></i> Heritage Historian
+                  </span>
+                  <h4 class="font-bold text-slate-900 text-base sm:text-lg mt-1">Nusrat Jahan</h4>
+                  <p class="text-xs text-slate-500">Old Dhaka, Sonargaon &amp; Sylhet</p>
                 </div>
               </div>
 
@@ -885,7 +988,7 @@
               </div>
             </div>
 
-            <button onclick="openGuideContactModal('Nusrat Jahan', 'Dhaka Heritage & Sylhet Tea Estates', '+880 1611-223344', 'nusrat.heritage@roambd-guides.org', 'BPC-2021-DHAKA-302')" class="mt-6 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+            <button onclick="openGuideContactModal('Nusrat Jahan', 'Dhaka Heritage & Sylhet Tea Estates', '+880 1611-223344', 'nusrat.heritage@roambd-guides.org', 'BPC-2021-DHAKA-302')" class="mt-5 w-full bg-bengal-800 hover:bg-bengal-900 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
               <i class="fa-solid fa-address-card"></i> View Guide Contact &amp; Credentials
             </button>
           </div>
@@ -895,24 +998,24 @@
       <!-- 5. INTERACTIVE MAP & EMERGENCY SAFETY NETWORK -->
       <section id="map-section" class="scroll-mt-24">
         <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-6 sm:p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="p-5 sm:p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">Geospatial Explorer &amp; Safety</span>
               <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif mt-0.5">Nearby Services &amp; Emergency Response Map</h2>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">Filter attractions, verified stays, dining spots, hospitals, and Tourist Police help desks.</p>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Tap any pin on the map to inspect attractions, stays, hospitals, and Tourist Police desks.</p>
             </div>
 
-            <div class="flex flex-wrap gap-2">
-              <button onclick="filterMapPins('all')" class="map-filter-btn bg-slate-900 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition">All Layers</button>
-              <button onclick="filterMapPins('attraction')" class="map-filter-btn bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-100 transition"><i class="fa-solid fa-camera mr-1"></i> Attractions</button>
-              <button onclick="filterMapPins('stay')" class="map-filter-btn bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-sky-100 transition"><i class="fa-solid fa-bed mr-1"></i> Stays &amp; Dining</button>
-              <button onclick="filterMapPins('emergency')" class="map-filter-btn bg-red-50 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition"><i class="fa-solid fa-kit-medical mr-1"></i> Hospitals &amp; Police</button>
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              <button onclick="filterMapPins('all')" class="map-filter-btn bg-slate-900 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap flex-shrink-0">All Layers</button>
+              <button onclick="filterMapPins('attraction')" class="map-filter-btn bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-100 transition whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-camera mr-1"></i> Attractions</button>
+              <button onclick="filterMapPins('stay')" class="map-filter-btn bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-sky-100 transition whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-bed mr-1"></i> Stays &amp; Dining</button>
+              <button onclick="filterMapPins('emergency')" class="map-filter-btn bg-red-50 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-kit-medical mr-1"></i> Hospitals &amp; Police</button>
             </div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12">
             <!-- Simulated Interactive Map Canvas -->
-            <div class="lg:col-span-8 relative bg-slate-900 min-h-[420px] overflow-hidden flex items-center justify-center">
+            <div class="lg:col-span-8 relative bg-slate-900 min-h-[340px] sm:min-h-[440px] overflow-hidden flex items-center justify-center">
               <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
               <svg viewBox="0 0 800 500" class="w-full h-full max-h-[440px] opacity-35">
@@ -922,60 +1025,60 @@
               </svg>
 
               <div id="map-pins-container" class="absolute inset-0">
-                <button onclick="selectMapPin('Lalbagh Fort & Heritage Zone', 'Attraction • Old Dhaka', 'Open daily 10:00 AM – 5:00 PM (Closed Sunday). Adjacent to Tourist Police Post #04.', 'emerald')" data-type="attraction" style="top: 38%; left: 42%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white group-hover:scale-110 transition">
-                    <i class="fa-solid fa-landmark"></i> Lalbagh Fort
+                <button onclick="selectMapPin('Lalbagh Fort & Heritage Zone', 'Attraction • Old Dhaka', 'Open daily 10:00 AM – 5:00 PM (Closed Sunday). Adjacent to Tourist Police Post #04.', 'emerald')" data-type="attraction" style="top: 32%; left: 38%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white group-hover:scale-110 transition">
+                    <i class="fa-solid fa-landmark"></i> <span>Lalbagh</span>
                   </span>
                 </button>
 
-                <button onclick="selectMapPin('Srimangal Tea Sanctuary', 'Attraction • Sylhet Division', 'Eco-trail access & tea estates. Nearest medical center 3.2 km away.', 'emerald')" data-type="attraction" style="top: 24%; left: 68%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white group-hover:scale-110 transition">
-                    <i class="fa-solid fa-leaf"></i> Srimangal
+                <button onclick="selectMapPin('Srimangal Tea Sanctuary', 'Attraction • Sylhet Division', 'Eco-trail access & tea estates. Nearest medical center 3.2 km away.', 'emerald')" data-type="attraction" style="top: 20%; left: 72%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white group-hover:scale-110 transition">
+                    <i class="fa-solid fa-leaf"></i> <span>Srimangal</span>
                   </span>
                 </button>
 
-                <button onclick="selectMapPin('Kolatoli Marine Drive Hub', 'Stays & Dining • Cox\'s Bazar', 'Cluster of verified oceanfront accommodations and seafood kitchens.', 'sky')" data-type="stay" style="top: 76%; left: 73%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-sky-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white group-hover:scale-110 transition">
-                    <i class="fa-solid fa-hotel"></i> Kolatoli Stays
+                <button onclick="selectMapPin('Kolatoli Marine Drive Hub', 'Stays & Dining • Cox\'s Bazar', 'Cluster of verified oceanfront accommodations and seafood kitchens.', 'sky')" data-type="stay" style="top: 62%; left: 78%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-sky-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white group-hover:scale-110 transition">
+                    <i class="fa-solid fa-hotel"></i> <span>Kolatoli</span>
                   </span>
                 </button>
 
-                <button onclick="selectMapPin('Sundarbans Karamjal Eco Station', 'Attraction • Mongla, Khulna', 'Forest Department permit checkpoint, crocodile breeding center & canopy walk.', 'emerald')" data-type="attraction" style="top: 68%; left: 28%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white group-hover:scale-110 transition">
-                    <i class="fa-solid fa-tree"></i> Sundarbans
+                <button onclick="selectMapPin('Sundarbans Karamjal Eco Station', 'Attraction • Mongla, Khulna', 'Forest Department permit checkpoint, crocodile breeding center & canopy walk.', 'emerald')" data-type="attraction" style="top: 56%; left: 22%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white group-hover:scale-110 transition">
+                    <i class="fa-solid fa-tree"></i> <span>Sundarbans</span>
                   </span>
                 </button>
 
-                <button onclick="selectMapPin('Tourist Police Regional Help Desk', 'Emergency • Cox\'s Bazar Laboni Point', '24/7 rapid response patrol unit, lost passport assistance & first-aid dispatch. Tel: 01320-160000', 'red')" data-type="emergency" style="top: 66%; left: 64%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-red-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white animate-bounce">
-                    <i class="fa-solid fa-shield-halved"></i> Tourist Police
+                <button onclick="selectMapPin('Tourist Police Regional Help Desk', 'Emergency • Cox\'s Bazar Laboni Point', '24/7 rapid response patrol unit, lost passport assistance & first-aid dispatch. Tel: 01320-160000', 'red')" data-type="emergency" style="top: 46%; left: 66%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-red-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white animate-bounce">
+                    <i class="fa-solid fa-shield-halved"></i> <span>Police</span>
                   </span>
                 </button>
 
-                <button onclick="selectMapPin('Dhaka Medical & Trauma Center', 'Emergency Hospital • Central Dhaka', '24-hour emergency trauma care, ambulance dispatch & international traveler desk.', 'red')" data-type="emergency" style="top: 48%; left: 49%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
-                  <span class="px-2.5 py-1 rounded-full bg-red-600 text-white text-[11px] font-bold shadow-lg flex items-center gap-1.5 border-2 border-white">
-                    <i class="fa-solid fa-hospital"></i> 24/7 Hospital
+                <button onclick="selectMapPin('Dhaka Medical & Trauma Center', 'Emergency Hospital • Central Dhaka', '24-hour emergency trauma care, ambulance dispatch & international traveler desk.', 'red')" data-type="emergency" style="top: 42%; left: 45%;" class="map-pin absolute -translate-x-1/2 -translate-y-1/2 group">
+                  <span class="px-2 sm:px-2.5 py-1 rounded-full bg-red-600 text-white text-[10px] sm:text-[11px] font-bold shadow-lg flex items-center gap-1 border-2 border-white">
+                    <i class="fa-solid fa-hospital"></i> <span>Hospital</span>
                   </span>
                 </button>
               </div>
 
               <!-- Selected Pin Info Overlay -->
-              <div id="map-selection-card" class="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-96 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-slate-200 text-slate-800">
+              <div id="map-selection-card" class="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto sm:w-96 bg-white/95 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-xl border border-slate-200 text-slate-800">
                 <div class="flex items-center justify-between">
                   <span id="map-card-badge" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Attraction • Old Dhaka</span>
-                  <span class="text-[11px] font-mono text-slate-400">23.7189° N, 90.3882° E</span>
+                  <span class="text-[10px] font-mono text-slate-400">23.71° N, 90.38° E</span>
                 </div>
-                <h4 id="map-card-title" class="font-bold text-slate-900 text-sm mt-1">Lalbagh Fort &amp; Heritage Zone</h4>
-                <p id="map-card-desc" class="text-xs text-slate-600 mt-1">Open daily 10:00 AM – 5:00 PM (Closed Sunday). Adjacent to Tourist Police Post #04.</p>
+                <h4 id="map-card-title" class="font-bold text-slate-900 text-xs sm:text-sm mt-1">Lalbagh Fort &amp; Heritage Zone</h4>
+                <p id="map-card-desc" class="text-[11px] sm:text-xs text-slate-600 mt-0.5 leading-snug">Open daily 10:00 AM – 5:00 PM (Closed Sunday). Adjacent to Tourist Police Post #04.</p>
               </div>
             </div>
 
             <!-- Right Emergency Quick Directory -->
-            <div class="lg:col-span-4 p-6 bg-slate-50 flex flex-col justify-between space-y-6">
-              <div class="space-y-4">
-                <div class="flex items-center gap-2.5 text-red-700">
-                  <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-                  <h3 class="font-extrabold text-base uppercase tracking-wide">Emergency Assistance</h3>
+            <div class="lg:col-span-4 p-5 sm:p-6 bg-slate-50 flex flex-col justify-between space-y-5">
+              <div class="space-y-3.5">
+                <div class="flex items-center gap-2 text-red-700">
+                  <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                  <h3 class="font-extrabold text-sm sm:text-base uppercase tracking-wide">Emergency Assistance</h3>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">
                   Instant access to Bangladesh national emergency dispatch, regional Tourist Police zones, and coastal weather advisories.
@@ -985,7 +1088,7 @@
                   <div class="bg-white p-3.5 rounded-2xl border border-red-200 flex items-center justify-between shadow-sm">
                     <div>
                       <span class="text-xs font-extrabold text-slate-900 block">National Emergency (999)</span>
-                      <span class="text-[11px] text-slate-500">Police, Fire &amp; Ambulance Service</span>
+                      <span class="text-[11px] text-slate-500">Police, Fire &amp; Ambulance</span>
                     </div>
                     <a href="tel:999" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition">Call 999</a>
                   </div>
@@ -993,14 +1096,14 @@
                   <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
                     <div>
                       <span class="text-xs font-bold text-slate-900 block">Tourist Police HQ Hotline</span>
-                      <span class="text-[11px] text-slate-500">+880 1320-169999 (24/7 Duty Officer)</span>
+                      <span class="text-[11px] text-slate-500">+880 1320-169999 (24/7)</span>
                     </div>
                     <a href="tel:+8801320169999" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-bold transition">Dial</a>
                   </div>
 
                   <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
                     <div>
-                      <span class="text-xs font-bold text-slate-900 block">Coast Guard Search &amp; Rescue</span>
+                      <span class="text-xs font-bold text-slate-900 block">Coast Guard Rescue</span>
                       <span class="text-[11px] text-slate-500">Bay of Bengal &amp; Saint Martin</span>
                     </div>
                     <a href="tel:16111" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-bold transition">Dial 16111</a>
@@ -1018,17 +1121,17 @@
 
       <!-- 6. COMMUNITY REVIEWS & RATINGS -->
       <section id="reviews-section" class="scroll-mt-24">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">Traveler Field Notes</span>
-            <h2 class="text-3xl font-extrabold text-slate-900 font-serif mt-1">Community Stories &amp; Ratings</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif mt-1">Community Stories &amp; Ratings</h2>
           </div>
-          <button onclick="openReviewModal('General Explorer Experience')" class="bg-bengal-700 hover:bg-bengal-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 self-start sm:self-auto shadow-sm">
+          <button onclick="openReviewModal('General Explorer Experience')" class="w-full sm:w-auto bg-bengal-700 hover:bg-bengal-800 text-white px-5 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
             <i class="fa-solid fa-pen-nib"></i> Share Your Travel Story
           </button>
         </div>
 
-        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
           <!-- Populated by JS -->
         </div>
       </section>
@@ -1039,71 +1142,71 @@
   <!-- ===================================================================== -->
   <!-- SCREEN 3: DEDICATED TOUR GUIDE PORTAL (FOR LOGGED-IN TOUR GUIDES)     -->
   <!-- ===================================================================== -->
-  <div id="screen-guide" class="hidden max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-8 flex-grow w-full">
+  <div id="screen-guide" class="hidden max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 flex-grow w-full">
     <!-- Top Banner -->
-    <div class="bg-gradient-to-r from-bengal-950 via-bengal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-      <div class="flex items-start sm:items-center gap-4">
-        <img id="guide-portal-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Tour Guide Profile" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover ring-2 ring-emerald-400">
+    <div class="bg-gradient-to-r from-bengal-950 via-bengal-900 to-slate-900 text-white p-5 sm:p-8 rounded-3xl shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+      <div class="flex items-center gap-4">
+        <img id="guide-portal-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Tour Guide Profile" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover ring-2 ring-emerald-400 flex-shrink-0">
         <div>
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-1.5">
             <span class="text-[10px] font-mono uppercase tracking-widest bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
-              <i class="fa-solid fa-certificate mr-1"></i> Certified Tour Naturalist Portal
+              <i class="fa-solid fa-certificate mr-1"></i> Certified Guide Portal
             </span>
             <span id="guide-portal-license" class="text-[11px] font-mono text-amber-300">BPC-2026-VERIFIED</span>
           </div>
-          <h1 id="guide-portal-name" class="text-2xl sm:text-3xl font-bold font-serif mt-1">Mahmudul Hasan</h1>
+          <h1 id="guide-portal-name" class="text-xl sm:text-3xl font-bold font-serif mt-1">Mahmudul Hasan</h1>
           <p id="guide-portal-region" class="text-xs sm:text-sm text-slate-300 mt-0.5">Primary Region: Sundarbans &amp; Bagerhat Heritage</p>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
-        <button id="guide-availability-btn" onclick="toggleGuideAvailability()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex items-center gap-2.5 w-full lg:w-auto">
+        <button id="guide-availability-btn" onclick="toggleGuideAvailability()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
           <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
           <span id="guide-availability-text">Status: Available for Guiding</span>
         </button>
-        <button onclick="showScreen('home')" class="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
-          <i class="fa-solid fa-globe"></i> View Public Discovery Portal
+        <button onclick="showScreen('home')" class="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-globe"></i> Public Discovery Portal
         </button>
       </div>
     </div>
 
-    <!-- Guide Stats Row -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Community Rating</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1 flex items-center gap-2">
+    <!-- Guide Stats Row (2x2 on Mobile, 4 on Desktop) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Community Rating</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 flex items-center gap-1.5">
           <span>4.9</span>
-          <i class="fa-solid fa-star text-amber-400 text-xl"></i>
+          <i class="fa-solid fa-star text-amber-400 text-base sm:text-xl"></i>
         </div>
-        <span class="text-[11px] text-emerald-700 font-semibold">142 Verified Field Reviews</span>
+        <span class="text-[11px] text-emerald-700 font-semibold">142 Reviews</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Directory Profile Views</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1">1,284</div>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Profile Views</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">1,284</div>
         <span class="text-[11px] text-emerald-700 font-semibold">+19% this month</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Active Traveler Inquiries</span>
-        <div class="text-3xl font-extrabold text-amber-600 mt-1">3</div>
-        <span class="text-[11px] text-slate-500 font-medium">Direct non-commercial requests</span>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Active Inquiries</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1">3</div>
+        <span class="text-[11px] text-slate-500 font-medium">Direct messages</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Permit &amp; Safety Standing</span>
-        <div class="text-xl font-extrabold text-emerald-700 mt-2 flex items-center gap-1.5">
-          <i class="fa-solid fa-shield-check"></i> Active &amp; Cleared
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Permit Standing</span>
+        <div class="text-sm sm:text-xl font-extrabold text-emerald-700 mt-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-check"></i> Cleared
         </div>
-        <span class="text-[11px] text-slate-500 font-medium">Synced with Tourist Police BD</span>
+        <span class="text-[11px] text-slate-500 font-medium">Synced with Police</span>
       </div>
     </div>
 
     <!-- Main Two-Column Guide Workspace -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
       <!-- Left Column: Edit Guide Credentials & Optional Details -->
-      <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+      <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-8">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
           <div>
             <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 font-mono">Public Directory Card</span>
-            <h3 class="text-xl font-bold text-slate-900 mt-0.5">Edit Your Guide Profile &amp; Details</h3>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Edit Your Guide Profile &amp; Details</h3>
           </div>
           <span id="guide-save-badge" class="hidden text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full">
             <i class="fa-solid fa-check mr-1"></i> Saved!
@@ -1163,7 +1266,7 @@
             <textarea id="guide-edit-bio" rows="3" placeholder="Describe your regional expertise, trail knowledge, and cultural background..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600"></textarea>
           </div>
 
-          <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md">
+          <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-md">
             <i class="fa-solid fa-floppy-disk mr-1.5"></i> Update Public Guide Directory Profile
           </button>
         </form>
@@ -1171,15 +1274,15 @@
 
       <!-- Right Column: Recent Traveler Inquiries & Regional Advisories -->
       <div class="lg:col-span-5 space-y-6">
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
           <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700 font-mono">Traveler Connection Log</span>
           <h3 class="text-lg font-bold text-slate-900 mt-0.5 mb-4">Recent Explorer Inquiries</h3>
 
           <div class="space-y-3 text-xs">
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-2">
                 <span class="font-bold text-slate-900">Dr. Farhana Rahman (Group of 4)</span>
-                <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Nov 24–26</span>
+                <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded flex-shrink-0">Nov 24–26</span>
               </div>
               <p class="text-slate-600">"Looking for guidance on Forestry Department vessel permits for Karamjal &amp; Harbaria eco-trails."</p>
               <div class="pt-1 flex items-center gap-3 text-[11px] font-bold text-emerald-700">
@@ -1190,9 +1293,9 @@
             </div>
 
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-slate-900">Arifuzzaman Noyon (Solo Photographer)</span>
-                <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">Dec 02–05</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-900">Arifuzzaman Noyon (Solo)</span>
+                <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded flex-shrink-0">Dec 02–05</span>
               </div>
               <p class="text-slate-600">"Seeking early morning birdwatching trail route and local boatman contact."</p>
               <div class="pt-1 flex items-center gap-3 text-[11px] font-bold text-emerald-700">
@@ -1204,7 +1307,7 @@
           </div>
         </div>
 
-        <div class="bg-emerald-950 text-white rounded-3xl p-6 space-y-3">
+        <div class="bg-emerald-950 text-white rounded-3xl p-5 sm:p-6 space-y-2.5">
           <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase font-mono">
             <i class="fa-solid fa-bullhorn"></i> Official Field Dispatch
           </div>
@@ -1220,54 +1323,83 @@
   <!-- ===================================================================== -->
   <!-- SCREEN 4: SYSTEM ADMINISTRATION DESK                                  -->
   <!-- ===================================================================== -->
-  <div id="screen-admin" class="hidden max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-grow w-full">
-    <div class="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  <div id="screen-admin" class="hidden max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10 flex-grow w-full">
+    <div class="bg-slate-900 text-white p-5 sm:p-8 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <span class="text-xs font-mono uppercase tracking-widest text-emerald-400">Governance &amp; Content Desk</span>
         <h1 class="text-2xl sm:text-3xl font-bold font-serif mt-1">RoamBD System Administration</h1>
         <p class="text-xs text-slate-400 mt-1">Manage destination entries, verify local tour guide licenses, and monitor safety advisories.</p>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="openModal('add-destination-modal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+      <div class="grid grid-cols-2 sm:flex items-center gap-2.5 w-full sm:w-auto">
+        <button onclick="openModal('add-destination-modal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-plus"></i> Add Destination
         </button>
-        <button onclick="showScreen('home')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold transition">
-          Return to Public Portal
+        <button onclick="showScreen('home')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-3 rounded-xl text-xs font-bold transition text-center">
+          Public Portal
         </button>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Documented Attractions</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1" id="admin-dest-count">6</div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Attractions</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1" id="admin-dest-count">6</div>
         <span class="text-[11px] text-emerald-700 font-semibold">Across 64 Districts</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Verified Local Guides</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1">48</div>
-        <span class="text-[11px] text-amber-600 font-semibold">3 Pending NID Verification</span>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Verified Guides</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">48</div>
+        <span class="text-[11px] text-amber-600 font-semibold">2 Pending Review</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Tourist Police Nodes</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1">112</div>
-        <span class="text-[11px] text-emerald-700 font-semibold">100% Active Hotline Sync</span>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Police Nodes</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">112</div>
+        <span class="text-[11px] text-emerald-700 font-semibold">100% Active Sync</span>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-xs text-slate-400 font-bold uppercase">Community Field Notes</span>
-        <div class="text-3xl font-extrabold text-slate-900 mt-1" id="admin-review-count">3</div>
-        <span class="text-[11px] text-slate-500 font-semibold">Moderated for Authenticity</span>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase block">Field Notes</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1" id="admin-review-count">3</div>
+        <span class="text-[11px] text-slate-500 font-semibold">Moderated</span>
       </div>
     </div>
 
+    <!-- Responsive Guide Verification Queue (Cards on Mobile, Table on Desktop) -->
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-      <div class="p-6 border-b border-slate-200 flex items-center justify-between">
-        <div>
-          <h3 class="font-bold text-slate-900 text-lg">Local Tour Guide License &amp; NID Verification Queue</h3>
-          <p class="text-xs text-slate-500">Approve certified guides to display their direct contact cards on the public portal.</p>
+      <div class="p-5 sm:p-6 border-b border-slate-200">
+        <h3 class="font-bold text-slate-900 text-base sm:text-lg">Local Tour Guide License &amp; NID Verification Queue</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Approve certified guides to display their direct contact cards on the public portal.</p>
+      </div>
+
+      <!-- Mobile Card List (Shown on small screens) -->
+      <div class="md:hidden divide-y divide-slate-200 text-xs">
+        <div class="p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm">Rafiqul Islam</span>
+            <span class="guide-status-badge bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Pending Review</span>
+          </div>
+          <p class="text-slate-600">Kuakata Sea Beach, Patuakhali • Bengali, English</p>
+          <p class="font-mono text-[11px] text-slate-400">NID-1991283746 • BPC-882</p>
+          <div class="flex gap-2 pt-1">
+            <button onclick="approveGuideCard(this)" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl font-bold">Verify &amp; Publish</button>
+            <button onclick="rejectGuideCard(this)" class="px-4 bg-red-50 text-red-600 py-2 rounded-xl font-bold">Decline</button>
+          </div>
+        </div>
+        <div class="p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm">Biplob Chakma</span>
+            <span class="guide-status-badge bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Pending Review</span>
+          </div>
+          <p class="text-slate-600">Kaptai Lake &amp; Rangamati • Chakma, Bengali, English</p>
+          <p class="font-mono text-[11px] text-slate-400">NID-1988392011 • CHT-409</p>
+          <div class="flex gap-2 pt-1">
+            <button onclick="approveGuideCard(this)" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl font-bold">Verify &amp; Publish</button>
+            <button onclick="rejectGuideCard(this)" class="px-4 bg-red-50 text-red-600 py-2 rounded-xl font-bold">Decline</button>
+          </div>
         </div>
       </div>
-      <div class="overflow-x-auto">
+
+      <!-- Desktop Table (Hidden on small screens) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200">
@@ -1308,19 +1440,43 @@
     </div>
   </div>
 
+  <!-- ================= MOBILE BOTTOM QUICK-NAVIGATION DOCK ================= -->
+  <div id="mobile-bottom-nav" class="hidden md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 grid grid-cols-5 text-[10px] font-bold text-slate-600 shadow-lg">
+    <a href="#destinations-section" onclick="showScreen('home')" class="flex flex-col items-center justify-center py-1 hover:text-emerald-700">
+      <i class="fa-solid fa-compass text-sm mb-0.5 text-emerald-700"></i>
+      <span>Explore</span>
+    </a>
+    <button onclick="openModal('ai-modal')" class="flex flex-col items-center justify-center py-1 hover:text-emerald-700">
+      <i class="fa-solid fa-wand-magic-sparkles text-sm mb-0.5 text-amber-500"></i>
+      <span>RoamAI</span>
+    </button>
+    <a href="#guides-section" onclick="showScreen('home')" class="flex flex-col items-center justify-center py-1 hover:text-emerald-700">
+      <i class="fa-solid fa-id-badge text-sm mb-0.5 text-emerald-700"></i>
+      <span>Guides</span>
+    </a>
+    <a href="#map-section" onclick="showScreen('home')" class="flex flex-col items-center justify-center py-1 hover:text-emerald-700">
+      <i class="fa-solid fa-map-location-dot text-sm mb-0.5 text-sky-600"></i>
+      <span>Map</span>
+    </a>
+    <button onclick="openModal('profile-modal')" class="flex flex-col items-center justify-center py-1 hover:text-emerald-700">
+      <i class="fa-solid fa-user-circle text-sm mb-0.5 text-slate-700"></i>
+      <span>Profile</span>
+    </button>
+  </div>
+
   <!-- ================= FOOTER ================= -->
-  <footer class="bg-slate-950 text-slate-400 py-10 px-4 sm:px-8 border-t border-slate-800 mt-auto">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
+  <footer class="bg-slate-950 text-slate-400 py-8 sm:py-10 px-4 sm:px-8 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-center sm:text-left">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold">
           <i class="fa-solid fa-mountain-sun"></i>
         </div>
-        <div>
+        <div class="text-left">
           <span class="font-bold text-white text-sm font-serif">RoamBD</span>
           <span class="block text-[11px] text-slate-500">Non-Commercial Bangladesh Travel &amp; Safety Portal</span>
         </div>
       </div>
-      <div class="flex flex-wrap gap-6 text-slate-400">
+      <div class="flex flex-wrap justify-center gap-5 text-slate-400">
         <button onclick="showScreen('home')" class="hover:text-white transition">Discovery Portal</button>
         <button onclick="showScreen('auth')" class="hover:text-white transition">Sign In / Register</button>
         <button onclick="openModal('emergency-modal')" class="text-red-400 hover:text-red-300 font-bold transition">Emergency 999</button>
@@ -1330,26 +1486,26 @@
   </footer>
 
   <!-- ===================================================================== -->
-  <!-- INTERACTIVE MODALS                                                    -->
+  <!-- INTERACTIVE MODALS (BOTTOM-SHEET ON MOBILE, CENTERED ON DESKTOP)      -->
   <!-- ===================================================================== -->
 
   <!-- 1. DESTINATION CULTURAL & TRANSIT GUIDE MODAL -->
-  <div id="destination-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-fadeIn">
-      <div class="relative h-56">
+  <div id="destination-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-slate-200">
+      <div class="relative h-48 sm:h-56">
         <img id="dest-modal-img" src="" alt="" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
-        <button onclick="closeModal('destination-modal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 text-white hover:bg-black flex items-center justify-center">
+        <button onclick="closeModal('destination-modal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-black flex items-center justify-center">
           <i class="fa-solid fa-xmark"></i>
         </button>
-        <div class="absolute bottom-4 left-6 right-6 text-white">
+        <div class="absolute bottom-4 left-5 right-5 text-white">
           <span id="dest-modal-badge" class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded bg-emerald-600 text-white">Region</span>
-          <h3 id="dest-modal-title" class="text-2xl font-bold font-serif mt-1">Destination Title</h3>
+          <h3 id="dest-modal-title" class="text-xl sm:text-2xl font-bold font-serif mt-1">Destination Title</h3>
         </div>
       </div>
-      <div class="p-6 space-y-4 text-xs sm:text-sm">
+      <div class="p-5 sm:p-6 space-y-4 text-xs sm:text-sm">
         <p id="dest-modal-desc" class="text-slate-600 leading-relaxed"></p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
             <span class="text-[10px] font-bold uppercase text-emerald-700 block"><i class="fa-solid fa-route mr-1"></i> How to Reach (Transit)</span>
             <p id="dest-modal-transit" class="text-xs text-slate-700 mt-1 font-medium"></p>
@@ -1363,11 +1519,11 @@
           <span class="text-[10px] font-bold uppercase text-emerald-800 block"><i class="fa-solid fa-hands-praying mr-1"></i> Cultural Etiquette &amp; Safety Note</span>
           <p id="dest-modal-etiquette" class="text-xs text-emerald-950 mt-1"></p>
         </div>
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-          <button onclick="saveToNotebook()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+          <button onclick="saveToNotebook()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold px-4 py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
             <i class="fa-regular fa-bookmark"></i> Save to Traveler Notebook
           </button>
-          <button onclick="closeModal('destination-modal')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition">
+          <button onclick="closeModal('destination-modal')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-3 rounded-xl text-xs transition">
             Close Guide
           </button>
         </div>
@@ -1376,25 +1532,25 @@
   </div>
 
   <!-- 2. ROAM-AI FULL INTERACTIVE PLANNER MODAL -->
-  <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('ai-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg">
+      <div class="flex items-center gap-3 mb-4 pr-6">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
         <div>
           <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-700 font-bold">RoamAI Engine</span>
-          <h3 class="text-xl font-bold font-serif text-slate-900">Custom Cultural Itinerary Generator</h3>
+          <h3 class="text-lg sm:text-xl font-bold font-serif text-slate-900">Custom Cultural Itinerary Generator</h3>
         </div>
       </div>
 
       <div class="space-y-4 text-xs">
         <div>
           <label class="font-bold text-slate-700 block mb-1">1. Primary Ecosystem or Interest</label>
-          <select id="modal-ai-interest" class="w-full border border-slate-200 rounded-xl p-2.5 font-semibold text-slate-800">
+          <select id="modal-ai-interest" class="w-full border border-slate-200 rounded-xl p-3 font-semibold text-slate-800">
             <option value="Sylhet Tea & Rainforest">Sylhet Tea Valleys &amp; Lawachara Rainforest</option>
             <option value="Sundarbans Mangrove">Sundarbans Royal Bengal Mangrove Delta</option>
             <option value="Chittagong Hill Tracts">Bandarban &amp; Sajek Cloud Peaks</option>
@@ -1405,15 +1561,15 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="font-bold text-slate-700 block mb-1">2. Companion Group</label>
-            <select id="modal-ai-group" class="w-full border border-slate-200 rounded-xl p-2.5 font-semibold text-slate-800">
+            <select id="modal-ai-group" class="w-full border border-slate-200 rounded-xl p-3 font-semibold text-slate-800">
               <option value="Solo Explorer">Solo Explorer</option>
               <option value="Family Group">Family &amp; Seniors</option>
-              <option value="Photography Team">Photography &amp; Nature Team</option>
+              <option value="Photography Team">Photography Team</option>
             </select>
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">3. Trip Duration</label>
-            <select id="modal-ai-days" class="w-full border border-slate-200 rounded-xl p-2.5 font-semibold text-slate-800">
+            <select id="modal-ai-days" class="w-full border border-slate-200 rounded-xl p-3 font-semibold text-slate-800">
               <option value="3 Days">3 Days</option>
               <option value="5 Days">5 Days</option>
               <option value="7 Days">7 Days</option>
@@ -1421,14 +1577,14 @@
           </div>
         </div>
 
-        <button onclick="runModalAIPlanner()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl uppercase tracking-wider transition shadow-md">
+        <button onclick="runModalAIPlanner()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider transition shadow-md">
           Synthesize Day-by-Day Route Plan
         </button>
 
         <div id="modal-ai-result" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-2">
-          <div class="flex items-center justify-between text-[11px] font-bold text-emerald-800">
+          <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-emerald-800">
             <span id="modal-ai-res-header">RECOMMENDED: SYLHET TEA &amp; RAINFOREST (3 DAYS)</span>
-            <span>VERIFIED ROUTE</span>
+            <span class="hidden sm:inline">VERIFIED ROUTE</span>
           </div>
           <ul id="modal-ai-res-steps" class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
             <li><strong>Day 1:</strong> Morning Parabat Express train from Dhaka to Srimangal; afternoon cycling through Finlay Tea Estate &amp; Seven-Layer Tea cabin.</li>
@@ -1447,8 +1603,8 @@
   </div>
 
   <!-- 3. LOCAL GUIDE DIRECT CONTACT MODAL -->
-  <div id="guide-contact-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="guide-contact-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('guide-contact-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1464,7 +1620,7 @@
             <span class="text-[10px] uppercase font-bold text-slate-400 block">Direct Mobile / Telephone</span>
             <span id="guide-modal-phone" class="font-bold text-slate-800 text-sm">+880</span>
           </div>
-          <a id="guide-modal-call-link" href="tel:+880" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5">
+          <a id="guide-modal-call-link" href="tel:+880" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5">
             <i class="fa-solid fa-phone"></i> Call
           </a>
         </div>
@@ -1474,14 +1630,14 @@
             <span class="text-[10px] uppercase font-bold text-slate-400 block">WhatsApp Channel</span>
             <span class="font-bold text-slate-800">Direct Message</span>
           </div>
-          <button onclick="showToast('Launching WhatsApp connection with local guide...')" class="bg-green-600 hover:bg-green-700 text-white px-3.5 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5">
+          <button onclick="showToast('Launching WhatsApp connection with local guide...')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5">
             <i class="fa-brands fa-whatsapp"></i> Chat
           </button>
         </div>
 
         <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
           <span class="text-[10px] uppercase font-bold text-slate-400 block">Official Email &amp; Registration ID</span>
-          <p id="guide-modal-email" class="font-semibold text-slate-800 mt-0.5"></p>
+          <p id="guide-modal-email" class="font-semibold text-slate-800 mt-0.5 break-all"></p>
           <p id="guide-modal-license" class="font-mono text-[11px] text-emerald-700 mt-1"></p>
         </div>
       </div>
@@ -1490,20 +1646,20 @@
         RoamBD is a non-commercial public directory. Connect directly with certified guides to coordinate trail permits and cultural tours.
       </p>
 
-      <button onclick="closeModal('guide-contact-modal')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition">
+      <button onclick="closeModal('guide-contact-modal')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-xs transition">
         Done
       </button>
     </div>
   </div>
 
   <!-- 4. ACCOMMODATION DIRECTORY MODAL -->
-  <div id="directory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="directory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('directory-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-700 font-bold">Accommodation Information Sheet</span>
-      <h3 id="dir-modal-name" class="text-xl font-bold font-serif text-slate-900 mt-1">Stay Name</h3>
+      <h3 id="dir-modal-name" class="text-xl font-bold font-serif text-slate-900 mt-1 pr-6">Stay Name</h3>
       <p id="dir-modal-address" class="text-xs text-slate-500 mt-0.5"></p>
 
       <div class="my-4 space-y-3 text-xs">
@@ -1513,7 +1669,7 @@
         </div>
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
           <span class="text-[10px] font-bold uppercase text-slate-400 block">Official Inquiry Email</span>
-          <span id="dir-modal-email" class="font-semibold text-emerald-700"></span>
+          <span id="dir-modal-email" class="font-semibold text-emerald-700 break-all"></span>
         </div>
         <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200">
           <span class="text-[10px] font-bold uppercase text-emerald-800 block">Documented Facilities &amp; Safety</span>
@@ -1523,7 +1679,7 @@
 
       <div class="mt-5 pt-3.5 border-t border-slate-100 flex gap-2">
         <button onclick="showToast('Calling front desk directory number...')" class="flex-1 bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs transition">
-          <i class="fa-solid fa-phone mr-1"></i> Call Property Reception
+          <i class="fa-solid fa-phone mr-1"></i> Call Reception
         </button>
         <button onclick="closeModal('directory-modal')" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
           Close
@@ -1533,8 +1689,8 @@
   </div>
 
   <!-- 5. REGIONAL FOOD & CULINARY CULTURE MODAL -->
-  <div id="food-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="food-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('food-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1564,19 +1720,19 @@
   </div>
 
   <!-- 6. EMERGENCY ASSISTANCE & TOURIST POLICE MODAL -->
-  <div id="emergency-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border-2 border-red-200">
+  <div id="emergency-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl relative border-t-2 sm:border-2 border-red-200">
       <button onclick="closeModal('emergency-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl animate-pulse">
+      <div class="flex items-center gap-3 mb-4 pr-6">
+        <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl animate-pulse flex-shrink-0">
           <i class="fa-solid fa-shield-heart"></i>
         </div>
         <div>
           <span class="text-[11px] font-bold text-red-600 uppercase tracking-wider font-mono">24/7 Rapid Response</span>
-          <h3 class="text-xl font-bold text-slate-900">Emergency &amp; Tourist Safety Hub</h3>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900">Emergency &amp; Tourist Safety Hub</h3>
         </div>
       </div>
 
@@ -1585,46 +1741,46 @@
       </p>
 
       <div class="space-y-3 text-xs mb-5">
-        <div class="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between">
+        <div class="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between gap-2">
           <div>
-            <span class="font-extrabold text-red-950 text-sm block">National Emergency Hotline (999)</span>
-            <span class="text-red-700">Police, Fire Service &amp; Ambulance Dispatch</span>
+            <span class="font-extrabold text-red-950 text-xs sm:text-sm block">National Emergency Hotline (999)</span>
+            <span class="text-red-700 text-[11px]">Police, Fire Service &amp; Ambulance</span>
           </div>
-          <a href="tel:999" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+          <a href="tel:999" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-sm flex-shrink-0">
             <i class="fa-solid fa-phone-volume"></i> Call 999
           </a>
         </div>
 
-        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-2">
           <div>
-            <span class="font-bold text-slate-900 text-sm block">Tourist Police Bangladesh HQ</span>
-            <span class="text-slate-500">24/7 Duty Control Room: +880 1320-169999</span>
+            <span class="font-bold text-slate-900 text-xs sm:text-sm block">Tourist Police Bangladesh HQ</span>
+            <span class="text-slate-500 text-[11px]">24/7 Control Room: +880 1320-169999</span>
           </div>
-          <a href="tel:+8801320169999" class="bg-bengal-700 hover:bg-bengal-800 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+          <a href="tel:+8801320169999" class="bg-bengal-700 hover:bg-bengal-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 flex-shrink-0">
             <i class="fa-solid fa-shield-halved"></i> Call Desk
           </a>
         </div>
 
-        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-2">
           <div>
-            <span class="font-bold text-slate-900 text-sm block">Nearest Medical Trauma Centers</span>
-            <span class="text-slate-500">GPS scan for district government hospitals</span>
+            <span class="font-bold text-slate-900 text-xs sm:text-sm block">Nearest Medical Trauma Centers</span>
+            <span class="text-slate-500 text-[11px]">GPS scan for government hospitals</span>
           </div>
-          <button onclick="locateNearestHospital()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5">
+          <button onclick="locateNearestHospital()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 flex-shrink-0">
             <i class="fa-solid fa-hospital"></i> Locate
           </button>
         </div>
       </div>
 
-      <button onclick="closeModal('emergency-modal')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+      <button onclick="closeModal('emergency-modal')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl text-xs transition">
         Dismiss Window
       </button>
     </div>
   </div>
 
   <!-- 7. TRAVELER PROFILE & SAVED SPOTS MODAL (WITH EDIT PROFILE SUPPORT) -->
-  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
       <button onclick="closeModal('profile-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1632,16 +1788,16 @@
       <div class="flex items-center justify-between pr-8">
         <div>
           <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider font-mono">Explorer Profile</span>
-          <h3 class="text-xl font-bold text-slate-900 mt-0.5">Traveler Notebook &amp; Identity</h3>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Traveler Notebook &amp; Identity</h3>
         </div>
         <button id="btn-edit-profile-toggle" onclick="toggleProfileEditMode()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-          <i class="fa-solid fa-user-pen"></i> <span>Edit Profile</span>
+          <i class="fa-solid fa-user-pen"></i> <span>Edit</span>
         </button>
       </div>
 
       <!-- Profile Summary Card -->
       <div class="flex items-center gap-4 my-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-        <img id="profile-card-avatar" class="w-14 h-14 rounded-full object-cover ring-2 ring-emerald-600" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Active User">
+        <img id="profile-card-avatar" class="w-14 h-14 rounded-full object-cover ring-2 ring-emerald-600 flex-shrink-0" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Active User">
         <div class="flex-1 min-w-0">
           <h4 id="profile-card-name" class="font-bold text-slate-800 text-base truncate">Tanvir Ahmed</h4>
           <p id="profile-card-email" class="text-xs text-slate-500 truncate">tanvir.ahmed@example.com</p>
@@ -1656,7 +1812,7 @@
             <span class="font-bold text-slate-700 uppercase text-[10px] tracking-wider">Personal &amp; Safety Details</span>
             <button onclick="toggleProfileEditMode()" class="text-[11px] text-emerald-700 font-bold hover:underline">+ Add / Edit Details</button>
           </div>
-          <div class="grid grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Gender</span>
               <span id="profile-view-gender" class="font-semibold text-slate-800">Not Specified</span>
@@ -1700,11 +1856,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Full Name</label>
-            <input id="edit-prof-name" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
+            <input id="edit-prof-name" type="text" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Gender</label>
-            <select id="edit-prof-gender" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
+            <select id="edit-prof-gender" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
               <option value="Not Specified">Prefer not to say</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -1716,27 +1872,27 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Phone Number (+880)</label>
-            <input id="edit-prof-phone" type="tel" placeholder="+880 17XX-XXXXXX" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
+            <input id="edit-prof-phone" type="tel" placeholder="+880 17XX-XXXXXX" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Emergency SOS Contact</label>
-            <input id="edit-prof-emergency" type="text" placeholder="e.g. +880 18XX-XXXXXX (Family)" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
+            <input id="edit-prof-emergency" type="text" placeholder="e.g. +880 18XX-XXXXXX (Family)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
           </div>
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Home Address / District</label>
-          <input id="edit-prof-address" type="text" placeholder="e.g. House 14, Road 5, Dhanmondi, Dhaka" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
+          <input id="edit-prof-address" type="text" placeholder="e.g. House 14, Road 5, Dhanmondi, Dhaka" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white">
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Traveler Bio &amp; Preferences</label>
-          <textarea id="edit-prof-bio" rows="2" placeholder="Share your travel interests, favorite ecosystems, or dietary preferences..." class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white"></textarea>
+          <textarea id="edit-prof-bio" rows="2" placeholder="Share your travel interests, favorite ecosystems, or dietary preferences..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-800 bg-white"></textarea>
         </div>
 
         <div class="flex gap-2 pt-1">
           <button type="submit" class="flex-1 bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-2.5 rounded-xl transition">
-            <i class="fa-solid fa-check mr-1"></i> Save Profile Changes
+            <i class="fa-solid fa-check mr-1"></i> Save Profile
           </button>
           <button type="button" onclick="toggleProfileEditMode()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition">
             Cancel
@@ -1746,7 +1902,7 @@
 
       <!-- Sign Out Action Inside Explorer Profile -->
       <div class="mt-5 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
-        <button onclick="closeModal('profile-modal'); signOut();" class="w-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+        <button onclick="closeModal('profile-modal'); signOut();" class="w-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out of Account
         </button>
       </div>
@@ -1754,8 +1910,8 @@
   </div>
 
   <!-- 8. COMMUNITY FIELD NOTE / REVIEW SUBMISSION MODAL -->
-  <div id="review-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="review-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('review-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1775,7 +1931,7 @@
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1">Experience Rating</label>
-          <div class="flex gap-1.5 text-amber-400 text-base">
+          <div class="flex gap-2 text-amber-400 text-lg py-1">
             <button type="button" onclick="setStars(1)"><i class="fa-solid fa-star"></i></button>
             <button type="button" onclick="setStars(2)"><i class="fa-solid fa-star"></i></button>
             <button type="button" onclick="setStars(3)"><i class="fa-solid fa-star"></i></button>
@@ -1787,7 +1943,7 @@
           <label class="block font-bold text-slate-700 mb-1">Field Observation &amp; Safety Advice</label>
           <textarea id="review-text" rows="3" placeholder="Share transit tips, weather conditions, or local cultural etiquette..." class="w-full border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none"></textarea>
         </div>
-        <button onclick="submitReviewAction()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
+        <button onclick="submitReviewAction()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
           Publish Field Note
         </button>
       </div>
@@ -1795,8 +1951,8 @@
   </div>
 
   <!-- 9. ADD NEW DESTINATION MODAL (ADMIN) -->
-  <div id="add-destination-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="add-destination-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
       <button onclick="closeModal('add-destination-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1809,7 +1965,7 @@
           <label class="block font-bold text-slate-700 mb-1">Destination Title</label>
           <input id="new-spot-name" type="text" placeholder="e.g. Somapura Mahavihara (Paharpur)" class="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none">
         </div>
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block font-bold text-slate-700 mb-1">District / Division</label>
             <input id="new-spot-district" type="text" placeholder="Naogaon, Rajshahi" class="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none">
@@ -1837,7 +1993,7 @@
           <label class="block font-bold text-slate-700 mb-1">Historical Context &amp; Guide Overview</label>
           <textarea id="new-spot-desc" rows="2" placeholder="UNESCO World Heritage 8th-century Buddhist monastery complex..." class="w-full border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none"></textarea>
         </div>
-        <button onclick="saveNewDestination()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
+        <button onclick="saveNewDestination()" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
           Save &amp; Publish Guidebook Entry
         </button>
       </div>
@@ -1845,8 +2001,8 @@
   </div>
 
   <!-- 10. FORGOT PASSWORD MODAL -->
-  <div id="forgot-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="forgot-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative">
       <button onclick="closeModal('forgot-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -1862,10 +2018,10 @@
       <form onsubmit="handlePasswordReset(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Registered Email or Phone</label>
-          <input id="reset-input" type="text" required placeholder="e.g. tanvir@example.com or +88017XXXXXXXX" class="w-full px-3.5 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          <input id="reset-input" type="text" required placeholder="e.g. tanvir@example.com or +88017XXXXXXXX" class="w-full px-3.5 py-3 text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
         </div>
 
-        <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
+        <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
           Send Recovery Link
         </button>
       </form>
@@ -2080,16 +2236,33 @@
       }
     ];
 
-    // ================= 3. SCREEN & NAVIGATION MANAGEMENT =================
+    // ================= 3. SCREEN & MOBILE DRAWER NAVIGATION =================
+    function toggleMobileDrawer(open) {
+      const drawer = document.getElementById('mobile-drawer');
+      if (!drawer) return;
+      if (open) {
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function mobileNavClick(screenId) {
+      toggleMobileDrawer(false);
+      showScreen(screenId);
+    }
+
     function showScreen(screenId) {
       const auth = document.getElementById('screen-auth');
       const home = document.getElementById('screen-home');
       const guide = document.getElementById('screen-guide');
       const admin = document.getElementById('screen-admin');
       const navbar = document.getElementById('main-navbar');
-      const touristLinks = document.getElementById('tourist-nav-links');
+      const bottomNav = document.getElementById('mobile-bottom-nav');
       const guidePortalBtn = document.getElementById('btn-return-guide-portal');
       const adminPortalBtn = document.getElementById('btn-return-admin-portal');
+      const drawerGuideBtn = document.getElementById('drawer-btn-guide');
+      const drawerAdminBtn = document.getElementById('drawer-btn-admin');
 
       auth.classList.add('hidden');
       home.classList.add('hidden');
@@ -2099,28 +2272,37 @@
       if (screenId === 'auth') {
         auth.classList.remove('hidden');
         navbar.classList.add('hidden');
+        bottomNav.classList.add('hidden');
       } else {
         navbar.classList.remove('hidden');
+        bottomNav.classList.remove('hidden');
+
         if (currentUser && currentUser.role === 'guide') {
           guidePortalBtn.classList.remove('hidden');
           guidePortalBtn.classList.add('inline-flex');
+          drawerGuideBtn.classList.remove('hidden');
+          drawerGuideBtn.classList.add('flex');
         } else {
           guidePortalBtn.classList.add('hidden');
           guidePortalBtn.classList.remove('inline-flex');
+          drawerGuideBtn.classList.add('hidden');
+          drawerGuideBtn.classList.remove('flex');
         }
 
         if (currentUser && currentUser.role === 'admin') {
           adminPortalBtn.classList.remove('hidden');
           adminPortalBtn.classList.add('inline-flex');
+          drawerAdminBtn.classList.remove('hidden');
+          drawerAdminBtn.classList.add('flex');
         } else {
           adminPortalBtn.classList.add('hidden');
           adminPortalBtn.classList.remove('inline-flex');
+          drawerAdminBtn.classList.add('hidden');
+          drawerAdminBtn.classList.remove('flex');
         }
 
         if (screenId === 'home') {
           home.classList.remove('hidden');
-          touristLinks.classList.remove('hidden');
-          touristLinks.classList.add('md:flex');
         } else if (screenId === 'guide') {
           guide.classList.remove('hidden');
           populateGuideDashboard();
@@ -2157,13 +2339,13 @@
       if (tab === 'register') {
         signInForm.classList.add('hidden');
         registerForm.classList.remove('hidden');
-        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
-        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
+        btnRegister.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
+        btnSignIn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
       } else {
         registerForm.classList.add('hidden');
         signInForm.classList.remove('hidden');
-        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
-        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
+        btnSignIn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
+        btnRegister.className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
       }
     }
 
@@ -2172,8 +2354,6 @@
       document.getElementById('reg-role').value = role;
       const touristCard = document.getElementById('role-card-tourist');
       const guideCard = document.getElementById('role-card-guide');
-      const adminCard = document.getElementById('role-card-admin');
-      if (adminCard) adminCard.remove();
 
       const activeClass = "p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2.5";
       const inactiveClass = "p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2.5";
@@ -2277,7 +2457,6 @@
       registeredUsers.push(newUser);
       saveRegisteredUsers(registeredUsers);
 
-      // Switch to Sign In screen so user logs in with their newly created credentials
       switchAuthTab('signin');
       document.getElementById('signin-email').value = email;
       document.getElementById('signin-password').value = '';
@@ -2338,13 +2517,20 @@
     // ================= 5. PROFILE SYNC & EDIT PROFILE LOGIC =================
     function syncUserUI() {
       if (!currentUser) return;
+      const roleTitle = currentUser.role === 'admin' ? 'System Administrator' : (currentUser.role === 'guide' ? 'Certified Tour Guide' : 'Verified Traveler');
+      const avatarSrc = currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
+
       document.getElementById('nav-user-name').innerText = currentUser.name.split(' ')[0];
-      document.getElementById('nav-user-avatar').src = currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
+      document.getElementById('nav-user-avatar').src = avatarSrc;
+
+      document.getElementById('drawer-user-name').innerText = currentUser.name;
+      document.getElementById('drawer-user-role').innerText = roleTitle;
+      document.getElementById('drawer-user-avatar').src = avatarSrc;
 
       document.getElementById('profile-card-name').innerText = currentUser.name;
       document.getElementById('profile-card-email').innerText = currentUser.email;
-      document.getElementById('profile-card-avatar').src = currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
-      document.getElementById('profile-card-role').innerText = currentUser.role === 'admin' ? 'System Administrator' : (currentUser.role === 'guide' ? 'Certified Tour Guide' : 'Verified Traveler');
+      document.getElementById('profile-card-avatar').src = avatarSrc;
+      document.getElementById('profile-card-role').innerText = roleTitle;
 
       document.getElementById('profile-view-gender').innerText = currentUser.gender || 'Not Specified';
       document.getElementById('profile-view-phone').innerText = currentUser.phone || 'Not Specified';
@@ -2421,11 +2607,11 @@
       const txt = document.getElementById('guide-availability-text');
 
       if (guideAvailable) {
-        btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm";
+        btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm";
         txt.innerText = "Status: Available for Guiding";
         showToast("Public directory status set to: Available for Guiding");
       } else {
-        btn.className = "bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm";
+        btn.className = "bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm";
         txt.innerText = "Status: Currently on Expedition";
         showToast("Public directory status set to: On Field Expedition");
       }
@@ -2479,7 +2665,7 @@
       container.innerHTML = items.map(item => `
         <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
           <div>
-            <div class="relative h-52 overflow-hidden bg-slate-200">
+            <div class="relative h-48 sm:h-52 overflow-hidden bg-slate-200">
               <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/064e3b/ecfdf5?text=${encodeURIComponent(item.title)}'">
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-transparent"></div>
               <span class="absolute top-3.5 left-3.5 bg-slate-950/75 backdrop-blur-md text-emerald-300 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/15">
@@ -2498,9 +2684,9 @@
           </div>
 
           <div class="px-5 pb-5 pt-3 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-[11px] text-slate-400 font-semibold"><i class="fa-regular fa-comment-dots mr-1"></i> ${item.reviews} Field Notes</span>
-            <button onclick="openDestinationModal(${item.id})" class="bg-emerald-50 hover:bg-bengal-700 text-emerald-900 hover:text-white font-bold px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-1.5">
-              <span>Explore Cultural Guide</span>
+            <span class="text-[11px] text-slate-400 font-semibold"><i class="fa-regular fa-comment-dots mr-1"></i> ${item.reviews} Notes</span>
+            <button onclick="openDestinationModal(${item.id})" class="bg-emerald-50 hover:bg-bengal-700 text-emerald-900 hover:text-white font-bold px-3.5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5">
+              <span>Explore Guide</span>
               <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>
@@ -2514,10 +2700,10 @@
     function filterCategory(cat) {
       activeCategory = cat;
       document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap";
+        btn.className = "cat-pill px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap flex-shrink-0";
       });
       if (event && event.currentTarget) {
-        event.currentTarget.className = "cat-pill active-pill px-4 py-2 rounded-xl text-xs font-bold bg-bengal-800 text-white transition whitespace-nowrap";
+        event.currentTarget.className = "cat-pill active-pill px-4 py-2.5 rounded-xl text-xs font-bold bg-bengal-800 text-white transition whitespace-nowrap flex-shrink-0";
       }
       filterDestinations();
     }
@@ -2568,9 +2754,9 @@
     function selectQuickPersona(btn, persona) {
       selectedPersona = persona;
       document.querySelectorAll('.persona-btn').forEach(b => {
-        b.className = "persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2 px-2 rounded-xl font-medium text-center transition";
+        b.className = "persona-btn bg-white/10 hover:bg-white/20 border border-white/15 py-2.5 px-2 rounded-xl font-medium text-center transition";
       });
-      btn.className = "persona-btn bg-emerald-700/80 border border-emerald-400 py-2 px-2 rounded-xl font-bold text-center transition";
+      btn.className = "persona-btn bg-emerald-700/80 border border-emerald-400 py-2.5 px-2 rounded-xl font-bold text-center transition";
       generateQuickAI();
     }
 
@@ -2657,7 +2843,7 @@
       if (!container) return;
 
       container.innerHTML = communityReviews.map(r => `
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col justify-between space-y-4">
+        <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col justify-between space-y-4">
           <div>
             <div class="flex items-center justify-between text-xs mb-3">
               <span class="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg">${r.region}</span>
@@ -2726,6 +2912,23 @@
       showToast('Applicant removed from verification queue.');
     }
 
+    function approveGuideCard(btn) {
+      const card = btn.closest('div.p-4');
+      const badge = card.querySelector('.guide-status-badge');
+      if (badge) {
+        badge.className = 'bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-bold text-[10px]';
+        badge.innerText = 'Active in Directory';
+      }
+      btn.parentElement.innerHTML = '<span class="text-xs text-emerald-700 font-bold">Approved &amp; Published</span>';
+      showToast('Tour guide verified and published to public directory.');
+    }
+
+    function rejectGuideCard(btn) {
+      const card = btn.closest('div.p-4');
+      card.remove();
+      showToast('Applicant removed from verification queue.');
+    }
+
     function saveNewDestination() {
       const name = document.getElementById('new-spot-name').value;
       const district = document.getElementById('new-spot-district').value;
@@ -2788,12 +2991,12 @@
 
       if (mode === 'low') {
         body.classList.add('low-fi');
-        btnLow.className = "px-2.5 py-1 rounded text-xs font-semibold bg-slate-700 text-white transition";
-        btnHigh.className = "px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition";
+        btnLow.className = "px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-semibold bg-slate-700 text-white transition flex items-center gap-1";
+        btnHigh.className = "px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1";
       } else {
         body.classList.remove('low-fi');
-        btnHigh.className = "px-2.5 py-1 rounded text-xs font-semibold bg-emerald-700 text-white transition";
-        btnLow.className = "px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition";
+        btnHigh.className = "px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-semibold bg-emerald-700 text-white transition flex items-center gap-1";
+        btnLow.className = "px-2 sm:px-2.5 py-1 rounded text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1";
       }
     }
 
@@ -2823,10 +3026,10 @@
       if (!toast) {
         toast = document.createElement('div');
         toast.id = 'roambd-toast';
-        toast.className = 'fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-xs font-bold flex items-center gap-2.5 transition-all duration-300';
+        toast.className = 'fixed bottom-20 md:bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-xs font-bold flex items-center gap-2.5 transition-all duration-300';
         document.body.appendChild(toast);
       }
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i> <span>${message}</span>`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-sm flex-shrink-0"></i> <span>${message}</span>`;
       toast.classList.remove('hidden');
       clearTimeout(window.toastTimer);
       window.toastTimer = setTimeout(() => {
