@@ -281,32 +281,23 @@
                 Select Account Type
               </label>
               <input type="hidden" id="reg-role" value="tourist">
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <button type="button" id="role-card-tourist" onclick="selectAccountRole('tourist')" class="p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2">
-                  <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" id="role-card-tourist" onclick="selectAccountRole('tourist')" class="p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                     <i class="fa-solid fa-compass"></i>
                   </div>
                   <div>
                     <span class="block text-xs font-bold text-slate-900">Tourist</span>
-                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Explore &amp; plan trips</span>
+                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Explore &amp; plan trips across Bangladesh</span>
                   </div>
                 </button>
-                <button type="button" id="role-card-guide" onclick="selectAccountRole('guide')" class="p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2">
-                  <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                <button type="button" id="role-card-guide" onclick="selectAccountRole('guide')" class="p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                     <i class="fa-solid fa-id-badge"></i>
                   </div>
                   <div>
                     <span class="block text-xs font-bold text-slate-900">Tour Guide</span>
-                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Certified local guide</span>
-                  </div>
-                </button>
-                <button type="button" id="role-card-admin" onclick="selectAccountRole('admin')" class="p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2">
-                  <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
-                    <i class="fa-solid fa-user-shield"></i>
-                  </div>
-                  <div>
-                    <span class="block text-xs font-bold text-slate-900">Admin</span>
-                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Platform governance</span>
+                    <span class="block text-[10px] text-slate-500 leading-tight mt-0.5">Certified local guide &amp; naturalist</span>
                   </div>
                 </button>
               </div>
@@ -2092,16 +2083,12 @@
       document.getElementById('reg-role').value = role;
       const touristCard = document.getElementById('role-card-tourist');
       const guideCard = document.getElementById('role-card-guide');
-      const adminCard = document.getElementById('role-card-admin');
 
-      const activeClass = "p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2";
-      const inactiveClass = "p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2";
+      const activeClass = "p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 text-left transition flex items-start gap-2.5";
+      const inactiveClass = "p-3 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-start gap-2.5";
 
       touristCard.className = role === 'tourist' ? activeClass : inactiveClass;
       guideCard.className = role === 'guide' ? activeClass : inactiveClass;
-      if (adminCard) {
-        adminCard.className = role === 'admin' ? activeClass : inactiveClass;
-      }
     }
 
     function showAuthBanner(type, title, message) {
