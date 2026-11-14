@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In &amp; Register — RoamBD | Bangladesh Travel &amp; Safety Network</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Fonts: Plus Jakarta Sans, Playfair Display & Space Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+          colors: {
+            bengal: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22'
+            },
+            terracotta: {
+              500: '#ea580c',
+              600: '#c2410c',
+              700: '#9a3412',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Wireframe Mode for Prototype Evaluation */
+    body.low-fi {
+      filter: grayscale(100%);
+      font-family: 'Space Mono', monospace !important;
+      background: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    body.low-fi * {
+      box-shadow: none !important;
+      border-color: #475569 !important;
+      border-radius: 4px !important;
+    }
+    body.low-fi img {
+      filter: contrast(180%) grayscale(100%) opacity(0.35);
+    }
+    body.low-fi .bg-bengal-900,
+    body.low-fi .bg-bengal-950,
+    body.low-fi .bg-slate-900,
+    body.low-fi .editorial-panel {
+      background: #e2e8f0 !important;
+      color: #0f172a !important;
+      border: 1.5px dashed #475569 !important;
+    }
+    body.low-fi .bg-emerald-700,
+    body.low-fi .bg-bengal-700,
+    body.low-fi .bg-bengal-800 {
+      background: #334155 !important;
+      color: #ffffff !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- ================= TOP EVALUATION CONTROLS BAR ================= -->
+  <div class="bg-slate-950 text-slate-300 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Auth Architecture
+      </span>
+      <span class="text-slate-400 hidden md:inline">RoamBD — Secure Tourist &amp; Guide Identity Gateway</span>
+    </div>
+    
+    <div class="flex items-center gap-3 mt-1 sm:mt-0">
+      <!-- Evaluation Fidelity Switcher -->
+      <div class="flex items-center bg-slate-900 p-0.5 rounded-lg border border-slate-800">
+        <button id="btn-highfi" onclick="setFidelity('high')" class="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-700 text-white transition">
+          <i class="fa-solid fa-gem mr-1"></i> High-Fidelity
+        </button>
+        <button id="btn-lowfi" onclick="setFidelity('low')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-drafting-compass mr-1"></i> Low-Fi Wireframe
+        </button>
+      </div>
+
+      <!-- Emergency Hotline Indicator -->
+      <a href="tel:01320169999" class="bg-red-950/70 hover:bg-red-900 border border-red-700/50 text-red-300 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-shield-halved text-red-400"></i>
+        <span>Tourist Police 01320-169999</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-3.5 sticky top-9 z-40">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-bengal-900 to-bengal-700 flex items-center justify-center text-white text-lg shadow-sm">
+          <i class="fa-solid fa-mountain-sun"></i>
+        </div>
+        <div>
+          <span class="text-2xl font-extrabold tracking-tight text-slate-950 font-serif">Roam<span class="text-emerald-700">BD</span></span>
+          <span class="block text-[9px] text-slate-500 font-bold tracking-widest uppercase">Traveler Network</span>
+        </div>
+      </a>
+
+      <!-- Return Link -->
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-xs sm:text-sm font-bold text-slate-600 hover:text-emerald-700 transition flex items-center gap-1.5 py-1.5 px-3 rounded-lg hover:bg-slate-100">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Return to Discovery Portal</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN SPLIT-SCREEN AUTH CONTAINER ================= -->
+  <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="max-w-5xl w-full bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[660px]">
+      
+      <!-- LEFT EDITORIAL SHOWCASE PANEL (DESKTOP) -->
+      <div class="editorial-panel lg:col-span-5 bg-gradient-to-br from-bengal-950 via-slate-900 to-bengal-900 text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+        <!-- Subtle Pattern Backdrop -->
+        <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#34d399_1px,transparent_1px)] [background-size:18px_18px] pointer-events-none"></div>
+        
+        <!-- Scenic Bangladesh Background Photo Restored -->
+        <img src="https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80" alt="Sundarbans Mangrove Waterways" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity pointer-events-none" onerror="this.src='https://placehold.co/600x900/064e3b/ecfdf5?text=Explore+Bangladesh'">
+
+        <!-- Top Editorial Header -->
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30 font-mono mb-4">
+            <i class="fa-solid fa-compass"></i> Authentic Bengal
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold font-serif leading-tight">
+            One Account for All 64 Districts
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed">
+            Save custom itineraries, record trail observations, access emergency travel networks, and connect with certified cultural guides.
+          </p>
+        </div>
+
+        <!-- Cultural & Community Highlights -->
+        <div class="relative z-10 my-8 space-y-4">
+          <div class="flex items-start gap-3.5 bg-white/5 backdrop-blur-sm p-3.5 rounded-2xl border border-white/10">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm flex-shrink-0">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-100">Saved Travel Notebook</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Keep track of mountain summits, tea gardens, and historic Mughal ruins.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3.5 bg-white/5 backdrop-blur-sm p-3.5 rounded-2xl border border-white/10">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm flex-shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-100">Integrated Safety Advisories</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Real-time alerts from Bangladesh Tourist Police &amp; District Administrations.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3.5 bg-white/5 backdrop-blur-sm p-3.5 rounded-2xl border border-white/10">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm flex-shrink-0">
+              <i class="fa-solid fa-hands-holding-child"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-100">Non-Commercial Community</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Strictly informative directory. Zero booking commissions or transactional fees.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Platform Stats -->
+        <div class="relative z-10 pt-6 border-t border-white/15 grid grid-cols-3 gap-2 text-center">
+          <div>
+            <span class="block text-xl font-extrabold text-emerald-400 font-serif">64</span>
+            <span class="text-[10px] text-slate-400 uppercase font-semibold">Districts</span>
+          </div>
+          <div>
+            <span class="block text-xl font-extrabold text-emerald-400 font-serif">100%</span>
+            <span class="text-[10px] text-slate-400 uppercase font-semibold">Verified</span>
+          </div>
+          <div>
+            <span class="block text-xl font-extrabold text-emerald-400 font-serif">24/7</span>
+            <span class="text-[10px] text-slate-400 uppercase font-semibold">Tourist SOS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT INTERACTIVE AUTHENTICATION CONTAINER -->
+      <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
+        
+        <div>
+          <!-- Tab Navigation: Sign In vs Register -->
+          <div class="flex items-center p-1 bg-slate-100 rounded-2xl mb-6 max-w-sm">
+            <button id="tab-btn-signin" onclick="switchAuthTab('signin')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition">
+              <i class="fa-solid fa-lock mr-1.5 text-emerald-700"></i> Sign In
+            </button>
+            <button id="tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition">
+              <i class="fa-solid fa-user-plus mr-1.5"></i> Create Account
+            </button>
+          </div>
+
+          <!-- EVALUATION SHORTCUT: QUICK DEMO CREDENTIALS -->
+          <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3.5 mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold text-emerald-950 flex items-center gap-1.5 font-mono">
+                <i class="fa-solid fa-bolt text-emerald-700"></i> Demo Presentation Autofill:
+              </span>
+              <span class="text-[10px] bg-white border border-emerald-200 text-emerald-800 font-bold px-2 py-0.5 rounded">Quick Fill</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="fillDemoCredentials('tourist')" class="text-xs bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold px-2.5 py-1 rounded-lg transition">
+                <i class="fa-solid fa-user text-emerald-700 mr-1"></i> Tourist
+              </button>
+              <button type="button" onclick="fillDemoCredentials('guide')" class="text-xs bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold px-2.5 py-1 rounded-lg transition">
+                <i class="fa-solid fa-id-badge text-emerald-700 mr-1"></i> Tour Guide
+              </button>
+              <button type="button" onclick="fillDemoCredentials('admin')" class="text-xs bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold px-2.5 py-1 rounded-lg transition">
+                <i class="fa-solid fa-shield-halved text-emerald-700 mr-1"></i> Administrator
+              </button>
+            </div>
+          </div>
+
+          <!-- SUCCESS NOTIFICATION BANNER (HIDDEN INITIALLY) -->
+          <div id="auth-alert" class="hidden mb-6 bg-emerald-100 border border-emerald-300 text-emerald-900 p-4 rounded-2xl text-xs flex items-start gap-3">
+            <i class="fa-solid fa-circle-check text-emerald-700 text-base mt-0.5"></i>
+            <div>
+              <p class="font-bold text-sm" id="auth-alert-title">Authentication Successful!</p>
+              <p class="text-emerald-800 mt-0.5" id="auth-alert-msg">Redirecting to your RoamBD dashboard...</p>
+            </div>
+          </div>
+
+          <!-- ================= TAB 1: SIGN IN FORM ================= -->
+          <form id="signin-form" onsubmit="handleSignIn(event)" class="space-y-4">
+            <div>
+              <label for="signin-email" class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                Email Address or Tourist ID
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i class="fa-regular fa-envelope"></i>
+                </span>
+                <input id="signin-email" type="email" required placeholder="tanvir.ahmed@example.com" class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="signin-password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Password
+                </label>
+                <button type="button" onclick="openModal('forgot-modal')" class="text-xs text-emerald-700 hover:text-emerald-900 font-bold">
+                  Forgot Password?
+                </button>
+              </div>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i class="fa-solid fa-lock"></i>
+                </span>
+                <input id="signin-password" type="password" required placeholder="••••••••••••" class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition">
+                <button type="button" onclick="togglePasswordVisibility('signin-password', 'toggle-icon-signin')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                  <i id="toggle-icon-signin" class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="remember-me" class="rounded border-slate-300 text-emerald-700 focus:ring-emerald-600 w-4 h-4">
+                <span class="text-xs text-slate-600 font-medium">Remember this browser</span>
+              </label>
+              <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-lock text-emerald-700 mr-1"></i> TLS 256-bit Encrypted</span>
+            </div>
+
+            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to RoamBD
+            </button>
+          </form>
+
+          <!-- ================= TAB 2: REGISTRATION FORM ================= -->
+          <form id="register-form" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
+            <div>
+              <label for="reg-name" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                Full Legal Name
+              </label>
+              <input id="reg-name" type="text" required placeholder="e.g. Tanvir Ahmed Chowdhury" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="reg-email" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Email Address
+                </label>
+                <input id="reg-email" type="email" required placeholder="tanvir@example.com" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+              <div>
+                <label for="reg-phone" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Phone (+880 Bangladesh)
+                </label>
+                <input id="reg-phone" type="tel" required placeholder="+880 17XX-XXXXXX" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                Account Type &amp; Purpose
+              </label>
+              <select id="reg-role" class="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
+                <option value="tourist">Tourist &amp; Explorer (Personal Notebook &amp; Safety)</option>
+                <option value="guide">Tour Guide Applicant (Subject to Smart NID &amp; License Audit)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="reg-password" class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                Create Secure Password
+              </label>
+              <div class="relative">
+                <input id="reg-password" type="password" oninput="checkPasswordStrength(this.value)" required placeholder="At least 8 characters with numbers" class="w-full px-3.5 pr-10 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <button type="button" onclick="togglePasswordVisibility('reg-password', 'toggle-icon-reg')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                  <i id="toggle-icon-reg" class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              
+              <!-- Strength Indicator -->
+              <div class="mt-1.5 flex items-center gap-1.5">
+                <div class="h-1 flex-1 bg-slate-200 rounded-full overflow-hidden">
+                  <div id="strength-bar-1" class="h-full bg-slate-200 transition-all duration-300"></div>
+                </div>
+                <div class="h-1 flex-1 bg-slate-200 rounded-full overflow-hidden">
+                  <div id="strength-bar-2" class="h-full bg-slate-200 transition-all duration-300"></div>
+                </div>
+                <div class="h-1 flex-1 bg-slate-200 rounded-full overflow-hidden">
+                  <div id="strength-bar-3" class="h-full bg-slate-200 transition-all duration-300"></div>
+                </div>
+                <span id="strength-text" class="text-[10px] text-slate-400 font-bold ml-1">Strength</span>
+              </div>
+            </div>
+
+            <label class="flex items-start gap-2 pt-1 cursor-pointer">
+              <input type="checkbox" required class="rounded border-slate-300 text-emerald-700 focus:ring-emerald-600 mt-0.5">
+              <span class="text-[11px] text-slate-600 leading-tight">
+                I agree to the <a href="#" class="text-emerald-700 font-bold underline">Community Travel Code of Ethics</a> and acknowledge environmental preservation guidelines across protected heritage sites.
+              </span>
+            </label>
+
+            <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-2">
+              <i class="fa-solid fa-user-plus"></i> Register Explorer Account
+            </button>
+          </form>
+
+          <!-- Alternative Social Providers -->
+          <div class="relative my-6 text-center">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+            <span class="relative px-3 bg-white text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Or continue with</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" onclick="handleSocialAuth('Google')" class="flex items-center justify-center gap-2.5 py-2.5 px-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Google Account</span>
+            </button>
+            <button type="button" onclick="handleSocialAuth('Apple')" class="flex items-center justify-center gap-2.5 py-2.5 px-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition">
+              <i class="fa-brands fa-apple text-base"></i>
+              <span>Apple ID</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Safe Travel Community Footnote -->
+        <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Official Bangladesh Tourism Gateway</span>
+          <a href="index.html#destinations-section" class="font-bold text-emerald-800 hover:underline">Explore without signing in &rarr;</a>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================= FORGOT PASSWORD MODAL ================= -->
+  <div id="forgot-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+      <button onclick="closeModal('forgot-modal')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg mb-3">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h3 class="text-xl font-bold font-serif text-slate-900">Reset Explorer Credentials</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-4 leading-relaxed">
+        Provide your registered email address or mobile number (+880). We will send an official one-time security link.
+      </p>
+
+      <form onsubmit="handlePasswordReset(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Registered Email or Phone</label>
+          <input id="reset-input" type="text" required placeholder="e.g. tanvir@example.com or +88017XXXXXXXX" class="w-full px-3.5 py-2.5 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+        </div>
+
+        <button type="submit" class="w-full bg-bengal-700 hover:bg-bengal-800 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition shadow-md">
+          Send Recovery Link
+        </button>
+
+        <button type="button" onclick="closeModal('forgot-modal')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // Tab Switching: Sign In vs Registration
+    function switchAuthTab(tab) {
+      const signInForm = document.getElementById('signin-form');
+      const registerForm = document.getElementById('register-form');
+      const btnSignIn = document.getElementById('tab-btn-signin');
+      const btnRegister = document.getElementById('tab-btn-register');
+
+      if (tab === 'register') {
+        signInForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
+        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
+      } else {
+        registerForm.classList.add('hidden');
+        signInForm.classList.remove('hidden');
+        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-900 shadow-sm transition";
+        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition";
+      }
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    // Evaluation Helper: Autofill Demo Credentials
+    function fillDemoCredentials(role) {
+      switchAuthTab('signin');
+      const emailField = document.getElementById('signin-email');
+      const passField = document.getElementById('signin-password');
+
+      if (role === 'tourist') {
+        emailField.value = 'tanvir.ahmed@example.com';
+        passField.value = 'RoamBD#Travel2026';
+      } else if (role === 'guide') {
+        emailField.value = 'mahmud.sundarban@roambd-guides.org';
+        passField.value = 'Mangrove#Guide084';
+      } else if (role === 'admin') {
+        emailField.value = 'admin.desk@roambd.gov.bd';
+        passField.value = 'MasterAdmin#BD2026';
+      }
+    }
+
+    // Password Strength Check
+    function checkPasswordStrength(val) {
+      const bar1 = document.getElementById('strength-bar-1');
+      const bar2 = document.getElementById('strength-bar-2');
+      const bar3 = document.getElementById('strength-bar-3');
+      const text = document.getElementById('strength-text');
+
+      // Reset
+      bar1.className = 'h-full bg-slate-200 transition-all';
+      bar2.className = 'h-full bg-slate-200 transition-all';
+      bar3.className = 'h-full bg-slate-200 transition-all';
+
+      if (!val) {
+        text.innerText = 'Strength';
+        text.className = 'text-[10px] text-slate-400 font-bold ml-1';
+        return;
+      }
+
+      if (val.length < 6) {
+        bar1.className = 'h-full bg-red-500';
+        text.innerText = 'Weak';
+        text.className = 'text-[10px] text-red-600 font-bold ml-1';
+      } else if (val.length < 10) {
+        bar1.className = 'h-full bg-amber-500';
+        bar2.className = 'h-full bg-amber-500';
+        text.innerText = 'Medium';
+        text.className = 'text-[10px] text-amber-600 font-bold ml-1';
+      } else {
+        bar1.className = 'h-full bg-emerald-600';
+        bar2.className = 'h-full bg-emerald-600';
+        bar3.className = 'h-full bg-emerald-600';
+        text.innerText = 'Strong';
+        text.className = 'text-[10px] text-emerald-700 font-bold ml-1';
+      }
+    }
+
+    // Form Handling Simulation
+    function handleSignIn(e) {
+      e.preventDefault();
+      const email = document.getElementById('signin-email').value;
+      const alertBox = document.getElementById('auth-alert');
+      const alertTitle = document.getElementById('auth-alert-title');
+      const alertMsg = document.getElementById('auth-alert-msg');
+
+      alertTitle.innerText = "Welcome back to RoamBD!";
+      alertMsg.innerText = `Verified session established for ${email}. Navigating to your travel notebook...`;
+      alertBox.classList.remove('hidden');
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1600);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const role = document.getElementById('reg-role').value;
+      const alertBox = document.getElementById('auth-alert');
+      const alertTitle = document.getElementById('auth-alert-title');
+      const alertMsg = document.getElementById('auth-alert-msg');
+
+      alertTitle.innerText = `Welcome, ${name}!`;
+      alertMsg.innerText = role === 'guide' 
+        ? "Guide application received! Smart NID verification submitted to administrative desk. Redirecting to portal..."
+        : "Explorer account created successfully! Accessing your itinerary dashboard...";
+      alertBox.classList.remove('hidden');
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1800);
+    }
+
+    function handleSocialAuth(provider) {
+      const alertBox = document.getElementById('auth-alert');
+      const alertTitle = document.getElementById('auth-alert-title');
+      const alertMsg = document.getElementById('auth-alert-msg');
+
+      alertTitle.innerText = `Connecting via ${provider}...`;
+      alertMsg.innerText = "Single Sign-On authentication handshake confirmed. Redirecting to discovery portal...";
+      alertBox.classList.remove('hidden');
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    }
+
+    function handlePasswordReset(e) {
+      e.preventDefault();
+      const contact = document.getElementById('reset-input').value;
+      closeModal('forgot-modal');
+      alert(`Password recovery dispatched! A secure verification link has been sent to ${contact}.`);
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Prototype Evaluation Fidelity Switcher
+    function setFidelity(mode) {
+      const body = document.body;
+      const btnHigh = document.getElementById('btn-highfi');
+      const btnLow = document.getElementById('btn-lowfi');
+
+      if (mode === 'low') {
+        body.classList.add('low-fi');
+        btnLow.className = "px-2.5 py-1 rounded text-xs font-semibold bg-slate-700 text-white transition";
+        btnHigh.className = "px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition";
+      } else {
+        body.classList.remove('low-fi');
+        btnHigh.className = "px-2.5 py-1 rounded text-xs font-semibold bg-emerald-700 text-white transition";
+        btnLow.className = "px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition";
+      }
+    }
+  </script>
+</body>
+</html>

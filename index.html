@@ -2153,7 +2153,7 @@
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
       const phone = document.getElementById('reg-phone').value.trim();
-      const role = document.getElementById('reg-role').value;
+      const role = document.getElementById('reg-role').value === 'guide' ? 'guide' : 'tourist';
       const password = document.getElementById('reg-password').value;
 
       const existing = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
@@ -2177,13 +2177,9 @@
         license: role === 'guide' ? 'BPC-2026-PENDING' : '',
         bio: role === 'guide'
           ? 'Certified local guide ready to assist travelers with regional heritage and trail safety.'
-          : role === 'admin'
-          ? 'System Administrator managing destinations, tour guides, and safety advisories.'
           : 'Exploring the natural and cultural wonders of Bangladesh.',
         avatar: role === 'guide'
           ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
-          : role === 'admin'
-          ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
           : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
       };
 
@@ -2196,7 +2192,7 @@
       document.getElementById('signin-password').value = '';
       document.getElementById('signin-password').focus();
 
-      const roleLabel = role === 'admin' ? 'Administrator' : (role === 'guide' ? 'Tour Guide' : 'Tourist');
+      const roleLabel = role === 'guide' ? 'Tour Guide' : 'Tourist';
       showAuthBanner('success', 'Account Created Successfully!', `Your ${roleLabel} account is saved. Please enter your password to sign in.`);
     }
 
