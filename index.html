@@ -70,6 +70,88 @@
       color: #ffffff !important;
     }
 
+    /* Dark Mode Theme */
+    body.dark-mode {
+      background-color: #090d16 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark-mode #screen-auth {
+      background-color: #090d16 !important;
+    }
+    body.dark-mode #main-navbar {
+      background-color: rgba(15, 23, 42, 0.92) !important;
+      border-color: #1e293b !important;
+    }
+    body.dark-mode .bg-white,
+    body.dark-mode .bg-white\/95 {
+      background-color: #111827 !important;
+      color: #f1f5f9 !important;
+      border-color: #1f2937 !important;
+    }
+    body.dark-mode .bg-slate-50,
+    body.dark-mode .bg-slate-50\/80,
+    body.dark-mode .bg-slate-100,
+    body.dark-mode .bg-slate-100\/70 {
+      background-color: #1e293b !important;
+      color: #e2e8f0 !important;
+      border-color: #334155 !important;
+    }
+    body.dark-mode .text-slate-950,
+    body.dark-mode .text-slate-900,
+    body.dark-mode .text-slate-800 {
+      color: #f8fafc !important;
+    }
+    body.dark-mode .text-slate-700,
+    body.dark-mode .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+    body.dark-mode .text-slate-500,
+    body.dark-mode .text-slate-400 {
+      color: #94a3b8 !important;
+    }
+    body.dark-mode .border-slate-200,
+    body.dark-mode .border-slate-200\/80,
+    body.dark-mode .border-slate-200\/90,
+    body.dark-mode .border-slate-100,
+    body.dark-mode .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #1f2937 !important;
+    }
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder {
+      color: #64748b !important;
+    }
+    body.dark-mode .bg-emerald-50,
+    body.dark-mode .bg-emerald-50\/60,
+    body.dark-mode .bg-emerald-50\/70 {
+      background-color: rgba(6, 78, 59, 0.35) !important;
+      border-color: #065f46 !important;
+      color: #a7f3d0 !important;
+    }
+    body.dark-mode .text-emerald-950,
+    body.dark-mode .text-emerald-900,
+    body.dark-mode .text-emerald-800,
+    body.dark-mode .text-emerald-700 {
+      color: #34d399 !important;
+    }
+    body.dark-mode .bg-amber-50,
+    body.dark-mode .bg-amber-50\/70 {
+      background-color: rgba(120, 53, 15, 0.35) !important;
+      border-color: #78350f !important;
+      color: #fde68a !important;
+    }
+    body.dark-mode .bg-red-50 {
+      background-color: rgba(127, 29, 29, 0.35) !important;
+      border-color: #991b1b !important;
+      color: #fecaca !important;
+    }
+
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -101,6 +183,12 @@
           <i class="fa-solid fa-drafting-compass mr-1"></i> Wireframe
         </button>
       </div>
+
+      <!-- Dark Mode Toggle Button -->
+      <button id="btn-darkmode" onclick="toggleDarkMode()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Toggle Dark / Light Mode">
+        <i id="darkmode-icon" class="fa-solid fa-moon text-amber-400"></i>
+        <span id="darkmode-text">Dark Mode</span>
+      </button>
 
       <!-- Quick Emergency Trigger -->
       <button onclick="openModal('emergency-modal')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition animate-pulse">
@@ -2709,6 +2797,27 @@
       }
     }
 
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      updateDarkModeButton(isDark);
+      try {
+        localStorage.setItem('roambd_dark_mode', isDark ? 'true' : 'false');
+      } catch (e) {}
+    }
+
+    function updateDarkModeButton(isDark) {
+      const icon = document.getElementById('darkmode-icon');
+      const text = document.getElementById('darkmode-text');
+      if (!icon || !text) return;
+      if (isDark) {
+        icon.className = 'fa-solid fa-sun text-amber-300';
+        text.innerText = 'Light Mode';
+      } else {
+        icon.className = 'fa-solid fa-moon text-amber-400';
+        text.innerText = 'Dark Mode';
+      }
+    }
+
     function showToast(message) {
       let toast = document.getElementById('roambd-toast');
       if (!toast) {
@@ -2727,6 +2836,12 @@
 
     // ================= INITIALIZATION =================
     window.addEventListener('DOMContentLoaded', () => {
+      try {
+        if (localStorage.getItem('roambd_dark_mode') === 'true') {
+          document.body.classList.add('dark-mode');
+          updateDarkModeButton(true);
+        }
+      } catch (e) {}
       registeredUsers = loadRegisteredUsers();
       syncUserUI();
       renderDestinations(destinations);
