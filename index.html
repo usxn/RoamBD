@@ -733,13 +733,6 @@
         </div>
       </section>
 
-      <!-- Full Destinations Grid -->
-      <section>
-        <div id="destinations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </section>
-
       <!-- Seasonal Slow Escape Banner -->
       <section class="relative rounded-3xl overflow-hidden h-[230px] sm:h-[260px] shadow-sm">
         <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80" alt="Tea Trails of Sylhet" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/1600x400/184D38/F8F7F3?text=Sylhet+Tea+Trails'">
@@ -757,8 +750,9 @@
         </div>
       </section>
 
-      <!-- Stays & Regional Culinary Directory -->
-      <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Stays & Regional Culinary Directory (2-Column Balanced Grid) -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left 7 Cols: Accommodations Directory -->
         <div class="lg:col-span-7 space-y-4">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">ACCOMMODATIONS DIRECTORY</span>
@@ -821,6 +815,37 @@
             </div>
           </div>
         </div>
+
+        <!-- Right 5 Cols: Regional Culinary Guide -->
+        <div class="lg:col-span-5 space-y-4">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-amber-800 block mb-1">TASTE THE CULTURE</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">Regional culinary guide</h3>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 border border-cream-300/90 space-y-3 shadow-2xs">
+            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+              <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=200&q=80" alt="Kacchi Biryani" class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-bold text-red-700 uppercase">Old Dhaka</span>
+                <h4 class="font-bold text-slate-900 text-sm truncate">Purana Dhaka Kacchi &amp; Bakarkhani</h4>
+                <button onclick="openFoodModal('Old Dhaka Nawabi Gastronomy', 'Chawkbazar & Nazira Bazar, Dhaka', 'Traditional Mutton Kacchi Biryani, Shahi Morog Polao, Bakarkhani & Borhani', 'Haji Biriyani, Star Kabab & Restaurant, Beauty Lassi & Falooda')" class="text-xs text-forest-700 font-bold hover:underline mt-1 inline-block">
+                  Explore dish guide &rarr;
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80" alt="Coastal Seafood" class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-bold text-forest-700 uppercase">Cox's Bazar Coast</span>
+                <h4 class="font-bold text-slate-900 text-sm truncate">Rupchanda Grill &amp; Bhorta Platter</h4>
+                <button onclick="openFoodModal('Coastal Seafood & Bhorta Traditions', 'Kolatoli & Inani, Cox\'s Bazar', 'Grilled Whole Rupchanda, Loitta Fry, 12-Variety Coastal Bhorta Platter', 'Poushee Restaurant, Jhaubon Seafood Dining, Mermaid Beach Cafe')" class="text-xs text-forest-700 font-bold hover:underline mt-1 inline-block">
+                  Explore dish guide &rarr;
+                </button>
+              </div>
+            </div>
+
             <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
               <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80" alt="Seven Layer Tea" class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
               <div class="min-w-0 flex-1">
@@ -843,6 +868,22 @@
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Community Field Notes & Observations -->
+      <section class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">TRAVELER FIELD NOTES</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">Community observations</h3>
+          </div>
+          <button onclick="openReviewModal()" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-4 py-2 rounded-full text-xs transition self-start sm:self-auto">
+            + Share Field Note
+          </button>
+        </div>
+        <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Populated dynamically via JS -->
         </div>
       </section>
 
@@ -961,6 +1002,81 @@
             </div>
           </div>
         </div>
+
+        <!-- Right 4 Cols: Checklist & Smart Travel Assistant -->
+        <div class="lg:col-span-4 space-y-5">
+          <!-- Ready to Roam Checklist Card -->
+          <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h4 class="font-extrabold text-slate-900 text-base">Ready to roam?</h4>
+              <span id="checklist-counter" class="text-[11px] font-bold text-forest-700 bg-forest-100 px-2.5 py-0.5 rounded-full">4 of 6 complete</span>
+            </div>
+
+            <div id="planner-checklist" class="space-y-2 text-xs">
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Destination &amp; route selected</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Sayeman Heritage Resort contact saved</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Train &amp; transit schedule verified</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Tourist Police 999 saved offline</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Connect with a local coastal guide</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
+                <input type="checkbox" onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
+                <span class="font-medium text-slate-700">Pack sun protection &amp; walking shoes</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Make Room for Discovery (RoamAI Card) -->
+          <div class="bg-forest-100 border border-forest-200 rounded-3xl p-6 space-y-3">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700">SMART ASSISTANT</span>
+            <h4 class="text-lg font-extrabold text-forest-900">Make room for discovery</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">RoamAI can suggest stops that fit your pace, weather window, and cultural interests.</p>
+            <button onclick="openModal('ai-modal')" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-2.5 rounded-full text-xs transition">
+              Ask RoamAI
+            </button>
+          </div>
+
+          <!-- Go Beyond the Guidebook Card -->
+          <div class="bg-forest-900 text-white rounded-3xl p-6 space-y-3">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-300">GO BEYOND THE GUIDEBOOK</span>
+            <h4 class="text-lg font-extrabold">See the coast with a local</h4>
+            <p class="text-xs text-cream-200/80">Meet verified guides who know the quiet beaches and the best local tables.</p>
+            <button onclick="openPage('guides')" class="bg-white text-forest-900 font-bold px-4 py-2 rounded-full text-xs transition inline-flex items-center gap-1.5">
+              <span>Find a local guide</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- PAGE 4: DEDICATED NEARBY MAP & SAFETY PAGE (MATCHING PAGE 4)          -->
+  <!-- ===================================================================== -->
+  <div id="page-map" class="app-page hidden">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-6">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">GOOD THINGS ARE CLOSER THAN YOU THINK</span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Discover around you</h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Find the places, flavors and essential safety stops near your next adventure.</p>
+        </div>
+
         <div class="flex flex-wrap items-center gap-2 overflow-x-auto no-scrollbar pb-1">
           <select id="map-region-select" onchange="switchMapRegion(this.value)" class="bg-white border border-cream-300 text-forest-900 px-3.5 py-2 rounded-full text-xs font-bold focus:outline-none">
             <option value="coxs">Area: Cox's Bazar</option>
