@@ -1283,6 +1283,9 @@
           <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
           <span id="guide-availability-text">Available this week</span>
         </button>
+        <button onclick="previewMyGuideCard()" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 px-4 py-2 rounded-full text-xs font-bold transition">
+          <i class="fa-regular fa-eye mr-1"></i> Preview Card
+        </button>
         <button onclick="openPage('home')" class="bg-white text-forest-900 px-4 py-2 rounded-full text-xs font-bold transition">
           Public Portal
         </button>
@@ -1292,75 +1295,115 @@
       </div>
     </div>
 
+    <!-- Guide Performance & Reputation KPIs -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-3xl border border-cream-300">
+        <span class="text-[11px] font-bold text-slate-400">Trips Hosted</span>
+        <p id="guide-kpi-trips" class="text-2xl font-extrabold text-slate-900 mt-1">142</p>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300">
+        <span class="text-[11px] font-bold text-slate-400">Traveler Rating</span>
+        <p id="guide-kpi-rating" class="text-2xl font-extrabold text-amber-600 mt-1">★ 4.9</p>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300">
+        <span class="text-[11px] font-bold text-slate-400">Active Inquiries</span>
+        <p id="guide-kpi-inquiries" class="text-2xl font-extrabold text-forest-700 mt-1">3</p>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300">
+        <span class="text-[11px] font-bold text-slate-400">Published Reviews</span>
+        <p id="guide-kpi-reviews" class="text-2xl font-extrabold text-slate-900 mt-1">1</p>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-7 bg-white rounded-3xl border border-cream-300 p-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-4">Public Directory Profile</h3>
-        <form onsubmit="saveGuideProfileDetails(event)" class="space-y-3 text-xs">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Full Name</label>
-              <input id="guide-edit-name" type="text" required class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+      <div class="lg:col-span-7 space-y-6">
+        <div class="bg-white rounded-3xl border border-cream-300 p-6">
+          <h3 class="text-lg font-extrabold text-slate-900 mb-4">Public Directory Profile</h3>
+          <form onsubmit="saveGuideProfileDetails(event)" class="space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Full Name</label>
+                <input id="guide-edit-name" type="text" required class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Guiding Region</label>
+                <input id="guide-edit-region" type="text" required class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Specialty Focus</label>
+                <select id="guide-edit-specialty" class="w-full px-3 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+                  <option value="wildlife">Wildlife &amp; Nature</option>
+                  <option value="hills">Hill Culture</option>
+                  <option value="heritage">Heritage &amp; Food</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Direct Phone</label>
+                <input id="guide-edit-phone" type="tel" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Experience</label>
+                <input id="guide-edit-exp" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Languages</label>
+                <input id="guide-edit-languages" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">BPC License ID</label>
+                <input id="guide-edit-license" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              </div>
             </div>
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Guiding Region</label>
-              <input id="guide-edit-region" type="text" required class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+              <label class="block font-bold text-slate-700 mb-1">Base District</label>
+              <input id="guide-edit-address" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
             </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Biography</label>
+              <textarea id="guide-edit-bio" rows="2" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold"></textarea>
+            </div>
+            <button type="submit" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-6 py-2.5 rounded-full text-xs transition">Save &amp; Sync Public Directory</button>
+          </form>
+        </div>
+
+        <!-- Publish Regional Field Advisory / Trail Tip -->
+        <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-extrabold text-slate-900">Publish Local Trail &amp; Weather Tip</h3>
+            <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2.5 py-0.5 rounded-full">Live on Explore</span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Gender</label>
-              <select id="guide-edit-gender" class="w-full px-3 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Not Specified">Prefer not to say</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Direct Phone</label>
-              <input id="guide-edit-phone" type="tel" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-            </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Experience</label>
-              <input id="guide-edit-exp" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Languages</label>
-              <input id="guide-edit-languages" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-            </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">BPC License ID</label>
-              <input id="guide-edit-license" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-            </div>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Base District</label>
-            <input id="guide-edit-address" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Biography</label>
-            <textarea id="guide-edit-bio" rows="2" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold"></textarea>
-          </div>
-          <button type="submit" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-6 py-2.5 rounded-full text-xs transition">Save Guide Details</button>
-        </form>
+          <p class="text-slate-500">Share real-time trail conditions, boat timings, or permit updates directly with travelers planning to visit your region.</p>
+          <form onsubmit="publishGuideFieldTip(event)" class="space-y-2.5">
+            <input id="guide-tip-region" type="text" required placeholder="Trail / Spot (e.g. Karamjal Mangrove Boardwalk, Sundarbans)" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+            <textarea id="guide-tip-text" rows="2" required placeholder="e.g. Morning high-tide launch leaves Mongla Jetty at 07:30 AM; bring binoculars for kingfisher sightings." class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-medium"></textarea>
+            <button type="submit" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-5 py-2.5 rounded-full text-xs transition">
+              <i class="fa-solid fa-paper-plane mr-1.5"></i> Post Trail Update
+            </button>
+          </form>
+        </div>
       </div>
 
-      <div class="lg:col-span-5 bg-white rounded-3xl border border-cream-300 p-6 space-y-4">
-        <h3 class="text-lg font-extrabold text-slate-900">Traveler Field Inquiries</h3>
-        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-300 text-xs space-y-1.5">
-          <div class="flex justify-between">
-            <span class="font-bold text-slate-900">Dr. Farhana Rahman</span>
-            <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2 py-0.5 rounded-full">Heritage Inquiry</span>
+      <div class="lg:col-span-5 space-y-6">
+        <!-- Interactive Traveler Field Inquiries (Accept / Decline / Reply) -->
+        <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-extrabold text-slate-900">Traveler Field Inquiries</h3>
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Non-Commercial</span>
           </div>
-          <p class="text-slate-600">"Planning a 2-day architectural survey around Sixty Dome Mosque &amp; Bagerhat next month."</p>
+          <div id="guide-inquiries-list" class="space-y-3"></div>
         </div>
-        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-300 text-xs space-y-1.5">
-          <div class="flex justify-between">
-            <span class="font-bold text-slate-900">Arifuzzaman Noyon</span>
-            <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Wildlife Trail</span>
+
+        <!-- My Traveler Reviews Feed -->
+        <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-extrabold text-slate-900">Recent Traveler Reviews</h3>
+            <span id="guide-portal-review-badge" class="text-[11px] font-bold text-forest-700">Verified Feedback</span>
           </div>
-          <p class="text-slate-600">"Seeking early morning birdwatching trail permit advice near Karamjal."</p>
+          <div id="guide-portal-reviews-list" class="space-y-2.5 text-xs"></div>
         </div>
       </div>
     </div>
@@ -3555,13 +3598,204 @@
       document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region || 'Sundarbans & Heritage'}`;
       document.getElementById('guide-edit-name').value = currentUser.name || '';
       document.getElementById('guide-edit-region').value = currentUser.region || 'Sundarbans & Heritage';
-      document.getElementById('guide-edit-gender').value = currentUser.gender || 'Not Specified';
+      if (document.getElementById('guide-edit-specialty')) {
+        document.getElementById('guide-edit-specialty').value = currentUser.specialty || 'wildlife';
+      }
       document.getElementById('guide-edit-phone').value = currentUser.phone || '+880 1712-987654';
       document.getElementById('guide-edit-exp').value = currentUser.exp || '5+ Years';
       document.getElementById('guide-edit-languages').value = currentUser.languages || 'Bangla, English';
       document.getElementById('guide-edit-license').value = currentUser.license || 'BPC-2026-084';
       document.getElementById('guide-edit-address').value = currentUser.address || 'Khulna';
       document.getElementById('guide-edit-bio').value = currentUser.bio || '';
+
+      renderGuideInquiries();
+      renderGuideOwnReviews();
+    }
+
+    const guideInquiriesData = [
+      {
+        id: 1,
+        traveler: "Dr. Farhana Rahman",
+        tag: "Heritage Inquiry",
+        dates: "Dec 14 – Dec 15 • 2 Travelers",
+        message: "Planning a 2-day architectural survey around Sixty Dome Mosque & Bagerhat next month.",
+        status: "REQUESTED"
+      },
+      {
+        id: 2,
+        traveler: "Arifuzzaman Noyon",
+        tag: "Wildlife Trail",
+        dates: "Dec 20 • Solo Photographer",
+        message: "Seeking early morning birdwatching trail permit advice near Karamjal.",
+        status: "REQUESTED"
+      },
+      {
+        id: 3,
+        traveler: "Nabila Tasnim",
+        tag: "Cultural Walk",
+        dates: "Nov 28 • 3 Travelers",
+        message: "Would love a half-day local culinary and craft village walk with family.",
+        status: "CONFIRMED"
+      }
+    ];
+
+    function renderGuideInquiries() {
+      const container = document.getElementById('guide-inquiries-list');
+      if (!container) return;
+
+      const activeCount = guideInquiriesData.filter(i => i.status !== 'DECLINED').length;
+      const kpiEl = document.getElementById('guide-kpi-inquiries');
+      if (kpiEl) kpiEl.innerText = activeCount;
+
+      container.innerHTML = guideInquiriesData.map(item => `
+        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-300 text-xs space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <span class="font-bold text-slate-900 block">${item.traveler}</span>
+              <span class="text-[10px] text-slate-400 font-semibold">${item.dates}</span>
+            </div>
+            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+              item.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' :
+              item.status === 'DECLINED' ? 'bg-red-100 text-red-700' :
+              'bg-amber-100 text-amber-800'
+            }">${item.status}</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">"${item.message}"</p>
+          ${item.status === 'REQUESTED' ? `
+            <div class="flex items-center gap-2 pt-1">
+              <button onclick="updateGuideInquiryStatus(${item.id}, 'CONFIRMED')" class="flex-1 bg-forest-700 hover:bg-forest-800 text-white font-bold py-1.5 rounded-full text-[11px] transition">
+                Accept Request
+              </button>
+              <button onclick="updateGuideInquiryStatus(${item.id}, 'DECLINED')" class="px-3.5 py-1.5 bg-white border border-cream-300 hover:border-red-400 text-slate-600 hover:text-red-600 font-bold rounded-full text-[11px] transition">
+                Decline
+              </button>
+            </div>
+          ` : `
+            <div class="pt-1 flex items-center justify-between text-[11px]">
+              <span class="font-semibold text-forest-700">${item.status === 'CONFIRMED' ? '✓ Confirmed on your schedule' : 'Declined'}</span>
+              <button onclick="showToast('Quick WhatsApp/Email reply template copied!')" class="text-forest-800 font-bold hover:underline">Send Note &rarr;</button>
+            </div>
+          `}
+        </div>
+      `).join('');
+    }
+
+    function updateGuideInquiryStatus(id, newStatus) {
+      const target = guideInquiriesData.find(i => i.id === id);
+      if (!target) return;
+      target.status = newStatus;
+      renderGuideInquiries();
+      showToast(newStatus === 'CONFIRMED'
+        ? `Confirmed trip inquiry from ${target.traveler}!`
+        : `Declined inquiry from ${target.traveler}.`);
+    }
+
+    function renderGuideOwnReviews() {
+      const container = document.getElementById('guide-portal-reviews-list');
+      if (!container || !currentUser) return;
+      const myReviews = communityReviews.filter(r =>
+        (r.region || '').toLowerCase().includes((currentUser.name || '').toLowerCase())
+      );
+      const revKpi = document.getElementById('guide-kpi-reviews');
+      if (revKpi) revKpi.innerText = myReviews.length;
+
+      if (myReviews.length === 0) {
+        container.innerHTML = `<p class="text-slate-400 italic">No reviews yet. Share your public profile card with travelers after a trip!</p>`;
+        return;
+      }
+      container.innerHTML = myReviews.map(r => `
+        <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900">${r.name}</span>
+            <span class="text-amber-500 font-bold">${'★'.repeat(r.stars || 5)}</span>
+          </div>
+          <p class="text-slate-600">"${r.content}"</p>
+        </div>
+      `).join('');
+    }
+
+    async function publishGuideFieldTip(e) {
+      e.preventDefault();
+      const region = document.getElementById('guide-tip-region').value.trim();
+      const text = document.getElementById('guide-tip-text').value.trim();
+      if (!region || !text) return;
+
+      const guideName = currentUser?.name || 'Verified Local Guide';
+      if (supabaseClient) {
+        await supabaseClient.from('field_notes').insert({
+          author_name: guideName,
+          author_role: 'Verified Guide Tip',
+          region,
+          content: text
+        });
+      }
+
+      communityReviews.unshift({
+        name: guideName,
+        role: 'Verified Local Guide',
+        date: 'Just now',
+        stars: 5,
+        region,
+        content: text
+      });
+      renderReviews();
+      document.getElementById('guide-tip-region').value = '';
+      document.getElementById('guide-tip-text').value = '';
+      showToast('Trail advisory published to Explore & Supabase!');
+    }
+
+    function previewMyGuideCard() {
+      if (!currentUser) return;
+      openGuideContactModal(
+        currentUser.name,
+        currentUser.region || 'Bangladesh Regional Trails',
+        currentUser.phone || '+880 1712-987654',
+        currentUser.email || 'guide@roambd.org',
+        currentUser.license || 'BPC-VERIFIED'
+      );
+    }
+
+    let guideAvailable = true;
+    function toggleGuideAvailability() {
+      guideAvailable = !guideAvailable;
+      document.getElementById('guide-availability-text').innerText = guideAvailable ? 'Available this week' : 'On field expedition';
+      showToast(guideAvailable ? 'Marked as Available' : 'Marked as On Expedition');
+    }
+
+    function saveGuideProfileDetails(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById('guide-edit-name').value.trim();
+      currentUser.region = document.getElementById('guide-edit-region').value.trim();
+      if (document.getElementById('guide-edit-specialty')) {
+        currentUser.specialty = document.getElementById('guide-edit-specialty').value;
+      }
+      currentUser.phone = document.getElementById('guide-edit-phone').value.trim();
+      currentUser.exp = document.getElementById('guide-edit-exp').value.trim();
+      currentUser.languages = document.getElementById('guide-edit-languages').value.trim();
+      currentUser.license = document.getElementById('guide-edit-license').value.trim();
+      currentUser.address = document.getElementById('guide-edit-address').value.trim();
+      currentUser.bio = document.getElementById('guide-edit-bio').value.trim();
+
+      const dirIdx = verifiedGuidesList.findIndex(g => g.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (dirIdx !== -1) {
+        verifiedGuidesList[dirIdx].name = currentUser.name;
+        verifiedGuidesList[dirIdx].region = currentUser.region;
+        verifiedGuidesList[dirIdx].specialty = currentUser.specialty || verifiedGuidesList[dirIdx].specialty;
+        verifiedGuidesList[dirIdx].phone = currentUser.phone;
+        verifiedGuidesList[dirIdx].languages = currentUser.languages;
+        verifiedGuidesList[dirIdx].license = currentUser.license;
+        verifiedGuidesList[dirIdx].bio = currentUser.bio;
+        renderGuidesDirectory(verifiedGuidesList);
+      }
+
+      const idx = registeredUsers.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (idx !== -1) {
+        registeredUsers[idx] = currentUser;
+        saveRegisteredUsers(registeredUsers);
+      }
+      populateGuideDashboard();
+      syncUserUI();
+      showToast('Guide profile updated across public directory!');
     }
 
     let guideAvailable = true;
