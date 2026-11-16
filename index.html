@@ -2812,11 +2812,13 @@
         });
 
         if (error) {
-          showAuthNotification('error', 'Registration Error', error.message);
-          return;
-        }
-
-        if (data.user) {
+          if (error.message && error.message.toLowerCase().includes('rate limit')) {
+            console.warn('Supabase email rate limit reached; saving account locally.');
+          } else {
+            showAuthNotification('error', 'Registration Error', error.message);
+            return;
+          }
+        } else if (data.user) {
           await supabaseClient.from('profiles').upsert({
             id: data.user.id,
             full_name: name,
