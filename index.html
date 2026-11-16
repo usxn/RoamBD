@@ -1676,17 +1676,6 @@
       </div>
     </div>
 
-    <!-- PANEL 6: GOVERNANCE AUDIT LOG -->
-    <div id="admin-panel-logs" class="admin-panel hidden bg-white rounded-3xl border border-cream-300 overflow-hidden">
-      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
-        <h3 class="font-extrabold text-slate-900 text-sm">System Governance &amp; Moderation Audit Trail</h3>
-        <span class="text-[11px] font-semibold text-slate-500">Live session activity</span>
-      </div>
-      <div id="admin-audit-log-list" class="divide-y divide-cream-200 text-xs"></div>
-    </div>
-  </div>
-
-  <!-- ================= EDITORIAL FOOTER ================= -->
     <div class="max-w-7xl mx-auto mt-8 pt-6 border-t border-cream-300 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
       <p>© 2026 RoamBD — Integrated Smart Tourism &amp; Travel Assistance Platform for Bangladesh. All rights reserved.</p>
       <div class="flex items-center gap-4 font-semibold">
@@ -2558,6 +2547,13 @@
     ];
 
     // ================= SUPABASE LIVE DATA SYNC =================
+    function withTimeout(promise, ms = 3000) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase connection timeout')), ms))
+      ]);
+    }
+
     async function syncLiveDatabase() {
       if (!supabaseClient) {
         updateDatabaseBadge(false, 'Local Cache Mode');
@@ -2567,12 +2563,15 @@
       try {
         updateDatabaseBadge(true, 'Connecting DB...');
 
-        // 1. Fetch active destinations from PostgreSQL
-        const { data: dbDestinations, error: destErr } = await supabaseClient
-          .from('destinations')
-          .select('*')
-          .eq('is_active', true)
-          .order('id', { ascending: true });
+        // 1. Fetch active destinations from PostgreSQL (with 3.5s timeout so UI never hangs)
+        const { data: dbDestinations, error: destErr } = await withTimeout(
+          supabaseClient
+            .from('destinations')
+            .select('*')
+            .eq('is_active', true)
+            .order('id', { ascending: true }),
+          3500
+        );
 
         if (!destErr && dbDestinations && dbDestinations.length > 0) {
           destinations = dbDestinations.map(d => ({
@@ -2594,10 +2593,13 @@
         }
 
         // 2. Fetch verified local guides from PostgreSQL
-        const { data: dbGuides, error: guideErr } = await supabaseClient
-          .from('guides')
-          .select('*')
-          .eq('verification_status', 'VERIFIED');
+        const { data: dbGuides, error: guideErr } = await withTimeout(
+          supabaseClient
+            .from('guides')
+            .select('*')
+            .eq('verification_status', 'VERIFIED'),
+          3500
+        );
 
         if (!guideErr && dbGuides && dbGuides.length > 0) {
           verifiedGuidesList = dbGuides.map(g => ({
@@ -2618,11 +2620,14 @@
         }
 
         // 3. Fetch community field notes (reviews) from PostgreSQL
-        const { data: dbReviews, error: revErr } = await supabaseClient
-          .from('field_notes')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(6);
+        const { data: dbReviews, error: revErr } = await withTimeout(
+          supabaseClient
+            .from('field_notes')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(6),
+          3500
+        );
 
         if (!revErr && dbReviews && dbReviews.length > 0) {
           communityReviews.splice(0, communityReviews.length, ...dbReviews.map(r => ({
@@ -2638,8 +2643,8 @@
 
         updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
       } catch (err) {
-        console.warn('Supabase sync fallback to local data:', err);
-        updateDatabaseBadge(true, 'Supabase Ready');
+        console.warn('Supabase unreachable or slow; running in fast local cache mode:', err);
+        updateDatabaseBadge(false, 'Local Cache Mode');
       }
     }
 
@@ -2949,63 +2954,83 @@
       e.preventDefault();
       const emailInput = document.getElementById('signin-email').value.trim();
       const passwordInput = document.getElementById('signin-password').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
-      // Try Live Supabase Auth first
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: emailInput,
-          password: passwordInput
-        });
-        if (!error && data.user) {
-          const { data: profile } = await supabaseClient
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Signing in...';
+      }
 
-          currentUser = {
-            id: data.user.id,
-            name: profile?.full_name || data.user.user_metadata?.full_name || emailInput.split('@')[0],
-            email: data.user.email,
-            role: profile?.role || data.user.user_metadata?.role || 'tourist',
-            phone: profile?.phone || '+880 1700-000000',
-            gender: 'Not Specified',
-            address: profile?.address || 'Dhaka, Bangladesh',
-            bio: profile?.bio || 'Exploring Bangladesh via RoamBD.'
-          };
+      try {
+        // 1. Check built-in / local accounts first if matching so demo credentials log in instantaneously
+        registeredUsers = loadRegisteredUsers();
+        const localMatch = registeredUsers.find(
+          u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
+        );
+
+        if (localMatch) {
+          currentUser = localMatch;
           syncUserUI();
           const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-          showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Connected to Supabase PostgreSQL...');
+          showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
           setTimeout(() => {
             document.getElementById('auth-alert').classList.add('hidden');
             openPage(targetPage);
-          }, 600);
+          }, 450);
           return;
         }
-      }
 
-      // Built-in / Local Storage Fallback
-      registeredUsers = loadRegisteredUsers();
-      const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === emailInput.toLowerCase());
+        // 2. Otherwise try Live Supabase Auth with a 3-second timeout
+        if (supabaseClient) {
+          const { data, error } = await withTimeout(
+            supabaseClient.auth.signInWithPassword({
+              email: emailInput,
+              password: passwordInput
+            }),
+            3000
+          );
+          if (!error && data && data.user) {
+            let profile = null;
+            try {
+              const res = await withTimeout(
+                supabaseClient.from('profiles').select('*').eq('id', data.user.id).single(),
+                2500
+              );
+              profile = res.data;
+            } catch (pErr) {}
 
-      if (!matchedUser || matchedUser.password !== passwordInput) {
+            currentUser = {
+              id: data.user.id,
+              name: profile?.full_name || data.user.user_metadata?.full_name || emailInput.split('@')[0],
+              email: data.user.email,
+              role: profile?.role || data.user.user_metadata?.role || 'tourist',
+              phone: profile?.phone || '+880 1700-000000',
+              gender: 'Not Specified',
+              address: profile?.address || 'Dhaka, Bangladesh',
+              bio: profile?.bio || 'Exploring Bangladesh via RoamBD.'
+            };
+            syncUserUI();
+            const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
+            showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Connected to Supabase PostgreSQL...');
+            setTimeout(() => {
+              document.getElementById('auth-alert').classList.add('hidden');
+              openPage(targetPage);
+            }, 450);
+            return;
+          }
+        }
+
         showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
-        return;
+      } catch (err) {
+        console.warn('Sign-in network fallback:', err);
+        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnHtml;
+        }
       }
-
-      currentUser = matchedUser;
-      syncUserUI();
-
-      let targetPage = 'home';
-      if (currentUser.role === 'guide') targetPage = 'guide';
-      else if (currentUser.role === 'admin') targetPage = 'admin';
-
-      showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
-
-      setTimeout(() => {
-        document.getElementById('auth-alert').classList.add('hidden');
-        openPage(targetPage);
-      }, 650);
     }
 
     async function handleRegister(e) {
@@ -3021,215 +3046,88 @@
         return;
       }
 
-      // Live Supabase Sign Up
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient.auth.signUp({
-          email,
-          password,
-          options: { data: { full_name: name, role, phone } }
-        });
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Creating Account...';
+      }
 
-        if (error) {
-          if (error.message && error.message.toLowerCase().includes('rate limit')) {
-            console.warn('Supabase email rate limit reached; saving account locally.');
-          } else {
-            showAuthNotification('error', 'Registration Error', error.message);
-            return;
+      try {
+        // Live Supabase Sign Up with 3-second timeout
+        if (supabaseClient) {
+          try {
+            const { data, error } = await withTimeout(
+              supabaseClient.auth.signUp({
+                email,
+                password,
+                options: { data: { full_name: name, role, phone } }
+              }),
+              3000
+            );
+
+            if (!error && data && data.user) {
+              try {
+                await withTimeout(
+                  supabaseClient.from('profiles').upsert({
+                    id: data.user.id,
+                    full_name: name,
+                    email,
+                    phone,
+                    role
+                  }),
+                  2500
+                );
+              } catch (upErr) {}
+            } else if (error && !error.message?.toLowerCase().includes('rate limit') && !error.message?.toLowerCase().includes('invalid')) {
+              showAuthNotification('error', 'Registration Error', error.message);
+              return;
+            }
+          } catch (netErr) {
+            console.warn('Supabase signUp timed out or offline; saving account locally.');
           }
-        } else if (data.user) {
-          await supabaseClient.from('profiles').upsert({
-            id: data.user.id,
-            full_name: name,
-            email,
-            phone,
-            role
-          });
+        }
 
-          currentUser = {
-            id: data.user.id,
-            name,
-            email,
-            role,
-            phone,
-            gender: "Not Specified",
-            address: "Dhaka, Bangladesh",
-            bio: "New RoamBD explorer."
-          };
-          syncUserUI();
-          const targetPage = role === 'guide' ? 'guide' : 'home';
-          showAuthNotification('success', `Welcome, ${name}!`, 'Account saved in Supabase PostgreSQL!');
-          setTimeout(() => {
-            document.getElementById('auth-alert').classList.add('hidden');
-            openPage(targetPage);
-          }, 700);
+        // Always save to local storage so instant re-login works offline & online
+        registeredUsers = loadRegisteredUsers();
+        if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+          showAuthNotification('error', 'Account Exists', 'An account with this email already exists.');
           return;
         }
-      }
 
-      // Local Storage Fallback
-      registeredUsers = loadRegisteredUsers();
-      if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-        showAuthNotification('error', 'Account Exists', 'An account with this email already exists.');
-        return;
-      }
+        const newUser = {
+          name,
+          email,
+          password,
+          role,
+          phone,
+          gender: "Not Specified",
+          address: "Dhaka, Bangladesh",
+          emergency: "Not Specified",
+          region: role === 'guide' ? "Bangladesh Regional Trails" : "",
+          exp: role === 'guide' ? "New Guide Applicant" : "",
+          languages: "Bangla, English",
+          license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
+          bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
+        };
 
-      const newUser = {
-        name,
-        email,
-        password,
-        role,
-        phone,
-        gender: "Not Specified",
-        address: "Dhaka, Bangladesh",
-        emergency: "Not Specified",
-        region: role === 'guide' ? "Bangladesh Regional Trails" : "",
-        exp: role === 'guide' ? "New Guide Applicant" : "",
-        languages: "Bangla, English",
-        license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
-        bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
-      };
+        registeredUsers.push(newUser);
+        saveRegisteredUsers(registeredUsers);
+        currentUser = newUser;
+        syncUserUI();
 
-      registeredUsers.push(newUser);
-      saveRegisteredUsers(registeredUsers);
-      currentUser = newUser;
-      syncUserUI();
+        const targetPage = role === 'guide' ? 'guide' : 'home';
+        showAuthNotification('success', `Welcome, ${name}!`, 'Account created. Entering RoamBD...');
 
-      const targetPage = role === 'guide' ? 'guide' : 'home';
-      showAuthNotification('success', `Welcome, ${name}!`, 'Account created. Entering RoamBD...');
-
-      setTimeout(() => {
-        document.getElementById('auth-alert').classList.add('hidden');
-        openPage(targetPage);
-      }, 750);
-    }
-
-    function handleSocialAuth(provider) {
-      currentUser = {
-        name: `Explorer (${provider})`,
-        email: `explorer.${provider.toLowerCase()}@roambd.org`,
-        role: "tourist",
-        phone: "+880 1700-000000",
-        gender: "Not Specified",
-        address: "Dhaka, Bangladesh",
-        emergency: "Not Specified",
-        bio: `Signed in via ${provider}.`
-      };
-      syncUserUI();
-      showAuthNotification('success', `Connected via ${provider}`, 'Entering RoamBD...');
-      setTimeout(() => {
-        document.getElementById('auth-alert').classList.add('hidden');
-        openPage('home');
-      }, 650);
-    }
-
-    async function signOut() {
-      if (supabaseClient) {
-        try { await supabaseClient.auth.signOut(); } catch (e) {}
-      }
-      currentUser = null;
-      document.getElementById('signin-email').value = '';
-      document.getElementById('signin-password').value = '';
-      switchAuthTab('signin');
-      openPage('auth');
-    }
-
-    function enterAsGuest() {
-      currentUser = { role: 'guest' };
-      syncUserUI();
-      openPage('home');
-      showToast('Browsing as Guest Visitor');
-    }
-
-    // ================= TRIP PLANNER INTERACTIVE LOGIC =================
-    let activePlannerDay = 1;
-
-    function renderPlannerStops(dayNum) {
-      const data = plannerDaysData[dayNum];
-      if (!data) return;
-      document.getElementById('planner-day-heading').innerText = data.heading;
-      document.getElementById('planner-day-sub').innerText = data.sub;
-
-      const list = document.getElementById('planner-stops-list');
-      list.innerHTML = data.stops.map(s => `
-        <div class="flex gap-4 items-start p-4 rounded-2xl bg-cream-50 border border-cream-300/80">
-          <span class="text-xs font-mono font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-lg flex-shrink-0">${s.time}</span>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${s.tag}</span>
-              <span class="text-[10px] font-bold text-emerald-700 bg-white px-2.5 py-0.5 rounded-full border border-cream-300">${s.status}</span>
-            </div>
-            <h4 class="font-extrabold text-slate-900 text-sm mt-1">${s.title}</h4>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed">${s.desc}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function selectPlannerDay(dayNum, btn) {
-      activePlannerDay = dayNum;
-      document.querySelectorAll('.planner-day-btn').forEach(b => {
-        b.className = "planner-day-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
-      });
-      if (btn) btn.className = "planner-day-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
-      renderPlannerStops(dayNum);
-    }
-
-    let activeGuideModalName = '';
-
-    function setGuideRating(stars) {
-      document.getElementById('guide-review-rating').value = stars;
-      document.querySelectorAll('.guide-star-btn').forEach(btn => {
-        const val = parseInt(btn.dataset.star, 10);
-        btn.innerHTML = val <= stars
-          ? '<i class="fa-solid fa-star text-amber-500"></i>'
-          : '<i class="fa-regular fa-star text-slate-300"></i>';
-      });
-    }
-
-    function renderGuideReviewsInModal(guideName) {
-      const listEl = document.getElementById('guide-modal-reviews-list');
-      const countEl = document.getElementById('guide-modal-review-count');
-      if (!listEl) return;
-
-      const matching = communityReviews.filter(r =>
-        (r.region || '').toLowerCase().includes(guideName.toLowerCase())
-      );
-
-      if (countEl) countEl.innerText = `${matching.length} review${matching.length === 1 ? '' : 's'}`;
-
-      if (matching.length === 0) {
-        listEl.innerHTML = `<p class="text-[11px] text-slate-400 italic">No reviews yet. Be the first traveler to share your experience with ${guideName}!</p>`;
-        return;
-      }
-
-      listEl.innerHTML = matching.map(r => `
-        <div class="bg-white p-2.5 rounded-xl border border-cream-200 text-[11px] space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-900">${r.name}</span>
-            <span class="text-amber-500 font-bold">${'★'.repeat(r.stars || 5)}</span>
-          </div>
-          <p class="text-slate-600 leading-snug">"${r.content}"</p>
-        </div>
-      `).join('');
-    }
-
-    function openGuideContactModal(name, region, phone, email, license, focusReview = false) {
-      activeGuideModalName = name;
-      document.getElementById('guide-modal-name').innerText = name;
-      document.getElementById('guide-modal-region').innerText = region;
-      document.getElementById('guide-modal-phone').innerText = phone;
-      document.getElementById('guide-modal-call-link').href = `tel:${phone.replace(/\s+/g, '')}`;
-      document.getElementById('guide-modal-email').innerText = email;
-      document.getElementById('guide-modal-license').innerText = `License ID: ${license}`;
-      setGuideRating(5);
-      renderGuideReviewsInModal(name);
-      openModal('guide-contact-modal');
-
-      if (focusReview) {
         setTimeout(() => {
-          const box = document.getElementById('guide-review-comment');
-          if (box) box.focus();
-        }, 120);
+          document.getElementById('auth-alert').classList.add('hidden');
+          openPage(targetPage);
+        }, 500);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnHtml;
+        }
       }
     }
 
