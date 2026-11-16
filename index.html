@@ -202,8 +202,14 @@
           <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
         </button>
 
-        <!-- Explorer Monogram & Name Pill -->
-        <button onclick="openModal('profile-modal')" class="flex items-center gap-2.5 pl-1.5 pr-3.5 py-1 rounded-full bg-white border border-cream-300 hover:border-forest-600 shadow-2xs transition" title="Open Explorer Profile">
+        <!-- Guest Sign In Button (Shown ONLY when browsing as Guest) -->
+        <button id="nav-guest-signin-btn" onclick="openPage('auth')" class="hidden items-center gap-1.5 px-4 py-1.5 rounded-full bg-forest-700 hover:bg-forest-800 text-white text-xs font-bold transition shadow-2xs">
+          <i class="fa-solid fa-right-to-bracket text-[11px]"></i>
+          <span>Sign In</span>
+        </button>
+
+        <!-- Explorer Monogram & Name Pill (Hidden when browsing as Guest) -->
+        <button id="nav-profile-pill" onclick="openModal('profile-modal')" class="flex items-center gap-2.5 pl-1.5 pr-3.5 py-1 rounded-full bg-white border border-cream-300 hover:border-forest-600 shadow-2xs transition" title="Open Explorer Profile">
           <span id="nav-user-initials" class="w-7 h-7 rounded-full bg-forest-700 text-white text-[11px] font-bold flex items-center justify-center">TA</span>
           <div class="text-left hidden sm:block leading-tight">
             <span id="nav-user-name" class="text-xs font-bold text-slate-900 block">Tanvir Ahmed</span>
@@ -231,14 +237,23 @@
           </button>
         </div>
 
-        <!-- Profile Mini Card -->
-        <div onclick="toggleMobileDrawer(false); openModal('profile-modal');" class="p-3.5 rounded-2xl bg-white border border-cream-300 flex items-center gap-3 cursor-pointer">
+        <!-- Profile Mini Card (Hidden for Guest) -->
+        <div id="drawer-profile-card" onclick="toggleMobileDrawer(false); openModal('profile-modal');" class="p-3.5 rounded-2xl bg-white border border-cream-300 flex items-center gap-3 cursor-pointer">
           <span id="drawer-user-initials" class="w-10 h-10 rounded-full bg-forest-700 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">TA</span>
           <div class="min-w-0 flex-1">
             <p id="drawer-user-name" class="text-xs font-bold text-slate-900 truncate">Tanvir Ahmed</p>
             <p id="drawer-user-role" class="text-[11px] text-forest-700 font-medium">Explorer</p>
           </div>
           <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </div>
+
+        <!-- Guest Sign In Card (Shown ONLY for Guest in Mobile Drawer) -->
+        <div id="drawer-guest-card" class="hidden p-3.5 rounded-2xl bg-forest-100 border border-forest-200 space-y-2">
+          <p class="text-xs font-bold text-forest-900">Browsing as Visitor</p>
+          <p class="text-[11px] text-slate-600">Sign in to save places, build trips, and manage your Explorer Profile.</p>
+          <button onclick="toggleMobileDrawer(false); openPage('auth');" class="w-full bg-forest-700 text-white font-bold py-2 rounded-full text-xs">
+            Sign In / Create Account
+          </button>
         </div>
 
         <!-- Dedicated Page Links -->
@@ -275,7 +290,7 @@
         <button onclick="toggleMobileDrawer(false); openModal('emergency-modal');" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-full text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-phone-volume"></i> Emergency 999
         </button>
-        <button onclick="toggleMobileDrawer(false); signOut();" class="w-full bg-white border border-cream-300 text-slate-700 font-bold py-2.5 rounded-full text-xs flex items-center justify-center gap-2">
+        <button id="drawer-signout-btn" onclick="toggleMobileDrawer(false); signOut();" class="w-full bg-white border border-cream-300 text-slate-700 font-bold py-2.5 rounded-full text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
         </button>
       </div>
@@ -447,7 +462,7 @@
 
       <div class="mt-6 pt-4 border-t border-cream-200 flex items-center justify-between text-xs">
         <span class="text-slate-400">Non-commercial portal</span>
-        <button onclick="openPage('home')" class="font-bold text-forest-700 hover:underline">Explore as Guest &rarr;</button>
+        <button onclick="enterAsGuest()" class="font-bold text-forest-700 hover:underline">Explore as Guest &rarr;</button>
       </div>
     </div>
   </div>
@@ -2298,7 +2313,7 @@
     }
 
     let registeredUsers = loadRegisteredUsers();
-    let currentUser = { ...BUILTIN_USERS[0] };
+    let currentUser = null;
     let currentLang = 'EN';
     let activePage = 'auth';
 
@@ -2600,7 +2615,49 @@
     }
 
     function syncUserUI() {
-      if (!currentUser) return;
+      const profilePill = document.getElementById('nav-profile-pill');
+      const guestSignInBtn = document.getElementById('nav-guest-signin-btn');
+      const drawerProfileCard = document.getElementById('drawer-profile-card');
+      const drawerGuestCard = document.getElementById('drawer-guest-card');
+      const drawerSignOutBtn = document.getElementById('drawer-signout-btn');
+      const heroFirst = document.getElementById('hero-user-firstname');
+
+      // Guest / Visitor Mode (No Explorer Profile shown)
+      if (!currentUser || currentUser.role === 'guest') {
+        if (profilePill) {
+          profilePill.classList.add('hidden');
+          profilePill.classList.remove('flex');
+        }
+        if (guestSignInBtn) {
+          guestSignInBtn.classList.remove('hidden');
+          guestSignInBtn.classList.add('inline-flex');
+        }
+        if (drawerProfileCard) {
+          drawerProfileCard.classList.add('hidden');
+          drawerProfileCard.classList.remove('flex');
+        }
+        if (drawerGuestCard) drawerGuestCard.classList.remove('hidden');
+        if (drawerSignOutBtn) drawerSignOutBtn.classList.add('hidden');
+        if (heroFirst) heroFirst.innerText = 'Traveler';
+        return;
+      }
+
+      // Signed-In User Mode (Show Explorer Profile)
+      if (profilePill) {
+        profilePill.classList.remove('hidden');
+        profilePill.classList.add('flex');
+      }
+      if (guestSignInBtn) {
+        guestSignInBtn.classList.add('hidden');
+        guestSignInBtn.classList.remove('inline-flex');
+      }
+      if (drawerProfileCard) {
+        drawerProfileCard.classList.remove('hidden');
+        drawerProfileCard.classList.add('flex');
+      }
+      if (drawerGuestCard) drawerGuestCard.classList.add('hidden');
+      if (drawerSignOutBtn) drawerSignOutBtn.classList.remove('hidden');
+
       const initials = getInitials(currentUser.name);
       const firstName = currentUser.name.split(' ')[0];
       const roleMap = { tourist: "Explorer", guide: "Verified Guide", admin: "System Admin" };
@@ -2613,7 +2670,6 @@
       document.getElementById('drawer-user-name').innerText = currentUser.name;
       document.getElementById('drawer-user-role').innerText = roleMap[currentUser.role] || "Explorer";
 
-      const heroFirst = document.getElementById('hero-user-firstname');
       if (heroFirst) heroFirst.innerText = firstName;
 
       document.getElementById('profile-card-initials').innerText = initials;
@@ -2860,10 +2916,18 @@
     }
 
     function signOut() {
+      currentUser = null;
       document.getElementById('signin-email').value = '';
       document.getElementById('signin-password').value = '';
       switchAuthTab('signin');
       openPage('auth');
+    }
+
+    function enterAsGuest() {
+      currentUser = { role: 'guest' };
+      syncUserUI();
+      openPage('home');
+      showToast('Browsing as Guest Visitor');
     }
 
     // ================= TRIP PLANNER INTERACTIVE LOGIC =================
