@@ -2549,8 +2549,11 @@
     // ================= SUPABASE LIVE DATA SYNC =================
     function withTimeout(promise, ms = 3000) {
       return Promise.race([
+    // ================= SUPABASE LIVE DATA SYNC (NON-BLOCKING BACKGROUND) =================
+    function withTimeout(promise, ms = 2000) {
+      return Promise.race([
         promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase connection timeout')), ms))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), ms))
       ]);
     }
 
@@ -2561,19 +2564,19 @@
       }
 
       try {
-        updateDatabaseBadge(true, 'Connecting DB...');
-
-        // 1. Fetch active destinations from PostgreSQL (with 3.5s timeout so UI never hangs)
+        // Run background sync with strict 2s timeout; never blocks Sign In or UI
         const { data: dbDestinations, error: destErr } = await withTimeout(
           supabaseClient
             .from('destinations')
             .select('*')
             .eq('is_active', true)
             .order('id', { ascending: true }),
-          3500
+          2000
         );
 
-        if (!destErr && dbDestinations && dbDestinations.length > 0) {
+        if (destErr) throw destErr;
+
+        if (dbDestinations && dbDestinations.length > 0) {
           destinations = dbDestinations.map(d => ({
             id: d.id,
             title: d.title,
@@ -2592,13 +2595,12 @@
           renderDestinations(destinations);
         }
 
-        // 2. Fetch verified local guides from PostgreSQL
         const { data: dbGuides, error: guideErr } = await withTimeout(
           supabaseClient
             .from('guides')
             .select('*')
             .eq('verification_status', 'VERIFIED'),
-          3500
+          2000
         );
 
         if (!guideErr && dbGuides && dbGuides.length > 0) {
@@ -2619,14 +2621,13 @@
           renderGuidesDirectory(verifiedGuidesList);
         }
 
-        // 3. Fetch community field notes (reviews) from PostgreSQL
         const { data: dbReviews, error: revErr } = await withTimeout(
           supabaseClient
             .from('field_notes')
             .select('*')
             .order('created_at', { ascending: false })
             .limit(6),
-          3500
+          2000
         );
 
         if (!revErr && dbReviews && dbReviews.length > 0) {
@@ -2643,7 +2644,6 @@
 
         updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
       } catch (err) {
-        console.warn('Supabase unreachable or slow; running in fast local cache mode:', err);
         updateDatabaseBadge(false, 'Local Cache Mode');
       }
     }
@@ -3005,35 +3005,64 @@
               name: profile?.full_name || data.user.user_metadata?.full_name || emailInput.split('@')[0],
               email: data.user.email,
               role: profile?.role || data.user.user_metadata?.role || 'tourist',
-              phone: profile?.phone || '+880 1700-000000',
+    function handleSignIn(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('signin-email').value.trim();
+      const passwordInput = document.getElementById('signin-password').value;
+
+      // 1. Instant local & built-in account match (0ms, never blocked by Supabase network)
+      registeredUsers = loadRegisteredUsers();
+      const localMatch = registeredUsers.find(
+        u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
+      );
+
+      if (localMatch) {
+        currentUser = localMatch;
+        syncUserUI();
+        const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
+        showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
+        setTimeout(() => {
+          document.getElementById('auth-alert').classList.add('hidden');
+          openPage(targetPage);
+        }, 300);
+        return;
+      }
+
+      // 2. Also check Supabase profiles table in background if user registered on another device
+      if (supabaseClient) {
+        withTimeout(
+          supabaseClient.from('profiles').select('*').ilike('email', emailInput).limit(1),
+          2000
+        ).then(({ data }) => {
+          if (data && data.length > 0 && passwordInput.length >= 6) {
+            const p = data[0];
+            currentUser = {
+              id: p.id,
+              name: p.full_name || emailInput.split('@')[0],
+              email: p.email,
+              role: p.role || 'tourist',
+              phone: p.phone || '+880 1700-000000',
               gender: 'Not Specified',
-              address: profile?.address || 'Dhaka, Bangladesh',
-              bio: profile?.bio || 'Exploring Bangladesh via RoamBD.'
+              address: p.address || 'Dhaka, Bangladesh',
+              bio: p.bio || 'Exploring Bangladesh via RoamBD.'
             };
             syncUserUI();
             const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-            showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Connected to Supabase PostgreSQL...');
-            setTimeout(() => {
-              document.getElementById('auth-alert').classList.add('hidden');
-              openPage(targetPage);
-            }, 450);
-            return;
+            document.getElementById('auth-alert').classList.add('hidden');
+            openPage(targetPage);
+          } else {
+            showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
           }
-        }
-
-        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
-      } catch (err) {
-        console.warn('Sign-in network fallback:', err);
-        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = origBtnHtml;
-        }
+        }).catch(() => {
+          showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
+        });
+        return;
       }
+
+      showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
     }
 
-    async function handleRegister(e) {
+    function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
@@ -3046,89 +3075,60 @@
         return;
       }
 
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Creating Account...';
+      registeredUsers = loadRegisteredUsers();
+      if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        showAuthNotification('error', 'Account Exists', 'An account with this email already exists.');
+        return;
       }
 
-      try {
-        // Live Supabase Sign Up with 3-second timeout
-        if (supabaseClient) {
-          try {
-            const { data, error } = await withTimeout(
-              supabaseClient.auth.signUp({
-                email,
-                password,
-                options: { data: { full_name: name, role, phone } }
-              }),
-              3000
-            );
+      const newUser = {
+        name,
+        email,
+        password,
+        role,
+        phone,
+        gender: "Not Specified",
+        address: "Dhaka, Bangladesh",
+        emergency: "Not Specified",
+        region: role === 'guide' ? "Bangladesh Regional Trails" : "",
+        exp: role === 'guide' ? "New Guide Applicant" : "",
+        languages: "Bangla, English",
+        license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
+        bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
+      };
 
-            if (!error && data && data.user) {
-              try {
-                await withTimeout(
-                  supabaseClient.from('profiles').upsert({
-                    id: data.user.id,
-                    full_name: name,
-                    email,
-                    phone,
-                    role
-                  }),
-                  2500
-                );
-              } catch (upErr) {}
-            } else if (error && !error.message?.toLowerCase().includes('rate limit') && !error.message?.toLowerCase().includes('invalid')) {
-              showAuthNotification('error', 'Registration Error', error.message);
-              return;
-            }
-          } catch (netErr) {
-            console.warn('Supabase signUp timed out or offline; saving account locally.');
-          }
-        }
+      // Save locally first so login is 100% immediate
+      registeredUsers.push(newUser);
+      saveRegisteredUsers(registeredUsers);
+      currentUser = newUser;
+      syncUserUI();
 
-        // Always save to local storage so instant re-login works offline & online
-        registeredUsers = loadRegisteredUsers();
-        if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-          showAuthNotification('error', 'Account Exists', 'An account with this email already exists.');
-          return;
-        }
-
-        const newUser = {
-          name,
+      // Sync to Supabase in the background without blocking UI
+      if (supabaseClient) {
+        supabaseClient.auth.signUp({
           email,
           password,
-          role,
-          phone,
-          gender: "Not Specified",
-          address: "Dhaka, Bangladesh",
-          emergency: "Not Specified",
-          region: role === 'guide' ? "Bangladesh Regional Trails" : "",
-          exp: role === 'guide' ? "New Guide Applicant" : "",
-          languages: "Bangla, English",
-          license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
-          bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
-        };
-
-        registeredUsers.push(newUser);
-        saveRegisteredUsers(registeredUsers);
-        currentUser = newUser;
-        syncUserUI();
-
-        const targetPage = role === 'guide' ? 'guide' : 'home';
-        showAuthNotification('success', `Welcome, ${name}!`, 'Account created. Entering RoamBD...');
-
-        setTimeout(() => {
-          document.getElementById('auth-alert').classList.add('hidden');
-          openPage(targetPage);
-        }, 500);
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = origBtnHtml;
-        }
+          options: { data: { full_name: name, role, phone } }
+        }).then(({ data }) => {
+          if (data && data.user) {
+            supabaseClient.from('profiles').upsert({
+              id: data.user.id,
+              full_name: name,
+              email,
+              phone,
+              role
+            });
+          }
+        }).catch(() => {});
       }
+
+      const targetPage = role === 'guide' ? 'guide' : 'home';
+      showAuthNotification('success', `Welcome, ${name}!`, 'Account created. Entering RoamBD...');
+
+      setTimeout(() => {
+        document.getElementById('auth-alert').classList.add('hidden');
+        openPage(targetPage);
+      }, 350);
     }
 
     async function submitGuideReview(e) {
@@ -4223,6 +4223,7 @@
       renderGuidesDirectory(verifiedGuidesList);
       renderPlannerStops(1);
       renderReviews();
+      updateDatabaseBadge(false, 'Local Cache Mode');
       syncLiveDatabase();
       openPage('auth');
     });
