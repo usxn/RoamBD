@@ -3798,35 +3798,6 @@
       showToast('Guide profile updated across public directory!');
     }
 
-    let guideAvailable = true;
-    function toggleGuideAvailability() {
-      guideAvailable = !guideAvailable;
-      document.getElementById('guide-availability-text').innerText = guideAvailable ? 'Available this week' : 'On field expedition';
-      showToast(guideAvailable ? 'Marked as Available' : 'Marked as On Expedition');
-    }
-
-    function saveGuideProfileDetails(e) {
-      e.preventDefault();
-      currentUser.name = document.getElementById('guide-edit-name').value.trim();
-      currentUser.region = document.getElementById('guide-edit-region').value.trim();
-      currentUser.gender = document.getElementById('guide-edit-gender').value;
-      currentUser.phone = document.getElementById('guide-edit-phone').value.trim();
-      currentUser.exp = document.getElementById('guide-edit-exp').value.trim();
-      currentUser.languages = document.getElementById('guide-edit-languages').value.trim();
-      currentUser.license = document.getElementById('guide-edit-license').value.trim();
-      currentUser.address = document.getElementById('guide-edit-address').value.trim();
-      currentUser.bio = document.getElementById('guide-edit-bio').value.trim();
-
-      const idx = registeredUsers.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (idx !== -1) {
-        registeredUsers[idx] = currentUser;
-        saveRegisteredUsers(registeredUsers);
-      }
-      populateGuideDashboard();
-      syncUserUI();
-      showToast('Guide profile updated!');
-    }
-
     function approveGuide(btn) {
       const row = btn.closest('tr');
       const name = row.children[0].innerText.trim();
