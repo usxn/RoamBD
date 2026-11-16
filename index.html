@@ -1659,6 +1659,34 @@
           <p id="guide-modal-email" class="font-semibold text-slate-800 mt-0.5"></p>
           <p id="guide-modal-license" class="font-mono text-[11px] text-forest-700 mt-1"></p>
         </div>
+
+        <!-- Traveler Reviews for this Guide -->
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-forest-800">Traveler Reviews</span>
+            <span id="guide-modal-review-count" class="text-[10px] font-bold text-slate-500">0 reviews</span>
+          </div>
+          <div id="guide-modal-reviews-list" class="space-y-2 max-h-36 overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+
+        <!-- Write a Review Form (Tourists / Logged-in Users) -->
+        <form id="guide-review-form" onsubmit="submitGuideReview(event)" class="p-3.5 bg-forest-100/70 border border-forest-200 rounded-2xl space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-forest-900">Write a Review for this Guide</span>
+            <div class="flex items-center gap-1 text-amber-500 text-sm" id="guide-star-selector">
+              <button type="button" onclick="setGuideRating(1)" class="guide-star-btn hover:scale-110 transition" data-star="1"><i class="fa-solid fa-star"></i></button>
+              <button type="button" onclick="setGuideRating(2)" class="guide-star-btn hover:scale-110 transition" data-star="2"><i class="fa-solid fa-star"></i></button>
+              <button type="button" onclick="setGuideRating(3)" class="guide-star-btn hover:scale-110 transition" data-star="3"><i class="fa-solid fa-star"></i></button>
+              <button type="button" onclick="setGuideRating(4)" class="guide-star-btn hover:scale-110 transition" data-star="4"><i class="fa-solid fa-star"></i></button>
+              <button type="button" onclick="setGuideRating(5)" class="guide-star-btn hover:scale-110 transition" data-star="5"><i class="fa-solid fa-star"></i></button>
+            </div>
+          </div>
+          <input type="hidden" id="guide-review-rating" value="5">
+          <textarea id="guide-review-comment" rows="2" required placeholder="Share your trail experience, safety tips, or hospitality feedback..." class="w-full px-3 py-2 rounded-xl bg-white border border-cream-300 text-xs font-medium focus:outline-none focus:border-forest-700"></textarea>
+          <button type="submit" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-2 rounded-full text-xs transition">
+            Submit Guide Review
+          </button>
+        </form>
       </div>
 
       <button onclick="closeModal('guide-contact-modal')" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-full text-xs">Done</button>
@@ -2902,30 +2930,119 @@
       document.getElementById('planner-day-sub').innerText = data.sub;
 
       const list = document.getElementById('planner-stops-list');
-      list.innerHTML = data.stops.map(s => `
-        <div class="flex gap-4 items-start p-4 rounded-2xl bg-cream-50 border border-cream-200">
-          <div class="w-14 text-right flex-shrink-0 pt-0.5">
-            <span class="text-xs font-extrabold text-forest-800 font-mono">${s.time}</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${s.tag}</span>
-              <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2 py-0.5 rounded-full">${s.status}</span>
+          <div class="px-5 py-3.5 bg-cream-50 border-t border-cream-200 flex items-center justify-between gap-2">
+            <span class="text-[11px] font-bold text-forest-700 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Available
+            </span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}', true)" class="bg-white hover:bg-cream-200 text-forest-900 border border-cream-300 font-bold px-3 py-2 rounded-full text-xs transition" title="Write a Review">
+                <i class="fa-regular fa-star text-amber-500 mr-1"></i> Review
+              </button>
+              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}', false)" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-3.5 py-2 rounded-full text-xs transition">
+                Connect &rarr;
+              </button>
             </div>
-            <h4 class="font-extrabold text-slate-900 text-sm mt-0.5">${s.title}</h4>
-            <p class="text-xs text-slate-600 mt-1">${s.desc}</p>
           </div>
         </div>
       `).join('');
     }
+    let activeGuideModalName = '';
 
-    function selectPlannerDay(dayNum, btn) {
-      activePlannerDay = dayNum;
-      document.querySelectorAll('.planner-day-btn').forEach(b => {
-        b.className = "planner-day-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
+    function setGuideRating(stars) {
+      document.getElementById('guide-review-rating').value = stars;
+      document.querySelectorAll('.guide-star-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.star, 10);
+        btn.innerHTML = val <= stars
+          ? '<i class="fa-solid fa-star text-amber-500"></i>'
+          : '<i class="fa-regular fa-star text-slate-300"></i>';
       });
-      if (btn) btn.className = "planner-day-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
-      renderPlannerStops(dayNum);
+    }
+
+    function renderGuideReviewsInModal(guideName) {
+      const listEl = document.getElementById('guide-modal-reviews-list');
+      const countEl = document.getElementById('guide-modal-review-count');
+      if (!listEl) return;
+
+      const matching = communityReviews.filter(r =>
+        (r.region || '').toLowerCase().includes(guideName.toLowerCase())
+      );
+
+      if (countEl) countEl.innerText = `${matching.length} review${matching.length === 1 ? '' : 's'}`;
+
+      if (matching.length === 0) {
+        listEl.innerHTML = `<p class="text-[11px] text-slate-400 italic">No reviews yet. Be the first traveler to share your experience with ${guideName}!</p>`;
+        return;
+      }
+
+      listEl.innerHTML = matching.map(r => `
+        <div class="bg-white p-2.5 rounded-xl border border-cream-200 text-[11px] space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900">${r.name}</span>
+            <span class="text-amber-500 font-bold">${'★'.repeat(r.stars || 5)}</span>
+          </div>
+          <p class="text-slate-600 leading-snug">"${r.content}"</p>
+        </div>
+      `).join('');
+    }
+
+    function openGuideContactModal(name, region, phone, email, license, focusReview = false) {
+      activeGuideModalName = name;
+      document.getElementById('guide-modal-name').innerText = name;
+      document.getElementById('guide-modal-region').innerText = region;
+      document.getElementById('guide-modal-phone').innerText = phone;
+      document.getElementById('guide-modal-call-link').href = `tel:${phone.replace(/\s+/g, '')}`;
+      document.getElementById('guide-modal-email').innerText = email;
+      document.getElementById('guide-modal-license').innerText = `License ID: ${license}`;
+      setGuideRating(5);
+      renderGuideReviewsInModal(name);
+      openModal('guide-contact-modal');
+
+      if (focusReview) {
+        setTimeout(() => {
+          const box = document.getElementById('guide-review-comment');
+          if (box) box.focus();
+        }, 120);
+      }
+    }
+
+    async function submitGuideReview(e) {
+      e.preventDefault();
+      if (!currentUser || currentUser.role === 'guest') {
+        closeModal('guide-contact-modal');
+        showToast('Please sign in as a Tourist to post a guide review.');
+        openPage('auth');
+        return;
+      }
+
+      const rating = parseInt(document.getElementById('guide-review-rating').value || '5', 10);
+      const comment = document.getElementById('guide-review-comment').value.trim();
+      if (!comment) return;
+
+      const authorName = currentUser.name || 'Verified Explorer';
+      const regionTag = `Guide: ${activeGuideModalName}`;
+
+      if (supabaseClient) {
+        await supabaseClient.from('field_notes').insert({
+          author_name: authorName,
+          author_role: `${rating}★ Tourist Review`,
+          region: regionTag,
+          content: comment
+        });
+      }
+
+      communityReviews.unshift({
+        name: authorName,
+        role: 'Verified Tourist',
+        date: 'Just now',
+        stars: rating,
+        region: regionTag,
+        content: comment
+      });
+
+      document.getElementById('guide-review-comment').value = '';
+      renderGuideReviewsInModal(activeGuideModalName);
+      renderReviews();
+      showToast(`Your ${rating}★ review for ${activeGuideModalName} has been published!`);
     }
 
     function toggleAddStopDrawer() {
