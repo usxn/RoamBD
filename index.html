@@ -2930,22 +2930,30 @@
       document.getElementById('planner-day-sub').innerText = data.sub;
 
       const list = document.getElementById('planner-stops-list');
-          <div class="px-5 py-3.5 bg-cream-50 border-t border-cream-200 flex items-center justify-between gap-2">
-            <span class="text-[11px] font-bold text-forest-700 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Available
-            </span>
-            <div class="flex items-center gap-1.5">
-              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}', true)" class="bg-white hover:bg-cream-200 text-forest-900 border border-cream-300 font-bold px-3 py-2 rounded-full text-xs transition" title="Write a Review">
-                <i class="fa-regular fa-star text-amber-500 mr-1"></i> Review
-              </button>
-              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}', false)" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-3.5 py-2 rounded-full text-xs transition">
-                Connect &rarr;
-              </button>
+      list.innerHTML = data.stops.map(s => `
+        <div class="flex gap-4 items-start p-4 rounded-2xl bg-cream-50 border border-cream-300/80">
+          <span class="text-xs font-mono font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-lg flex-shrink-0">${s.time}</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${s.tag}</span>
+              <span class="text-[10px] font-bold text-emerald-700 bg-white px-2.5 py-0.5 rounded-full border border-cream-300">${s.status}</span>
             </div>
+            <h4 class="font-extrabold text-slate-900 text-sm mt-1">${s.title}</h4>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">${s.desc}</p>
           </div>
         </div>
       `).join('');
     }
+
+    function selectPlannerDay(dayNum, btn) {
+      activePlannerDay = dayNum;
+      document.querySelectorAll('.planner-day-btn').forEach(b => {
+        b.className = "planner-day-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
+      });
+      if (btn) btn.className = "planner-day-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
+      renderPlannerStops(dayNum);
+    }
+
     let activeGuideModalName = '';
 
     function setGuideRating(stars) {
