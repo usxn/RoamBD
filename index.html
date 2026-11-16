@@ -161,6 +161,19 @@
     </div>
   </div>
 
+  <!-- ================= LIVE ADMIN SAFETY ADVISORY BANNER ================= -->
+  <div id="global-safety-banner" class="hidden bg-amber-50 border-b border-amber-300 text-amber-950 px-4 sm:px-8 py-2.5 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider flex-shrink-0">Travel Advisory</span>
+        <p class="truncate"><strong id="banner-advisory-region">Region</strong>: <span id="banner-advisory-msg">Advisory text</span></p>
+      </div>
+      <button onclick="document.getElementById('global-safety-banner').classList.add('hidden')" class="text-amber-800 hover:text-amber-950 font-bold text-xs flex-shrink-0">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
   <!-- ================= EDITORIAL TOP NAVIGATION BAR ================= -->
   <nav id="main-navbar" class="hidden bg-cream-100/95 backdrop-blur-md border-b border-cream-300/80 px-4 sm:px-8 py-3.5 sticky top-[31px] z-40">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -1365,13 +1378,14 @@
       </div>
       <div class="flex flex-wrap gap-2">
         <button onclick="openModal('add-destination-modal')" class="bg-forest-700 hover:bg-forest-800 text-white px-4 py-2 rounded-full text-xs font-bold transition">+ Add Destination</button>
+        <button onclick="exportAdminAuditCSV()" class="bg-white hover:bg-cream-50 text-forest-900 border border-cream-300 px-4 py-2 rounded-full text-xs font-bold transition"><i class="fa-solid fa-file-csv mr-1 text-forest-700"></i> Export CSV</button>
         <button onclick="openPage('home')" class="bg-cream-200 text-slate-800 px-4 py-2 rounded-full text-xs font-bold transition">Public Portal</button>
         <button onclick="signOut()" class="bg-red-50 text-red-700 border border-red-200 px-4 py-2 rounded-full text-xs font-bold transition">Sign Out</button>
       </div>
     </div>
 
     <!-- KPI Metrics -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
         <span class="text-[11px] font-bold text-slate-400">Active Spots</span>
         <p id="admin-dest-count" class="text-2xl font-extrabold text-slate-900 mt-1">9</p>
@@ -1381,10 +1395,14 @@
         <p id="admin-guides-count" class="text-2xl font-extrabold text-forest-700 mt-1">6</p>
       </div>
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
+        <span class="text-[11px] font-bold text-slate-400">Registered Users</span>
+        <p id="admin-users-count" class="text-2xl font-extrabold text-slate-900 mt-1">3</p>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300">
         <span class="text-[11px] font-bold text-slate-400">Safety Hotlines</span>
         <p id="admin-safety-status" class="text-2xl font-extrabold text-forest-700 mt-1">Verified</p>
       </div>
-      <div class="bg-white p-5 rounded-3xl border border-cream-300">
+      <div class="col-span-2 lg:col-span-1 bg-white p-5 rounded-3xl border border-cream-300">
         <span class="text-[11px] font-bold text-slate-400">Field Notes &amp; Reviews</span>
         <p id="admin-reviews-count" class="text-2xl font-extrabold text-slate-900 mt-1">3</p>
       </div>
@@ -1392,10 +1410,12 @@
 
     <!-- Admin Governance Sub-Tabs -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-      <button onclick="switchAdminTab('guides', this)" class="admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">1. Guide Verification Queue</button>
-      <button onclick="switchAdminTab('destinations', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">2. Manage Destinations</button>
-      <button onclick="switchAdminTab('reviews', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">3. Moderate Reviews</button>
-      <button onclick="switchAdminTab('safety', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">4. Safety Advisories &amp; 999 Audit</button>
+      <button onclick="switchAdminTab('guides', this)" class="admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">1. Guide Verification</button>
+      <button onclick="switchAdminTab('destinations', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">2. Destinations CRUD</button>
+      <button onclick="switchAdminTab('users', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">3. Users &amp; Roles</button>
+      <button onclick="switchAdminTab('reviews', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">4. Moderate Reviews</button>
+      <button onclick="switchAdminTab('safety', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">5. Safety &amp; 999 Audit</button>
+      <button onclick="switchAdminTab('logs', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">6. Governance Log</button>
     </div>
 
     <!-- PANEL 1: TOUR GUIDE VERIFICATION QUEUE -->
@@ -1487,17 +1507,46 @@
       <div id="admin-reviews-list" class="divide-y divide-cream-200"></div>
     </div>
 
+    <!-- PANEL 3B: REGISTERED USERS & ROLE DIRECTORY (SUPABASE PROFILES) -->
+    <div id="admin-panel-users" class="admin-panel hidden bg-white rounded-3xl border border-cream-300 overflow-hidden">
+      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
+        <h3 class="font-extrabold text-slate-900 text-sm">Registered Users &amp; Role Access Control (Supabase Profiles)</h3>
+        <button onclick="fetchAdminProfilesFromSupabase()" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3.5 py-1.5 rounded-full text-xs font-bold">
+          <i class="fa-solid fa-rotate mr-1"></i> Sync Profiles
+        </button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-cream-100 text-slate-500 font-bold border-b border-cream-200">
+            <tr>
+              <th class="px-6 py-3.5">Full Name</th>
+              <th class="px-6 py-3.5">Email</th>
+              <th class="px-6 py-3.5">District</th>
+              <th class="px-6 py-3.5">Role</th>
+              <th class="px-6 py-3.5 text-right">Role Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-tbody" class="divide-y divide-cream-200"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- PANEL 4: SAFETY ADVISORIES & EMERGENCY AUDIT (BR-09) -->
     <div id="admin-panel-safety" class="admin-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-6 bg-white rounded-3xl border border-cream-300 p-6 space-y-4 text-xs">
         <h3 class="font-extrabold text-slate-900 text-base">Broadcast Regional Travel Safety Advisory</h3>
-        <p class="text-slate-500">Publish an urgent weather, transit, or tide advisory banner visible to travelers on the Discovery Portal.</p>
+        <p class="text-slate-500">Publish an urgent weather, transit, or tide advisory banner visible across the top of RoamBD for all travelers.</p>
         <div class="space-y-3">
           <input id="admin-advisory-region" type="text" placeholder="Target Region (e.g. Saint Martin's & Teknaf Jetty)" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
           <textarea id="admin-advisory-msg" rows="2" placeholder="Advisory message (e.g. Signal No. 3 cautionary maritime weather; tourist ships suspended today.)" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-medium"></textarea>
-          <button onclick="publishSafetyAdvisory()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-full text-xs transition">
-            <i class="fa-solid fa-bullhorn mr-1.5"></i> Publish Live Safety Alert
-          </button>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="publishSafetyAdvisory()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-full text-xs transition">
+              <i class="fa-solid fa-bullhorn mr-1.5"></i> Publish Live Banner
+            </button>
+            <button onclick="clearSafetyAdvisory()" class="bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold px-4 py-2.5 rounded-full text-xs transition">
+              Clear Banner
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1584,6 +1633,17 @@
       </div>
     </div>
 
+    <!-- PANEL 6: GOVERNANCE AUDIT LOG -->
+    <div id="admin-panel-logs" class="admin-panel hidden bg-white rounded-3xl border border-cream-300 overflow-hidden">
+      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
+        <h3 class="font-extrabold text-slate-900 text-sm">System Governance &amp; Moderation Audit Trail</h3>
+        <span class="text-[11px] font-semibold text-slate-500">Live session activity</span>
+      </div>
+      <div id="admin-audit-log-list" class="divide-y divide-cream-200 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- ================= EDITORIAL FOOTER ================= -->
     <div class="max-w-7xl mx-auto mt-8 pt-6 border-t border-cream-300 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
       <p>© 2026 RoamBD — Integrated Smart Tourism &amp; Travel Assistance Platform for Bangladesh. All rights reserved.</p>
       <div class="flex items-center gap-4 font-semibold">
@@ -2020,6 +2080,34 @@
         <textarea id="new-spot-desc" rows="2" placeholder="Description..." class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5"></textarea>
         <button onclick="saveNewDestination()" class="w-full bg-forest-700 text-white font-bold py-3 rounded-full text-xs">Publish Destination</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 9B. EDIT DESTINATION MODAL (ADMIN) -->
+  <div id="edit-destination-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
+      <button onclick="closeModal('edit-destination-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-purple-700">ADMIN DIRECTORY EDITOR</span>
+      <h3 class="text-xl font-extrabold text-slate-900 mt-0.5 mb-4">Edit Destination Entry</h3>
+      <form onsubmit="saveEditedDestination(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-spot-index">
+        <input id="edit-spot-name" type="text" required placeholder="Destination Title" class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5 font-semibold">
+        <div class="grid grid-cols-2 gap-2.5">
+          <input id="edit-spot-district" type="text" required placeholder="District" class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5 font-semibold">
+          <input id="edit-spot-rating" type="number" step="0.1" min="1" max="5" required placeholder="Rating (e.g. 4.9)" class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5 font-semibold">
+        </div>
+        <select id="edit-spot-category" class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5 font-semibold">
+          <option value="historical">Heritage</option>
+          <option value="beach">Beaches</option>
+          <option value="forest">Wildlife &amp; Forests</option>
+          <option value="hill">Hills</option>
+          <option value="tea">Nature &amp; Tea</option>
+        </select>
+        <textarea id="edit-spot-desc" rows="3" placeholder="Description..." class="w-full bg-cream-50 border border-cream-300 rounded-xl p-2.5"></textarea>
+        <button type="submit" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-3 rounded-full text-xs">Save Changes to Database</button>
+      </form>
     </div>
   </div>
 
@@ -2539,6 +2627,11 @@
         updateRolePortalsUI();
         updateActiveNavIndicators(pageName);
         if (pageName === 'guide') populateGuideDashboard();
+        if (pageName === 'admin') {
+          updateAdminCounters();
+          renderAdminAuditLog();
+          fetchAdminProfilesFromSupabase();
+        }
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -3525,11 +3618,38 @@
       });
       renderGuidesDirectory(verifiedGuidesList);
       updateAdminCounters();
+      logAdminAction(`Verified and published local guide "${name}" (${license}).`);
       showToast(`${name} verified & published to Local Guides!`);
     }
-    function rejectGuide(btn) { btn.closest('tr').remove(); }
+    function rejectGuide(btn) {
+      const name = btn.closest('tr')?.children[0]?.innerText?.trim() || 'Applicant';
+      btn.closest('tr').remove();
+      logAdminAction(`Declined guide application for "${name}".`);
+    }
     function approveGuideCard(btn) { btn.parentElement.innerHTML = '<span class="text-xs text-forest-700 font-bold">Verified</span>'; }
     function rejectGuideCard(btn) { btn.closest('div.p-4').remove(); }
+
+    const adminAuditLogs = [
+      { time: "10:15 PM", action: "System Administrator signed into Governance Desk." },
+      { time: "09:40 PM", action: "Verified 24/7 Tourist Police & 999 National Helpline records (BR-09)." }
+    ];
+
+    function logAdminAction(actionText) {
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      adminAuditLogs.unshift({ time: now, action: actionText });
+      renderAdminAuditLog();
+    }
+
+    function renderAdminAuditLog() {
+      const container = document.getElementById('admin-audit-log-list');
+      if (!container) return;
+      container.innerHTML = adminAuditLogs.map(item => `
+        <div class="px-6 py-3.5 flex items-center justify-between gap-4">
+          <span class="font-medium text-slate-800"><i class="fa-solid fa-circle-check text-forest-700 mr-2"></i>${item.action}</span>
+          <span class="font-mono text-[11px] text-slate-400 flex-shrink-0">${item.time}</span>
+        </div>
+      `).join('');
+    }
 
     function switchAdminTab(tabName, btn) {
       document.querySelectorAll('.admin-tab-btn').forEach(b => {
@@ -3543,14 +3663,18 @@
 
       if (tabName === 'destinations') renderAdminDestinationsTable();
       if (tabName === 'reviews') renderAdminReviewsList();
+      if (tabName === 'users') fetchAdminProfilesFromSupabase();
+      if (tabName === 'logs') renderAdminAuditLog();
     }
 
     function updateAdminCounters() {
       const destEl = document.getElementById('admin-dest-count');
       const guidesEl = document.getElementById('admin-guides-count');
+      const usersEl = document.getElementById('admin-users-count');
       const revEl = document.getElementById('admin-reviews-count');
       if (destEl) destEl.innerText = destinations.length;
       if (guidesEl) guidesEl.innerText = verifiedGuidesList.length;
+      if (usersEl) usersEl.innerText = registeredUsers.length;
       if (revEl) revEl.innerText = communityReviews.length;
     }
 
@@ -3564,11 +3688,119 @@
           <td class="px-6 py-3.5 uppercase text-[10px] font-bold text-forest-700">${d.category}</td>
           <td class="px-6 py-3.5 font-bold text-amber-600">★ ${d.rating}</td>
           <td class="px-6 py-3.5 text-right space-x-2">
-            <button onclick="openDestinationModal(${d.id})" class="text-forest-700 font-bold hover:underline">Preview</button>
+            <button onclick="openEditDestinationModal(${idx})" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3 py-1 rounded-full font-bold">Edit</button>
             <button onclick="deleteDestinationAdmin(${idx}, ${d.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">Remove</button>
           </td>
         </tr>
       `).join('');
+    }
+
+    function openEditDestinationModal(idx) {
+      const d = destinations[idx];
+      if (!d) return;
+      document.getElementById('edit-spot-index').value = idx;
+      document.getElementById('edit-spot-name').value = d.title;
+      document.getElementById('edit-spot-district').value = d.district;
+      document.getElementById('edit-spot-rating').value = d.rating;
+      document.getElementById('edit-spot-category').value = d.category;
+      document.getElementById('edit-spot-desc').value = d.description;
+      openModal('edit-destination-modal');
+    }
+
+    async function saveEditedDestination(e) {
+      e.preventDefault();
+      const idx = parseInt(document.getElementById('edit-spot-index').value, 10);
+      const d = destinations[idx];
+      if (!d) return;
+
+      d.title = document.getElementById('edit-spot-name').value.trim();
+      d.district = document.getElementById('edit-spot-district').value.trim();
+      d.rating = document.getElementById('edit-spot-rating').value.trim();
+      d.category = document.getElementById('edit-spot-category').value;
+      d.badge = d.category.toUpperCase();
+      d.description = document.getElementById('edit-spot-desc').value.trim();
+
+      if (supabaseClient && typeof d.id === 'number' && d.id < 1000000) {
+        await supabaseClient.from('destinations').update({
+          title: d.title,
+          district: d.district,
+          rating: parseFloat(d.rating) || 4.8,
+          category: d.category,
+          description: d.description
+        }).eq('id', d.id);
+      }
+
+      renderDestinations(destinations);
+      renderAdminDestinationsTable();
+      closeModal('edit-destination-modal');
+      logAdminAction(`Updated destination "${d.title}" (${d.district}).`);
+      showToast(`"${d.title}" updated in PostgreSQL!`);
+    }
+
+    async function fetchAdminProfilesFromSupabase() {
+      let displayUsers = [...registeredUsers];
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('profiles').select('*');
+        if (!error && data && data.length > 0) {
+          data.forEach(p => {
+            if (!displayUsers.some(u => u.email.toLowerCase() === (p.email || '').toLowerCase())) {
+              displayUsers.push({
+                id: p.id,
+                name: p.full_name,
+                email: p.email,
+                address: p.address || 'Bangladesh',
+                role: p.role || 'tourist'
+              });
+            }
+          });
+        }
+      }
+      const usersEl = document.getElementById('admin-users-count');
+      if (usersEl) usersEl.innerText = displayUsers.length;
+
+      const tbody = document.getElementById('admin-users-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = displayUsers.map(u => `
+        <tr>
+          <td class="px-6 py-3.5 font-bold text-slate-900">${u.name}</td>
+          <td class="px-6 py-3.5 text-slate-600 font-mono text-[11px]">${u.email}</td>
+          <td class="px-6 py-3.5 text-slate-600">${u.address || 'Dhaka'}</td>
+          <td class="px-6 py-3.5"><span class="px-2.5 py-0.5 rounded-full font-bold uppercase text-[10px] ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : u.role === 'guide' ? 'bg-amber-100 text-amber-800' : 'bg-forest-100 text-forest-800'}">${u.role}</span></td>
+          <td class="px-6 py-3.5 text-right">
+            ${u.role !== 'admin' ? `<button onclick="promoteUserRole('${u.email}', '${u.role === 'guide' ? 'tourist' : 'guide'}')" class="text-forest-700 font-bold hover:underline">Switch to ${u.role === 'guide' ? 'Tourist' : 'Guide'}</button>` : '<span class="text-slate-400">Protected</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function promoteUserRole(email, newRole) {
+      const target = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (target) {
+        target.role = newRole;
+        saveRegisteredUsers(registeredUsers);
+      }
+      if (supabaseClient) {
+        await supabaseClient.from('profiles').update({ role: newRole }).eq('email', email);
+      }
+      fetchAdminProfilesFromSupabase();
+      logAdminAction(`Changed role of ${email} to ${newRole.toUpperCase()}.`);
+      showToast(`Updated ${email} to ${newRole}!`);
+    }
+
+    function exportAdminAuditCSV() {
+      const rows = [
+        ['Destination', 'District', 'Category', 'Rating'],
+        ...destinations.map(d => [d.title, d.district, d.category, d.rating])
+      ];
+      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", "roambd_directory_report.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      logAdminAction("Exported RoamBD Directory CSV Audit Report.");
+      showToast("Directory CSV Report downloaded!");
     }
 
     async function deleteDestinationAdmin(index, id) {
@@ -3581,6 +3813,7 @@
       renderDestinations(destinations);
       renderAdminDestinationsTable();
       updateAdminCounters();
+      logAdminAction(`Archived destination "${removed.title}".`);
       showToast(`"${removed.title}" archived from directory.`);
     }
 
@@ -3609,10 +3842,12 @@
     }
 
     function deleteReviewAdmin(index) {
+      const removed = communityReviews[index];
       communityReviews.splice(index, 1);
       renderReviews();
       renderAdminReviewsList();
       updateAdminCounters();
+      logAdminAction(`Removed review by "${removed?.name || 'User'}".`);
       showToast('Review removed by System Admin.');
     }
 
@@ -3623,19 +3858,27 @@
         showToast('Enter both target region and advisory message.');
         return;
       }
-      showToast(`Safety Alert Broadcasted for ${region}: "${msg}"`);
+      document.getElementById('banner-advisory-region').innerText = region;
+      document.getElementById('banner-advisory-msg').innerText = msg;
+      document.getElementById('global-safety-banner').classList.remove('hidden');
+      logAdminAction(`Published live safety banner for ${region}.`);
+      showToast(`Live safety banner published for ${region}!`);
       document.getElementById('admin-advisory-region').value = '';
       document.getElementById('admin-advisory-msg').value = '';
+    }
+
+    function clearSafetyAdvisory() {
+      document.getElementById('global-safety-banner').classList.add('hidden');
+      logAdminAction("Cleared active regional safety banner.");
+      showToast("Safety banner cleared.");
     }
 
     function verifyAllHotlinesToday() {
       const today = new Date().toISOString().split('T')[0];
       document.querySelectorAll('.hotline-verified-date').forEach(el => el.innerText = today);
+      logAdminAction(`Stamped all 24/7 emergency hotlines Verified (${today}).`);
       showToast(`All emergency hotlines stamped Verified (${today}) per BR-09!`);
     }
-    function rejectGuide(btn) { btn.closest('tr').remove(); }
-    function approveGuideCard(btn) { btn.parentElement.innerHTML = '<span class="text-xs text-forest-700 font-bold">Verified</span>'; }
-    function rejectGuideCard(btn) { btn.closest('div.p-4').remove(); }
 
     async function saveNewDestination() {
       const name = document.getElementById('new-spot-name').value;
