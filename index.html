@@ -1103,87 +1103,6 @@
             <span id="map-radius-label" class="text-[11px] text-slate-500 font-medium">Within 10 km</span>
           </div>
 
-            <div id="planner-checklist" class="space-y-2 text-xs">
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Destination &amp; route selected</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Sayeman Heritage Resort contact saved</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Train &amp; transit schedule verified</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" checked onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Tourist Police 999 saved offline</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Connect with a local coastal guide</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cream-50 border border-cream-200 cursor-pointer">
-                <input type="checkbox" onchange="updateChecklistCount()" class="rounded text-forest-700 w-4 h-4">
-                <span class="font-medium text-slate-700">Pack sun protection &amp; walking shoes</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Make Room for Discovery (RoamAI Card) -->
-          <div class="bg-forest-100 border border-forest-200 rounded-3xl p-6 space-y-3">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700">SMART ASSISTANT</span>
-            <h4 class="text-lg font-extrabold text-forest-900">Make room for discovery</h4>
-            <p class="text-xs text-slate-600 leading-relaxed">RoamAI can suggest stops that fit your pace, weather window, and cultural interests.</p>
-            <button onclick="openModal('ai-modal')" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-2.5 rounded-full text-xs transition">
-              Ask RoamAI
-            </button>
-          </div>
-
-          <!-- Go Beyond the Guidebook Card -->
-          <div class="bg-forest-900 text-white rounded-3xl p-6 space-y-3">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-300">GO BEYOND THE GUIDEBOOK</span>
-            <h4 class="text-lg font-extrabold">See the coast with a local</h4>
-            <p class="text-xs text-cream-200/80">Meet verified guides who know the quiet beaches and the best local tables.</p>
-            <button onclick="openPage('guides')" class="bg-white text-forest-900 font-bold px-4 py-2 rounded-full text-xs transition inline-flex items-center gap-1.5">
-              <span>Find a local guide</span>
-              <span>&rarr;</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- PAGE 4: DEDICATED NEARBY MAP & SAFETY PAGE (MATCHING PAGE 4)          -->
-  <!-- ===================================================================== -->
-  <div id="page-map" class="app-page hidden">
-    <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-6">
-      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">GOOD THINGS ARE CLOSER THAN YOU THINK</span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Discover around you</h1>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">Find the places, flavors and essential safety stops near your next adventure.</p>
-        </div>
-
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-          <button onclick="filterMapPins('all', this)" class="map-filter-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap flex-shrink-0">All places</button>
-          <button onclick="filterMapPins('attraction', this)" class="map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0">Beaches &amp; Nature</button>
-          <button onclick="filterMapPins('stay', this)" class="map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0">Stays &amp; Food</button>
-          <button onclick="filterMapPins('emergency', this)" class="map-filter-btn bg-white border border-cream-300 text-red-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-red-400 transition whitespace-nowrap flex-shrink-0">Essentials &amp; Police</button>
-        </div>
-      </div>
-
-      <!-- Split Nearby List + Light Cartographic Map -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-4 space-y-3">
-          <div class="flex items-center justify-between px-1">
-            <span class="text-sm font-extrabold text-slate-900">Around Cox's Bazar</span>
-            <span class="text-[11px] text-slate-500 font-medium">Within 10 km</span>
-          </div>
-
           <div onclick="selectMapPin('Sugandha Beach', 'BEACH • 0.8 km away', 'Wide sands, sea breeze & sunset views. Tourist Police watchtower active.')" class="bg-white border-2 border-forest-700 rounded-2xl p-3.5 flex items-center gap-3.5 cursor-pointer shadow-2xs">
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&q=80" alt="Sugandha Beach" class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
             <div class="min-w-0 flex-1">
@@ -1227,7 +1146,7 @@
 
           <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-cream-300 text-[11px] font-bold text-slate-800 shadow-2xs flex items-center gap-1.5">
             <i class="fa-solid fa-location-crosshairs text-forest-700"></i>
-            <span>Around Cox's Bazar • 10 km</span>
+            <span id="map-badge-overlay">Around Cox's Bazar • 10 km</span>
           </div>
 
           <div id="map-pins-container" class="absolute inset-0">
@@ -1585,199 +1504,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- 3. GUIDE CONTACT MODAL -->
-  <div id="guide-contact-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
-      <button onclick="closeModal('guide-contact-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <span class="text-[10px] font-bold uppercase tracking-widest bg-forest-100 text-forest-800 px-3 py-1 rounded-full">
-        <i class="fa-solid fa-circle-check mr-1"></i> Verified Local Guide
-      </span>
-      <h3 id="guide-modal-name" class="text-xl font-extrabold text-slate-900 mt-2">Guide Name</h3>
-      <p id="guide-modal-region" class="text-xs text-slate-500">Region</p>
-
-      <div class="my-4 space-y-2.5 text-xs">
-        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="text-[10px] font-bold text-slate-400 block">Direct Phone</span>
-            <span id="guide-modal-phone" class="font-bold text-slate-900 text-sm">+880</span>
-          </div>
-          <a id="guide-modal-call-link" href="tel:+880" class="bg-forest-700 text-white px-4 py-2 rounded-full font-bold text-xs">Call</a>
-        </div>
-        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl">
-          <span class="text-[10px] font-bold text-slate-400 block">Email &amp; BPC License</span>
-          <p id="guide-modal-email" class="font-semibold text-slate-800 mt-0.5"></p>
-          <p id="guide-modal-license" class="font-mono text-[11px] text-forest-700 mt-1"></p>
-        </div>
-      </div>
-
-      <button onclick="closeModal('guide-contact-modal')" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-full text-xs">Done</button>
-    </div>
-  </div>
-
-  <!-- 4. STAY DIRECTORY MODAL -->
-  <div id="directory-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
-      <button onclick="closeModal('directory-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700">ACCOMMODATION DIRECTORY</span>
-      <h3 id="dir-modal-name" class="text-xl font-extrabold text-slate-900 mt-1">Stay Name</h3>
-      <p id="dir-modal-address" class="text-xs text-slate-500 mt-0.5"></p>
-      <div class="my-4 space-y-2.5 text-xs">
-        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-300">
-          <span class="text-[10px] font-bold text-slate-400 block">Reception Hotline</span>
-          <span id="dir-modal-phone" class="font-bold text-slate-900 text-sm"></span>
-        </div>
-        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-300">
-          <span class="text-[10px] font-bold text-slate-400 block">Official Email</span>
-          <span id="dir-modal-email" class="font-semibold text-forest-700"></span>
-        </div>
-        <div class="p-3 bg-forest-100/70 rounded-2xl border border-forest-200">
-          <span class="text-[10px] font-bold text-forest-800 block">Facilities</span>
-          <p id="dir-modal-amenities" class="text-slate-700 mt-1"></p>
-        </div>
-      </div>
-      <button onclick="closeModal('directory-modal')" class="w-full bg-forest-700 text-white font-bold py-2.5 rounded-full text-xs">Close</button>
-    </div>
-  </div>
-
-  <!-- 5. FOOD MODAL -->
-  <div id="food-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
-      <button onclick="closeModal('food-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-amber-800">CULINARY GUIDE</span>
-      <h3 id="food-modal-title" class="text-xl font-extrabold text-slate-900 mt-1">Culinary Tradition</h3>
-      <p id="food-modal-region" class="text-xs text-forest-700 font-bold mt-0.5"></p>
-      <div class="my-4 space-y-2.5 text-xs">
-        <div class="p-3.5 bg-cream-200 rounded-2xl">
-          <span class="text-[10px] font-bold uppercase text-amber-900 block mb-1">Signature Dishes</span>
-          <p id="food-modal-dishes" class="text-slate-800 font-medium"></p>
-        </div>
-        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl">
-          <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Notable Heritage Kitchens</span>
-          <p id="food-modal-spots" class="text-slate-600"></p>
-        </div>
-      </div>
-      <button onclick="closeModal('food-modal')" class="w-full bg-forest-700 text-white font-bold py-2.5 rounded-full text-xs">Close</button>
-    </div>
-  </div>
-
-  <!-- 6. EMERGENCY SOS MODAL -->
-  <div id="emergency-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border-t-2 sm:border-2 border-red-200">
-      <button onclick="closeModal('emergency-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-11 h-11 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-shield-heart"></i>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider">24/7 RAPID RESPONSE</span>
-          <h3 class="text-lg font-extrabold text-slate-900">Emergency &amp; Tourist Safety</h3>
-        </div>
-      </div>
-      <div class="space-y-2.5 text-xs mb-5">
-        <div class="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="font-extrabold text-red-950 block">National Emergency (999)</span>
-            <span class="text-red-700 text-[11px]">Police, Fire &amp; Ambulance</span>
-          </div>
-          <a href="tel:999" class="bg-red-600 text-white font-bold px-4 py-2 rounded-full text-xs">Call 999</a>
-        </div>
-        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="font-bold text-slate-900 block">Tourist Police HQ</span>
-            <span class="text-slate-500 text-[11px]">+880 1320-169999</span>
-          </div>
-          <a href="tel:+8801320169999" class="bg-forest-700 text-white font-bold px-4 py-2 rounded-full text-xs">Dial</a>
-        </div>
-        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="font-bold text-slate-900 block">Nearest Trauma Centers</span>
-            <span class="text-slate-500 text-[11px]">Locate government hospitals</span>
-          </div>
-          <button onclick="locateNearestHospital()" class="bg-slate-800 text-white font-bold px-4 py-2 rounded-full text-xs">Locate</button>
-        </div>
-      </div>
-      <button onclick="closeModal('emergency-modal')" class="w-full bg-cream-200 text-slate-700 font-bold py-2.5 rounded-full text-xs">Close</button>
-    </div>
-  </div>
-
-  <!-- 7. EXPLORER PROFILE MODAL (WITH EDIT PROFILE & SIGN OUT) -->
-  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar border border-cream-300">
-      <button onclick="closeModal('profile-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="flex items-center justify-between pr-8">
-        <div>
-          <span class="text-[10px] font-bold text-forest-700 uppercase tracking-widest">EXPLORER PROFILE</span>
-          <h3 class="text-lg font-extrabold text-slate-900 mt-0.5">Traveler Notebook &amp; Identity</h3>
-        </div>
-        <button onclick="toggleProfileEditMode()" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3.5 py-1.5 rounded-full text-xs font-bold transition">
-          <i class="fa-solid fa-pen mr-1"></i> Edit Profile
-        </button>
-      </div>
-
-      <div class="flex items-center gap-3.5 my-4 p-4 bg-cream-100 rounded-2xl border border-cream-300">
-        <span id="profile-card-initials" class="w-12 h-12 rounded-full bg-forest-700 text-white font-bold text-base flex items-center justify-center flex-shrink-0">TA</span>
-        <div class="min-w-0 flex-1">
-          <h4 id="profile-card-name" class="font-extrabold text-slate-900 text-base truncate">Tanvir Ahmed</h4>
-          <p id="profile-card-email" class="text-xs text-slate-500 truncate">tanvir.ahmed@example.com</p>
-          <span id="profile-card-role" class="inline-block bg-forest-100 text-forest-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1">Explorer</span>
-        </div>
-      </div>
-
-      <!-- VIEW MODE -->
-      <div id="profile-view-section" class="space-y-3.5 text-xs">
-        <div class="bg-cream-50 border border-cream-300 rounded-2xl p-4 space-y-2.5">
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <span class="text-[10px] text-slate-400 font-bold block">Gender</span>
-              <span id="profile-view-gender" class="font-semibold text-slate-800">Not Specified</span>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 font-bold block">Phone</span>
-              <span id="profile-view-phone" class="font-semibold text-slate-800">+880 1711-223344</span>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 font-bold block">Home Address / District</span>
-              <span id="profile-view-address" class="font-semibold text-slate-800">Dhanmondi, Dhaka</span>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 font-bold block">Emergency Contact</span>
-              <span id="profile-view-emergency" class="font-semibold text-slate-800">Not Specified</span>
-            </div>
-          </div>
-          <div class="pt-2 border-t border-cream-200">
-            <span class="text-[10px] text-slate-400 font-bold block">Bio &amp; Travel Interests</span>
-            <p id="profile-view-bio" class="text-slate-600 mt-0.5"></p>
-          </div>
-        </div>
-
-        <div class="bg-forest-100/70 border border-forest-200 rounded-2xl p-4">
-          <span class="font-bold text-forest-900 text-[10px] uppercase block mb-2">Saved Places (8)</span>
-          <div class="space-y-1.5">
-            <div class="bg-white p-2.5 rounded-xl flex justify-between">
-              <span class="font-bold text-slate-800">Sajek Valley Cloud Ridge</span>
-              <span class="text-[10px] text-slate-400">Rangamati</span>
-            </div>
-            <div class="bg-white p-2.5 rounded-xl flex justify-between">
-              <span class="font-bold text-slate-800">Srimangal Tea Trails</span>
-              <span class="text-[10px] text-slate-400">Sylhet</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Bottom Info Row: 3 Value Pillars -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4">
@@ -2001,35 +1727,73 @@
   </div>
 
   <!-- ================= EDITORIAL FOOTER ================= -->
-  <footer class="bg-cream-200/70 border-t border-cream-300 py-10 px-4 sm:px-8 mt-auto">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-      <div class="md:col-span-5 space-y-2.5">
+  <footer id="main-footer" class="hidden bg-cream-200/80 border-t border-cream-300 py-12 px-4 sm:px-8 mt-auto">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
+      <!-- Brand & Mission -->
+      <div class="lg:col-span-4 space-y-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-forest-700 text-white flex items-center justify-center text-xs">
             <i class="fa-solid fa-location-dot"></i>
           </div>
           <span class="text-lg font-extrabold text-forest-900">RoamBD</span>
         </div>
-        <p class="text-xs text-slate-500 max-w-xs leading-relaxed">
-          Discover Bangladesh, beyond the familiar. Non-commercial cultural &amp; safety directory across all 64 districts.
+        <p class="text-xs text-slate-600 max-w-xs leading-relaxed">
+          Discover Bangladesh, beyond the familiar. A non-commercial cultural discovery, verified local guide, and 24/7 traveler safety network across all 64 districts.
         </p>
-        <p class="text-[11px] text-slate-400 pt-2">© 2026 RoamBD. All rights reserved.</p>
-      </div>
-
-      <div class="md:col-span-3 space-y-2 text-xs">
-        <span class="font-extrabold text-slate-900 block">Discover</span>
-        <button onclick="openPage('explore')" class="block text-slate-500 hover:text-forest-800">Explore destinations</button>
-        <button onclick="openPage('map')" class="block text-slate-500 hover:text-forest-800">Near me</button>
-        <button onclick="openPage('explore')" class="block text-slate-500 hover:text-forest-800">Stays &amp; Local food</button>
-      </div>
-
-      <div class="md:col-span-4 space-y-2.5 text-xs">
-        <span class="font-extrabold text-slate-900 block">Your journey</span>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="openPage('planner')" class="px-3 py-1.5 rounded-full bg-white border border-cream-300 font-semibold text-slate-700 hover:border-forest-700">Trip planner</button>
-          <button onclick="openPage('guides')" class="px-3 py-1.5 rounded-full bg-white border border-cream-300 font-semibold text-slate-700 hover:border-forest-700">Local guides</button>
-          <button onclick="openModal('emergency-modal')" class="px-3 py-1.5 rounded-full bg-red-50 border border-red-200 font-bold text-red-700">Emergency help • 24/7</button>
+        <div class="flex items-center gap-2.5 pt-1 text-slate-500">
+          <button onclick="openFooterInfoModal('about')" class="w-8 h-8 rounded-full bg-white border border-cream-300 hover:border-forest-700 hover:text-forest-800 flex items-center justify-center text-xs transition" aria-label="About RoamBD">
+            <i class="fa-solid fa-globe"></i>
+          </button>
+          <button onclick="openFooterInfoModal('contact')" class="w-8 h-8 rounded-full bg-white border border-cream-300 hover:border-forest-700 hover:text-forest-800 flex items-center justify-center text-xs transition" aria-label="Email RoamBD">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <a href="tel:+8801320169999" class="w-8 h-8 rounded-full bg-white border border-cream-300 hover:border-forest-700 hover:text-forest-800 flex items-center justify-center text-xs transition" aria-label="Tourist Helpline">
+            <i class="fa-solid fa-phone"></i>
+          </a>
         </div>
+      </div>
+
+      <!-- Column 1: Discover -->
+      <div class="lg:col-span-2 space-y-2.5 text-xs">
+        <span class="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] block">Discover</span>
+        <button onclick="openPage('explore')" class="block text-slate-600 hover:text-forest-800 transition">Explore destinations</button>
+        <button onclick="openPage('map')" class="block text-slate-600 hover:text-forest-800 transition">Near me</button>
+        <button onclick="openPage('explore')" class="block text-slate-600 hover:text-forest-800 transition">Stays &amp; Accommodations</button>
+        <button onclick="openPage('explore')" class="block text-slate-600 hover:text-forest-800 transition">Regional culinary guide</button>
+      </div>
+
+      <!-- Column 2: Your Journey -->
+      <div class="lg:col-span-3 space-y-2.5 text-xs">
+        <span class="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] block">Your journey</span>
+        <button onclick="openPage('planner')" class="block text-slate-600 hover:text-forest-800 transition">Trip planner</button>
+        <button onclick="openPage('map')" class="block text-slate-600 hover:text-forest-800 transition">Nearby map</button>
+        <button onclick="openPage('guides')" class="block text-slate-600 hover:text-forest-800 transition">Verified local guides</button>
+        <button onclick="openModal('ai-modal')" class="block text-slate-600 hover:text-forest-800 transition">Ask RoamAI</button>
+      </div>
+
+      <!-- Column 3: About, Contact & Support -->
+      <div class="lg:col-span-3 space-y-2.5 text-xs">
+        <span class="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] block">About &amp; Support</span>
+        <button onclick="openFooterInfoModal('about')" class="block text-slate-600 hover:text-forest-800 transition">About RoamBD</button>
+        <button onclick="openFooterInfoModal('contact')" class="block text-slate-600 hover:text-forest-800 transition">Contact us</button>
+        <button onclick="openFooterInfoModal('privacy')" class="block text-slate-600 hover:text-forest-800 transition">Privacy policy &amp; Terms</button>
+        <div class="pt-1">
+          <button onclick="openModal('emergency-modal')" class="px-3.5 py-1.5 rounded-full bg-red-50 border border-red-200 font-bold text-red-700 hover:bg-red-100 transition inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Emergency help • 24/7</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Legal & Copyright Bar -->
+    <div class="max-w-7xl mx-auto mt-8 pt-6 border-t border-cream-300 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
+      <p>© 2026 RoamBD — Integrated Smart Tourism &amp; Travel Assistance Platform for Bangladesh. All rights reserved.</p>
+      <div class="flex items-center gap-4 font-semibold">
+        <button onclick="openFooterInfoModal('about')" class="hover:text-forest-800">About</button>
+        <button onclick="openFooterInfoModal('contact')" class="hover:text-forest-800">Contact</button>
+        <button onclick="openFooterInfoModal('privacy')" class="hover:text-forest-800">Privacy Policy</button>
+        <button onclick="openFooterInfoModal('terms')" class="hover:text-forest-800">Terms of Use</button>
       </div>
     </div>
   </footer>
@@ -2156,6 +1920,196 @@
   </div>
 
   <!-- 3. GUIDE CONTACT MODAL -->
+  <div id="guide-contact-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
+      <button onclick="closeModal('guide-contact-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="text-[10px] font-bold uppercase tracking-widest bg-forest-100 text-forest-800 px-3 py-1 rounded-full">
+        <i class="fa-solid fa-circle-check mr-1"></i> Verified Local Guide
+      </span>
+      <h3 id="guide-modal-name" class="text-xl font-extrabold text-slate-900 mt-2">Guide Name</h3>
+      <p id="guide-modal-region" class="text-xs text-slate-500">Region</p>
+
+      <div class="my-4 space-y-2.5 text-xs">
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 block">Direct Phone</span>
+            <span id="guide-modal-phone" class="font-bold text-slate-900 text-sm">+880</span>
+          </div>
+          <a id="guide-modal-call-link" href="tel:+880" class="bg-forest-700 text-white px-4 py-2 rounded-full font-bold text-xs">Call</a>
+        </div>
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl">
+          <span class="text-[10px] font-bold text-slate-400 block">Email &amp; BPC License</span>
+          <p id="guide-modal-email" class="font-semibold text-slate-800 mt-0.5"></p>
+          <p id="guide-modal-license" class="font-mono text-[11px] text-forest-700 mt-1"></p>
+        </div>
+      </div>
+
+      <button onclick="closeModal('guide-contact-modal')" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-full text-xs">Done</button>
+    </div>
+  </div>
+
+  <!-- 4. STAY DIRECTORY MODAL -->
+  <div id="directory-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
+      <button onclick="closeModal('directory-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700">ACCOMMODATION DIRECTORY</span>
+      <h3 id="dir-modal-name" class="text-xl font-extrabold text-slate-900 mt-1">Stay Name</h3>
+      <p id="dir-modal-address" class="text-xs text-slate-500 mt-0.5"></p>
+      <div class="my-4 space-y-2.5 text-xs">
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-300">
+          <span class="text-[10px] font-bold text-slate-400 block">Reception Hotline</span>
+          <span id="dir-modal-phone" class="font-bold text-slate-900 text-sm"></span>
+        </div>
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-300">
+          <span class="text-[10px] font-bold text-slate-400 block">Official Email</span>
+          <span id="dir-modal-email" class="font-semibold text-forest-700"></span>
+        </div>
+        <div class="p-3 bg-forest-100/70 rounded-2xl border border-forest-200">
+          <span class="text-[10px] font-bold text-forest-800 block">Facilities</span>
+          <p id="dir-modal-amenities" class="text-slate-700 mt-1"></p>
+        </div>
+      </div>
+      <button onclick="closeModal('directory-modal')" class="w-full bg-forest-700 text-white font-bold py-2.5 rounded-full text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- 5. FOOD MODAL -->
+  <div id="food-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
+      <button onclick="closeModal('food-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-amber-800">CULINARY GUIDE</span>
+      <h3 id="food-modal-title" class="text-xl font-extrabold text-slate-900 mt-1">Culinary Tradition</h3>
+      <p id="food-modal-region" class="text-xs text-forest-700 font-bold mt-0.5"></p>
+      <div class="my-4 space-y-2.5 text-xs">
+        <div class="p-3.5 bg-cream-200 rounded-2xl">
+          <span class="text-[10px] font-bold uppercase text-amber-900 block mb-1">Signature Dishes</span>
+          <p id="food-modal-dishes" class="text-slate-800 font-medium"></p>
+        </div>
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl">
+          <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Notable Heritage Kitchens</span>
+          <p id="food-modal-spots" class="text-slate-600"></p>
+        </div>
+      </div>
+      <button onclick="closeModal('food-modal')" class="w-full bg-forest-700 text-white font-bold py-2.5 rounded-full text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- 6. EMERGENCY SOS MODAL -->
+  <div id="emergency-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border-t-2 sm:border-2 border-red-200">
+      <button onclick="closeModal('emergency-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-shield-heart"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider">24/7 RAPID RESPONSE</span>
+          <h3 class="text-lg font-extrabold text-slate-900">Emergency &amp; Tourist Safety</h3>
+        </div>
+      </div>
+      <div class="space-y-2.5 text-xs mb-5">
+        <div class="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="font-extrabold text-red-950 block">National Emergency (999)</span>
+            <span class="text-red-700 text-[11px]">Police, Fire &amp; Ambulance</span>
+          </div>
+          <a href="tel:999" class="bg-red-600 text-white font-bold px-4 py-2 rounded-full text-xs">Call 999</a>
+        </div>
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="font-bold text-slate-900 block">Tourist Police HQ</span>
+            <span class="text-slate-500 text-[11px]">+880 1320-169999</span>
+          </div>
+          <a href="tel:+8801320169999" class="bg-forest-700 text-white font-bold px-4 py-2 rounded-full text-xs">Dial</a>
+        </div>
+        <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="font-bold text-slate-900 block">Nearest Trauma Centers</span>
+            <span class="text-slate-500 text-[11px]">Locate government hospitals</span>
+          </div>
+          <button onclick="locateNearestHospital()" class="bg-slate-800 text-white font-bold px-4 py-2 rounded-full text-xs">Locate</button>
+        </div>
+      </div>
+      <button onclick="closeModal('emergency-modal')" class="w-full bg-cream-200 text-slate-700 font-bold py-2.5 rounded-full text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- 7. EXPLORER PROFILE MODAL (WITH EDIT PROFILE & SIGN OUT) -->
+  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar border border-cream-300">
+      <button onclick="closeModal('profile-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center justify-between pr-8">
+        <div>
+          <span class="text-[10px] font-bold text-forest-700 uppercase tracking-widest">EXPLORER PROFILE</span>
+          <h3 class="text-lg font-extrabold text-slate-900 mt-0.5">Traveler Notebook &amp; Identity</h3>
+        </div>
+        <button onclick="toggleProfileEditMode()" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3.5 py-1.5 rounded-full text-xs font-bold transition">
+          <i class="fa-solid fa-pen mr-1"></i> Edit Profile
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3.5 my-4 p-4 bg-cream-100 rounded-2xl border border-cream-300">
+        <span id="profile-card-initials" class="w-12 h-12 rounded-full bg-forest-700 text-white font-bold text-base flex items-center justify-center flex-shrink-0">TA</span>
+        <div class="min-w-0 flex-1">
+          <h4 id="profile-card-name" class="font-extrabold text-slate-900 text-base truncate">Tanvir Ahmed</h4>
+          <p id="profile-card-email" class="text-xs text-slate-500 truncate">tanvir.ahmed@example.com</p>
+          <span id="profile-card-role" class="inline-block bg-forest-100 text-forest-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1">Explorer</span>
+        </div>
+      </div>
+
+      <!-- VIEW MODE -->
+      <div id="profile-view-section" class="space-y-3.5 text-xs">
+        <div class="bg-cream-50 border border-cream-300 rounded-2xl p-4 space-y-2.5">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold block">Gender</span>
+              <span id="profile-view-gender" class="font-semibold text-slate-800">Not Specified</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold block">Phone</span>
+              <span id="profile-view-phone" class="font-semibold text-slate-800">+880 1711-223344</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold block">Home Address / District</span>
+              <span id="profile-view-address" class="font-semibold text-slate-800">Dhanmondi, Dhaka</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold block">Emergency Contact</span>
+              <span id="profile-view-emergency" class="font-semibold text-slate-800">Not Specified</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-cream-200">
+            <span class="text-[10px] text-slate-400 font-bold block">Bio &amp; Travel Interests</span>
+            <p id="profile-view-bio" class="text-slate-600 mt-0.5"></p>
+          </div>
+        </div>
+
+        <div class="bg-forest-100/70 border border-forest-200 rounded-2xl p-4">
+          <span class="font-bold text-forest-900 text-[10px] uppercase block mb-2">Saved Places (8)</span>
+          <div class="space-y-1.5">
+            <div class="bg-white p-2.5 rounded-xl flex justify-between">
+              <span class="font-bold text-slate-800">Sajek Valley Cloud Ridge</span>
+              <span class="text-[10px] text-slate-400">Rangamati</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl flex justify-between">
+              <span class="font-bold text-slate-800">Srimangal Tea Trails</span>
+              <span class="text-[10px] text-slate-400">Sylhet</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- EDIT MODE -->
       <form id="profile-edit-form" onsubmit="saveTouristProfileEdits(event)" class="hidden space-y-3 text-xs bg-cream-50 p-4 rounded-2xl border border-cream-300">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2262,90 +2216,107 @@
     </div>
   </div>
 
+  <!-- 11. FOOTER ABOUT / CONTACT / PRIVACY INFO MODAL -->
+  <div id="footer-info-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border border-cream-300">
+      <button onclick="closeModal('footer-info-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span id="footer-modal-tag" class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block">ABOUT ROAMBD</span>
+      <h3 id="footer-modal-title" class="text-xl font-extrabold text-slate-900 mt-1">About RoamBD</h3>
+      <div id="footer-modal-body" class="my-4 text-xs text-slate-600 space-y-3 leading-relaxed">
+        <!-- Populated dynamically -->
+      </div>
+      <button onclick="closeModal('footer-info-modal')" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-2.5 rounded-full text-xs transition">Close</button>
+    </div>
+  </div>
+
   <!-- ================= APPLICATION JAVASCRIPT ================= -->
   <script>
     const STORAGE_KEY = 'roambd_registered_users_v1';
 
-    const defaultUsers = [
+    const BUILTIN_USERS = [
       {
-        name: 'Tanvir Ahmed',
-        email: 'tanvir.ahmed@example.com',
-        phone: '+880 1711-223344',
-        password: 'password123',
-        role: 'tourist',
-        gender: 'Male',
-        address: 'Dhanmondi, Dhaka',
-        emergency: '+880 1811-998877 (Brother)',
-        bio: 'Heritage architecture enthusiast & nature photographer exploring all 64 districts.'
+        name: "Tanvir Ahmed",
+        email: "tanvir.ahmed@example.com",
+        password: "password123",
+        role: "tourist",
+        phone: "+880 1711-223344",
+        gender: "Male",
+        address: "Dhanmondi, Dhaka",
+        emergency: "Farhana Ahmed (+880 1811-998877)",
+        bio: "Exploring heritage architecture, tea gardens, and coastal routes across Bangladesh."
       },
       {
-        name: 'Mahmudul Hasan',
-        email: 'mahmud.sundarban@roambd-guides.org',
-        phone: '+880 1712-987654',
-        password: 'password123',
-        role: 'guide',
-        gender: 'Male',
-        region: 'Sundarbans & Bagerhat Heritage',
-        exp: '11+ Years',
-        languages: 'Bangla, English',
-        license: 'BPC-2018-KHULNA-084',
-        address: 'Mongla Port Road, Khulna',
-        bio: '11+ years guiding wildlife photography vessels and ecological research teams across Kotka, Hiron Point, and Sixty Dome Mosque.'
+        name: "Mahmudul Hasan",
+        email: "mahmud.guide@example.com",
+        password: "password123",
+        role: "guide",
+        phone: "+880 1712-987654",
+        gender: "Male",
+        address: "Khulna Sadar, Khulna",
+        region: "Sundarbans & Bagerhat Heritage",
+        exp: "11 Years",
+        languages: "Bangla, English",
+        license: "BPC-2018-KHULNA-084",
+        bio: "Certified wildlife naturalist specializing in Sundarbans waterways and Sixty Dome Mosque."
       },
       {
-        name: 'System Administrator',
-        email: 'admin@roambd.com',
-        phone: '+880 1320-169999',
-        password: 'admin123',
-        role: 'admin',
-        gender: 'Not Specified',
-        address: 'Bangladesh Parjatan Corporation, Dhaka',
-        emergency: '999',
-        bio: 'Official portal governance and safety coordinator.'
+        name: "System Administrator",
+        email: "admin@roambd.com",
+        password: "admin123",
+        role: "admin",
+        phone: "+880 1320-169999",
+        gender: "Not Specified",
+        address: "Agargaon Tourism Bhaban, Dhaka",
+        bio: "National tourism directory administrator & guide verification officer."
       }
     ];
 
     function loadRegisteredUsers() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
-          return [...defaultUsers];
-        }
-        const parsed = JSON.parse(raw);
-        defaultUsers.forEach(def => {
-          if (!parsed.some(u => u.email.toLowerCase() === def.email.toLowerCase())) {
-            parsed.push(def);
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        const merged = [...BUILTIN_USERS];
+        stored.forEach(u => {
+          if (!merged.some(b => b.email.toLowerCase() === u.email.toLowerCase())) {
+            merged.push(u);
+          } else {
+            const idx = merged.findIndex(b => b.email.toLowerCase() === u.email.toLowerCase());
+            merged[idx] = { ...merged[idx], ...u };
           }
         });
-        return parsed;
+        return merged;
       } catch (e) {
-        return [...defaultUsers];
+        return [...BUILTIN_USERS];
       }
     }
 
-    function saveRegisteredUsers(users) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(users)); } catch (e) {}
+    function saveRegisteredUsers(usersList) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(usersList));
+      } catch (e) {}
     }
 
     let registeredUsers = loadRegisteredUsers();
-    let currentUser = defaultUsers[0];
+    let currentUser = { ...BUILTIN_USERS[0] };
+    let currentLang = 'EN';
+    let activePage = 'auth';
 
     const destinations = [
       {
         id: 1,
-        title: "Cox's Bazar",
+        title: "Cox's Bazar Sea Beach",
         district: "Chattogram",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
         rating: "4.9",
         badge: "BEACH",
         subtitle: "Long coastlines & golden sunsets",
-        description: "Stretching 120 km along the Bay of Bengal, featuring golden sandbanks, Himchari waterfalls, and ancient coral boulders at Inani Beach.",
-        transit: "Direct 1-hour flights from Dhaka or Cox's Bazar Express train.",
+        description: "The world's longest natural sandy sea beach stretching 120 km along the Bay of Bengal, framed by Marine Drive, Inani coral stones, and Himchari waterfalls.",
+        transit: "Direct Dhaka–Cox's Bazar Express Rail or Domestic Flight (CXB).",
         bestSeason: "November to March",
-        etiquette: "Check red/green tide flags before swimming; Tourist Police patrol towers operate 24/7."
+        etiquette: "Swim inside green-flagged zones monitored by lifeguards and Tourist Police."
       },
       {
         id: 2,
@@ -2353,14 +2324,14 @@
         district: "Khulna",
         category: "forest",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=800&q=80",
-        rating: "5.0",
+        image: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80",
+        rating: "4.8",
         badge: "WILDLIFE",
         subtitle: "Mangrove waterways & wild encounters",
-        description: "The largest halophytic mangrove forest on Earth, sanctuary of the Royal Bengal Tiger, spotted deer, and Irrawaddy dolphins.",
-        transit: "Reach Khulna or Mongla Port by road/train; board licensed forest expedition launches.",
+        description: "UNESCO World Heritage mangrove forest home to the Royal Bengal Tiger, spotted deer, estuarine crocodiles, and tranquil tidal creeks.",
+        transit: "Khulna or Mongla river port launch expeditions.",
         bestSeason: "November to February",
-        etiquette: "Mandatory Forest Department permit; strictly no plastic disposal inside sanctuaries."
+        etiquette: "Forest Department permit and armed eco-guard escort mandatory."
       },
       {
         id: 3,
@@ -2368,14 +2339,14 @@
         district: "Rangamati",
         category: "hill",
         season: "monsoon",
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-        rating: "4.8",
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
+        rating: "4.7",
         badge: "HILLS",
         subtitle: "Cloud-kissed hills & mountain stays",
-        description: "Perched 1,800 feet above sea level amidst the Lusai Hills, famous for cotton-like morning cloud oceans and indigenous heritage.",
-        transit: "Travel to Khagrachhari, then ride Chander Gari via Baghaichhari army escort convoy.",
-        bestSeason: "July to February",
-        etiquette: "Carry valid National ID/Passport for security checkpoints."
+        description: "High-altitude ridge valley 1,800 feet above sea level surrounded by Lusai peaks, drifting morning clouds, and Konglak Hill.",
+        transit: "Khagrachhari town via Dighinala Chander Gari convoy.",
+        bestSeason: "August to February",
+        etiquette: "Carry National ID or Passport for Baghaihat checkpoint clearance."
       },
       {
         id: 4,
@@ -2383,367 +2354,278 @@
         district: "Sylhet",
         category: "tea",
         season: "year-round",
-        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=900&q=80",
         rating: "4.9",
-        badge: "NATURE",
+        badge: "NATURE ESCAPE",
         subtitle: "Tea trails & quiet forest walks",
-        description: "Rolling emerald carpets of terraced tea gardens, ancient rainforest canopy walks in Lawachara, and tranquil lotus lakes.",
-        transit: "4.5-hour scenic journey aboard Parabat Express train from Dhaka.",
-        bestSeason: "June to March",
-        etiquette: "Hire a certified local Eco-Guide at Lawachara gate; stay on marked forest trails."
+        description: "Rolling emerald tea estates, Lawachara tropical rainforest, Madhabpur Lake, and famous seven-layer spiced tea.",
+        transit: "Parabat or Upaban Express train from Dhaka to Srimangal.",
+        bestSeason: "Year-round",
+        etiquette: "Request permission before entering private tea garden blocks."
       },
       {
         id: 5,
-        title: "Lalbagh Fort",
-        district: "Old Dhaka",
+        title: "Sixty Dome Mosque",
+        district: "Bagerhat",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80",
-        rating: "4.7",
+        image: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&w=900&q=80",
+        rating: "4.8",
         badge: "HERITAGE",
-        subtitle: "17th-century Mughal citadel & gardens",
-        description: "Incomplete Mughal palace fortress overlooking the Buriganga River area, featuring the tomb of Pari Bibi and Diwan-i-Aam.",
-        transit: "Accessible via Dhaka Metro Rail to Dhaka University station.",
+        subtitle: "15th-century terracotta mosque city",
+        description: "Built by Khan Jahan Ali in the 1450s, this UNESCO World Heritage monument features 60 stone pillars and 77 domes.",
+        transit: "Padma Bridge highway via Khulna–Bagerhat corridor.",
         bestSeason: "October to March",
-        etiquette: "Closed on Sundays; modest attire recommended."
+        etiquette: "Dress modestly and remove footwear before entering prayer halls."
       },
       {
         id: 6,
-        title: "Kaptai Lake",
+        title: "Kaptai Lake & Shuvolong",
         district: "Rangamati",
-        category: "tea",
+        category: "hill",
         season: "monsoon",
-        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80",
         rating: "4.8",
-        badge: "NATURE",
-        subtitle: "Lakeside mornings & wooden boat rides",
-        description: "Surrounded by lush green hills and hanging bridges, offering serene wooden boat cruises across turquoise waters.",
-        transit: "Direct highway coaches from Dhaka to Rangamati town.",
-        bestSeason: "July to February",
-        etiquette: "Always wear life jackets provided on lake boats."
+        badge: "LAKE & HILLS",
+        subtitle: "Lakeside mornings & boat rides",
+        description: "Serene turquoise lake channels surrounded by green hill islands, hanging bridges, and cascading Shuvolong waterfalls.",
+        transit: "Direct highway from Chattogram to Rangamati Reserve Bazar.",
+        bestSeason: "July to January",
+        etiquette: "Wear life jackets during long-distance wooden boat crossings."
       },
       {
         id: 7,
         title: "Saint Martin's Island",
-        district: "Chattogram",
+        district: "Cox's Bazar",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80",
         rating: "4.9",
-        badge: "ISLAND",
-        subtitle: "Coral shores & slow island days",
-        description: "Bangladesh's only coral-bearing island in the northeastern Bay of Bengal, known for crystal-clear tide pools and Chera Dwip.",
-        transit: "Seasonal tourist ships from Teknaf or Cox's Bazar pier.",
+        badge: "CORAL ISLAND",
+        subtitle: "Turquoise reefs & coconut groves",
+        description: "Bangladesh's only coral island in the northeastern Bay of Bengal, famous for Chhera Dwip tidal pools, stargazing, and slow island rhythms.",
+        transit: "Seasonal tourist ships from Teknaf or Cox's Bazar jetty.",
         bestSeason: "November to February",
-        etiquette: "Strictly prohibited to collect live coral or shells; carry back all non-biodegradable waste."
+        etiquette: "Never collect or step on live coral; carry back all plastic waste."
       },
       {
         id: 8,
         title: "Paharpur Buddhist Vihara",
-        district: "Rajshahi",
+        district: "Naogaon, Rajshahi",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=900&q=80",
         rating: "4.8",
-        badge: "HERITAGE",
-        subtitle: "8th-century UNESCO Pala dynasty monastery",
-        description: "Somapura Mahavihara in Naogaon is one of the largest ancient Buddhist monasteries south of the Himalayas, adorned with terracotta plaques.",
-        transit: "Train from Dhaka to Santahar or Joypurhat, followed by a 25-minute local transfer.",
+        badge: "UNESCO HERITAGE",
+        subtitle: "8th-century Pala dynasty monastery",
+        description: "Somapura Mahavihara is one of the largest ancient Buddhist monasteries south of the Himalayas, adorned with intricate terracotta plaques.",
+        transit: "Intercity train to Jamalganj station followed by local transit.",
         bestSeason: "October to March",
-        etiquette: "Preserve ancient terracotta carvings; museum closed on Sundays."
+        etiquette: "Do not climb fragile excavated terracotta walls."
       },
       {
         id: 9,
         title: "Kuakata Sea Beach",
-        district: "Barishal",
+        district: "Patuakhali, Barishal",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&w=900&q=80",
         rating: "4.7",
-        badge: "BEACH",
+        badge: "SUNRISE & SUNSET",
         subtitle: "Panoramic sunrise & sunset over the sea",
-        description: "Known as Sagar Kannya (Daughter of the Sea), offering unobstructed views of both sunrise and sunset over the Bay of Bengal alongside Fatrar Char mangroves.",
-        transit: "Express highway coaches via Padma Bridge from Dhaka in 5.5 hours.",
+        description: "Known as Sagar Kanya (Daughter of the Sea), Kuakata offers unobstructed views of both sunrise and sunset from the same sandy shore.",
+        transit: "Padma Bridge expressway via Barishal to Kuakata.",
         bestSeason: "November to March",
-        etiquette: "Respect Rakhine heritage temples near Keranipara; follow coastal tide advisories."
+        etiquette: "Respect Rakhine heritage villages and local Buddhist temples nearby."
       }
     ];
+
+    const plannerDaysData = {
+      1: {
+        heading: "Arrival & a first taste of the coast",
+        sub: "Thursday, December 03 • 3 stops • A relaxed start",
+        stops: [
+          { time: "09:30", tag: "TRANSIT", title: "Arrive at Cox's Bazar Iconic Railway Station", desc: "Transfer along Marine Drive to Sayeman Beach Heritage Resort.", status: "Verified" },
+          { time: "13:00", tag: "LOCAL FOOD", title: "Coastal Seafood & Bhorta Lunch at Poushee", desc: "Fresh Rupchanda grill, loitta fry, and traditional 12-item Bangla bhorta.", status: "Saved" },
+          { time: "16:45", tag: "EXPERIENCE", title: "Golden Sunset Walk at Inani Coral Beach", desc: "Walk the coral-stone shoreline and watch the light change over the Bay of Bengal.", status: "Planned" }
+        ]
+      },
+      2: {
+        heading: "Marine Drive waterfalls & hill viewpoints",
+        sub: "Friday, December 04 • 3 stops • Nature & scenic coastal drive",
+        stops: [
+          { time: "08:30", tag: "NATURE", title: "Himchari National Park & Hilltop Viewpoint", desc: "Climb the forest stairs for sweeping Bay of Bengal views.", status: "Verified" },
+          { time: "12:30", tag: "LOCAL FOOD", title: "Lunch at Mermaid Beach Cafe, Pechar Dwip", desc: "Eco-friendly coastal dining overlooking Reju Khal estuary.", status: "Planned" },
+          { time: "17:00", tag: "EXPERIENCE", title: "Sampan Boat Harbor at Teknaf Road", desc: "Photograph colorful traditional wooden moon-boats at dusk.", status: "Planned" }
+        ]
+      },
+      3: {
+        heading: "Ramu Buddhist monasteries & return journey",
+        sub: "Saturday, December 05 • 2 stops • Culture & departure",
+        stops: [
+          { time: "10:00", tag: "CULTURE", title: "Ramu Rangkut Banasram & 100-ft Reclining Buddha", desc: "Explore centuries-old wooden monasteries and local handloom villages.", status: "Verified" },
+          { time: "15:00", tag: "TRANSIT", title: "Evening Express Train Return to Dhaka", desc: "Depart Cox's Bazar Station with saved travel memories.", status: "Verified" }
+        ]
+      }
+    };
 
     const communityReviews = [
       {
         name: "Dr. Farhana Rahman",
-        role: "Architectural Researcher",
+        role: "Architectural Historian",
         date: "2 days ago",
         stars: 5,
-        region: "Paharpur & Bagerhat",
-        content: "Having verified guide contacts directly on RoamBD without commercial middlemen made our university heritage survey effortless."
+        region: "Sixty Dome Mosque",
+        content: "Visiting Bagerhat just after sunrise gives the best light on the terracotta brickwork. Hiring a local guide unlocked so many historical details."
       },
       {
         name: "Arifuzzaman Noyon",
         role: "Wildlife Photographer",
         date: "1 week ago",
         stars: 5,
-        region: "Srimangal, Sylhet",
-        content: "We spotted Hoolock Gibbons at dawn in Lawachara and used the nearby map layer to locate essentials in Srimangal town within minutes."
+        region: "Sundarbans",
+        content: "Used RoamBD to connect with Mahmudul Hasan for our Kotka creek trail. Having the Forest Department and Tourist Police numbers saved gave complete peace of mind."
       },
       {
-        name: "Sarah Jenkins",
+        name: "Nabila Tasnim",
         role: "Solo Traveler",
         date: "2 weeks ago",
         stars: 5,
-        region: "Cox's Bazar",
-        content: "The direct Tourist Police hotline integration gave me huge peace of mind traveling solo. Also loved the Old Dhaka culinary guide!"
+        region: "Srimangal",
+        content: "The Parabat Express train combined with an early morning walk in Lawachara and 7-layer tea at Nilkantha was effortless."
       }
     ];
 
-    // ================= DEDICATED MULTI-PAGE ROUTER =================
-    function openPage(pageId) {
-      // Hide all dedicated pages
-      document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
-
+    // ================= DEDICATED PAGE ROUTING =================
+    function openPage(pageName) {
+      activePage = pageName;
       const navbar = document.getElementById('main-navbar');
       const bottomNav = document.getElementById('mobile-bottom-nav');
+      const footer = document.getElementById('main-footer');
 
-      if (pageId === 'auth') {
-        document.getElementById('page-auth').classList.remove('hidden');
+      document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+
+      if (pageName === 'auth') {
         navbar.classList.add('hidden');
         bottomNav.classList.add('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
+        if (footer) footer.classList.add('hidden');
+        document.getElementById('page-auth').classList.remove('hidden');
+      } else {
+        navbar.classList.remove('hidden');
+        bottomNav.classList.remove('hidden');
+        if (footer) footer.classList.remove('hidden');
+        const target = document.getElementById('page-' + pageName);
+        if (target) {
+          target.classList.remove('hidden');
+        } else {
+          document.getElementById('page-home').classList.remove('hidden');
+        }
+        updateRolePortalsUI();
+        updateActiveNavIndicators(pageName);
+        if (pageName === 'guide') populateGuideDashboard();
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-      navbar.classList.remove('hidden');
-      bottomNav.classList.remove('hidden');
-
-      // Show Role Portal shortcuts when logged in as Guide or Admin
-      const guideBtn = document.getElementById('btn-return-guide-portal');
-      const adminBtn = document.getElementById('btn-return-admin-portal');
-      const dGuideBtn = document.getElementById('drawer-btn-guide');
-      const dAdminBtn = document.getElementById('drawer-btn-admin');
-
-      guideBtn.classList.toggle('hidden', currentUser?.role !== 'guide');
-      guideBtn.classList.toggle('inline-flex', currentUser?.role === 'guide');
-      dGuideBtn.classList.toggle('hidden', currentUser?.role !== 'guide');
-      dGuideBtn.classList.toggle('flex', currentUser?.role === 'guide');
-
-      adminBtn.classList.toggle('hidden', currentUser?.role !== 'admin');
-      adminBtn.classList.toggle('inline-flex', currentUser?.role === 'admin');
-      dAdminBtn.classList.toggle('hidden', currentUser?.role !== 'admin');
-      dAdminBtn.classList.toggle('flex', currentUser?.role === 'admin');
-
-      // Reveal target page
-      const targetPage = document.getElementById(`page-${pageId}`);
-      if (targetPage) {
-        targetPage.classList.remove('hidden');
-      }
-
-      if (pageId === 'guide') populateGuideDashboard();
-
-      // Highlight active tab in Top Nav
+    function updateActiveNavIndicators(pageName) {
       document.querySelectorAll('.nav-page-btn').forEach(btn => {
-        if (btn.dataset.page === pageId) {
+        if (btn.dataset.page === pageName) {
           btn.className = "nav-page-btn text-forest-800 font-bold border-b-2 border-forest-700 pb-1 transition";
         } else {
           btn.className = "nav-page-btn hover:text-forest-800 pb-1 border-b-2 border-transparent transition";
         }
       });
 
-      // Highlight active icon in Mobile Bottom Dock
       document.querySelectorAll('.mobile-dock-btn').forEach(btn => {
-        if (btn.dataset.page === pageId) {
-          btn.classList.add('text-forest-800');
+        if (btn.dataset.page === pageName) {
+          btn.className = "mobile-dock-btn flex flex-col items-center justify-center py-1 text-forest-700 font-bold";
         } else {
-          btn.classList.remove('text-forest-800');
+          btn.className = "mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700";
         }
       });
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function navigateHomeByRole() {
-      if (currentUser && currentUser.role === 'guide') openPage('guide');
-      else if (currentUser && currentUser.role === 'admin') openPage('admin');
-      else openPage('home');
-    }
-
-    function signOut() {
-      document.getElementById('signin-password').value = '';
-      document.getElementById('auth-alert').classList.add('hidden');
-      openPage('auth');
     }
 
     function toggleMobileDrawer(open) {
       const drawer = document.getElementById('mobile-drawer');
-      if (drawer) drawer.classList.toggle('hidden', !open);
+      if (open) drawer.classList.remove('hidden');
+      else drawer.classList.add('hidden');
     }
 
-    // ================= AUTHENTICATION =================
-    function switchAuthTab(tab) {
-      const signInForm = document.getElementById('signin-form');
-      const registerForm = document.getElementById('register-form');
-      const btnSignIn = document.getElementById('tab-btn-signin');
-      const btnRegister = document.getElementById('tab-btn-register');
-      document.getElementById('auth-alert').classList.add('hidden');
+    function toggleLanguagePill() {
+      currentLang = currentLang === 'EN' ? 'BN' : 'EN';
+      document.getElementById('lang-pill-text').innerText = currentLang;
+      showToast(currentLang === 'BN' ? 'ভাষা বাংলায় পরিবর্তিত হয়েছে (Bangla Mode)' : 'Language switched to English (EN)');
+    }
 
-      if (tab === 'register') {
-        signInForm.classList.add('hidden');
-        registerForm.classList.remove('hidden');
-        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-full bg-white text-forest-900 shadow-2xs transition";
-        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-full text-slate-500 hover:text-forest-800 transition";
+    function navigateHomeByRole() {
+      if (currentUser && currentUser.role === 'admin') {
+        openPage('admin');
+      } else if (currentUser && currentUser.role === 'guide') {
+        openPage('guide');
       } else {
-        registerForm.classList.add('hidden');
-        signInForm.classList.remove('hidden');
-        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-full bg-white text-forest-900 shadow-2xs transition";
-        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-full text-slate-500 hover:text-forest-800 transition";
+        openPage('home');
       }
     }
 
-    function selectAccountRole(role) {
-      if (role !== 'guide') role = 'tourist';
-      document.getElementById('reg-role').value = role;
-      const tCard = document.getElementById('role-card-tourist');
-      const gCard = document.getElementById('role-card-guide');
+    function updateRolePortalsUI() {
+      const adminNavBtn = document.getElementById('btn-return-admin-portal');
+      const guideNavBtn = document.getElementById('btn-return-guide-portal');
+      const drawerAdminBtn = document.getElementById('drawer-btn-admin');
+      const drawerGuideBtn = document.getElementById('drawer-btn-guide');
 
-      const active = "p-3 rounded-2xl border-2 border-forest-700 bg-forest-100/70 text-left transition flex items-start gap-2.5";
-      const inactive = "p-3 rounded-2xl border border-cream-300 hover:border-forest-600 bg-cream-50 text-left transition flex items-start gap-2.5";
+      adminNavBtn.classList.add('hidden');
+      adminNavBtn.classList.remove('inline-flex');
+      guideNavBtn.classList.add('hidden');
+      guideNavBtn.classList.remove('inline-flex');
+      drawerAdminBtn.classList.add('hidden');
+      drawerAdminBtn.classList.remove('flex');
+      drawerGuideBtn.classList.add('hidden');
+      drawerGuideBtn.classList.remove('flex');
 
-      tCard.className = role === 'tourist' ? active : inactive;
-      gCard.className = role === 'guide' ? active : inactive;
-    }
-
-    function showAuthBanner(type, title, message) {
-      const box = document.getElementById('auth-alert');
-      const icon = document.getElementById('auth-alert-icon');
-      box.classList.remove('hidden', 'bg-forest-100', 'border-forest-200', 'text-forest-900', 'bg-red-100', 'border-red-300', 'text-red-900');
-
-      if (type === 'error') {
-        box.classList.add('bg-red-100', 'border-red-300', 'text-red-900');
-        icon.className = 'fa-solid fa-circle-exclamation text-red-600 text-base mt-0.5';
-      } else {
-        box.classList.add('bg-forest-100', 'border-forest-200', 'text-forest-900');
-        icon.className = 'fa-solid fa-circle-check text-forest-700 text-base mt-0.5';
+      if (currentUser && currentUser.role === 'admin') {
+        adminNavBtn.classList.remove('hidden');
+        adminNavBtn.classList.add('inline-flex');
+        drawerAdminBtn.classList.remove('hidden');
+        drawerAdminBtn.classList.add('flex');
+      } else if (currentUser && currentUser.role === 'guide') {
+        guideNavBtn.classList.remove('hidden');
+        guideNavBtn.classList.add('inline-flex');
+        drawerGuideBtn.classList.remove('hidden');
+        drawerGuideBtn.classList.add('flex');
       }
-      document.getElementById('auth-alert-title').innerText = title;
-      document.getElementById('auth-alert-msg').innerText = message;
     }
 
-    function handleSignIn(e) {
-      e.preventDefault();
-      registeredUsers = loadRegisteredUsers();
-      const email = document.getElementById('signin-email').value.trim().toLowerCase();
-      const pass = document.getElementById('signin-password').value;
-
-      const matched = registeredUsers.find(u => u.email.toLowerCase() === email);
-      if (!matched) {
-        showAuthBanner('error', 'Account Not Found', 'No account exists with this email. Please create an account first.');
-        return;
-      }
-      if (matched.password !== pass) {
-        showAuthBanner('error', 'Authentication Failed', "That email or password isn't right. Access denied.");
-        return;
-      }
-
-      currentUser = matched;
-      syncUserUI();
-      showAuthBanner('success', `Welcome back, ${currentUser.name}!`, 'Entering your RoamBD portal...');
-
-      setTimeout(() => {
-        document.getElementById('auth-alert').classList.add('hidden');
-        navigateHomeByRole();
-      }, 700);
-    }
-
-    function handleRegister(e) {
-      e.preventDefault();
-      registeredUsers = loadRegisteredUsers();
-      const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const phone = document.getElementById('reg-phone').value.trim();
-      const role = document.getElementById('reg-role').value === 'guide' ? 'guide' : 'tourist';
-      const password = document.getElementById('reg-password').value;
-
-      if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-        showAuthBanner('error', 'Email Already Registered', 'An account with this email already exists.');
-        return;
-      }
-
-      const newUser = {
-        name, email, phone, password, role,
-        gender: 'Not Specified',
-        address: 'Bangladesh',
-        emergency: 'Not Specified',
-        region: role === 'guide' ? 'Sylhet & Srimangal' : '',
-        exp: role === 'guide' ? '3+ Years' : '',
-        languages: role === 'guide' ? 'Bangla, English' : '',
-        license: role === 'guide' ? 'BPC-2026-PENDING' : '',
-        bio: 'Exploring the cultural heritage and natural trails of Bangladesh.'
-      };
-
-      registeredUsers.push(newUser);
-      saveRegisteredUsers(registeredUsers);
-
-      switchAuthTab('signin');
-      document.getElementById('signin-email').value = email;
-      document.getElementById('signin-password').value = '';
-      document.getElementById('signin-password').focus();
-      showAuthBanner('success', 'Account Created!', 'Your account is saved. Please sign in with your password.');
-    }
-
-    function handleSocialAuth(provider) {
-      currentUser = defaultUsers[0];
-      syncUserUI();
-      openPage('home');
-      showToast(`Signed in with ${provider}`);
-    }
-
-    function togglePasswordVisibility(inputId, iconId) {
-      const input = document.getElementById(inputId);
-      const icon = document.getElementById(iconId);
-      input.type = input.type === 'password' ? 'text' : 'password';
-      icon.className = input.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
-    }
-
-    function checkPasswordStrength(val) {
-      const b1 = document.getElementById('strength-bar-1');
-      const b2 = document.getElementById('strength-bar-2');
-      const b3 = document.getElementById('strength-bar-3');
-      const txt = document.getElementById('strength-text');
-      b1.className = b2.className = b3.className = 'h-full bg-cream-200 transition-all';
-      if (!val) { txt.innerText = 'Strength'; return; }
-      if (val.length < 6) { b1.className = 'h-full bg-red-500'; txt.innerText = 'Weak'; }
-      else if (val.length < 10) { b1.className = b2.className = 'h-full bg-amber-500'; txt.innerText = 'Medium'; }
-      else { b1.className = b2.className = b3.className = 'h-full bg-forest-700'; txt.innerText = 'Strong'; }
-    }
-
-    // ================= PROFILE & MONOGRAM SYNC =================
     function getInitials(name) {
-      return (name || 'TA').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      return (name || "TA").split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     }
 
     function syncUserUI() {
       if (!currentUser) return;
       const initials = getInitials(currentUser.name);
-      const roleLabel = currentUser.role === 'admin' ? 'Admin' : (currentUser.role === 'guide' ? 'Local Guide' : 'Explorer');
+      const firstName = currentUser.name.split(' ')[0];
+      const roleMap = { tourist: "Explorer", guide: "Verified Guide", admin: "System Admin" };
 
       document.getElementById('nav-user-initials').innerText = initials;
       document.getElementById('nav-user-name').innerText = currentUser.name;
-      document.getElementById('nav-user-role-label').innerText = roleLabel;
-      document.getElementById('hero-user-firstname').innerText = currentUser.name.split(' ')[0];
+      document.getElementById('nav-user-role-label').innerText = roleMap[currentUser.role] || "Explorer";
 
       document.getElementById('drawer-user-initials').innerText = initials;
       document.getElementById('drawer-user-name').innerText = currentUser.name;
-      document.getElementById('drawer-user-role').innerText = roleLabel;
+      document.getElementById('drawer-user-role').innerText = roleMap[currentUser.role] || "Explorer";
+
+      const heroFirst = document.getElementById('hero-user-firstname');
+      if (heroFirst) heroFirst.innerText = firstName;
 
       document.getElementById('profile-card-initials').innerText = initials;
       document.getElementById('profile-card-name').innerText = currentUser.name;
       document.getElementById('profile-card-email').innerText = currentUser.email;
-      document.getElementById('profile-card-role').innerText = roleLabel;
+      document.getElementById('profile-card-role').innerText = roleMap[currentUser.role] || "Explorer";
 
-      document.getElementById('profile-view-gender').innerText = currentUser.gender || 'Not Specified';
-      document.getElementById('profile-view-phone').innerText = currentUser.phone || 'Not Specified';
-      document.getElementById('profile-view-address').innerText = currentUser.address || 'Not Specified';
-      document.getElementById('profile-view-emergency').innerText = currentUser.emergency || 'Not Specified';
-      document.getElementById('profile-view-bio').innerText = currentUser.bio || 'Exploring Bangladesh.';
+      document.getElementById('profile-view-gender').innerText = currentUser.gender || "Not Specified";
+      document.getElementById('profile-view-phone').innerText = currentUser.phone || "+880 1711-223344";
+      document.getElementById('profile-view-address').innerText = currentUser.address || "Dhaka, Bangladesh";
+      document.getElementById('profile-view-emergency').innerText = currentUser.emergency || "Not Specified";
+      document.getElementById('profile-view-bio').innerText = currentUser.bio || "Exploring heritage & natural beauty across Bangladesh.";
     }
 
     function toggleProfileEditMode() {
@@ -2780,38 +2662,211 @@
       }
       syncUserUI();
       toggleProfileEditMode();
-      showToast('Profile details saved!');
+      showToast('Profile saved successfully!');
     }
 
-    // ================= TRIP PLANNER PAGE LOGIC =================
-    const plannerDaysData = {
-      1: {
-        heading: "Arrival & a first taste of the coast",
-        sub: "Thursday, December 03 • 3 stops • A relaxed start",
-        stops: [
-          { time: "08:30", tag: "TRANSIT", title: "Cox's Bazar Express Arrival", desc: "Arrive at the iconic oyster-shaped station and transfer to Marine Drive.", status: "Planned" },
-          { time: "13:00", tag: "LOCAL FOOD", title: "Seafood Lunch at Poushee Restaurant", desc: "Fresh catch, coral grill & traditional 12-item Bangla bhorta platter.", status: "Saved" },
-          { time: "16:30", tag: "EXPERIENCE", title: "Sunset Walk at Inani Coral Beach", desc: "Walk the coral-stone shoreline and watch the light change over the Bay of Bengal.", status: "Free Entry" }
-        ]
-      },
-      2: {
-        heading: "Coastal hills & waterfall trails",
-        sub: "Friday, December 04 • 2 stops • Nature & slow travel",
-        stops: [
-          { time: "09:00", tag: "NATURE", title: "Himchari National Park & Waterfall", desc: "Climb the coastal hill viewpoint for panoramic views over the Bay of Bengal.", status: "Planned" },
-          { time: "15:30", tag: "CULTURE", title: "Ramu Buddhist Monastery & Craft Village", desc: "Explore historic wooden pagodas and local Rakhine weaving traditions.", status: "Planned" }
-        ]
-      },
-      3: {
-        heading: "Morning sea breeze & departure",
-        sub: "Saturday, December 05 • 2 stops • Easy pace",
-        stops: [
-          { time: "07:30", tag: "BEACH", title: "Morning Walk at Sugandha Beach", desc: "Quiet early-morning shoreline walk before the crowds arrive.", status: "Planned" },
-          { time: "12:30", tag: "TRANSIT", title: "Return Transit to Dhaka", desc: "Evening train / flight departure back to Dhaka.", status: "Planned" }
-        ]
-      }
-    };
+    // ================= AUTHENTICATION LOGIC =================
+    function showAuthNotification(type, title, message) {
+      const alertBox = document.getElementById('auth-alert');
+      const alertIcon = document.getElementById('auth-alert-icon');
+      const alertTitle = document.getElementById('auth-alert-title');
+      const alertMsg = document.getElementById('auth-alert-msg');
 
+      alertTitle.innerText = title;
+      alertMsg.innerText = message;
+
+      if (type === 'error') {
+        alertBox.className = "mb-5 bg-red-50 border border-red-200 text-red-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
+        alertIcon.className = "fa-solid fa-circle-exclamation text-red-600 text-base mt-0.5";
+      } else {
+        alertBox.className = "mb-5 bg-forest-100 border border-forest-200 text-forest-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
+        alertIcon.className = "fa-solid fa-circle-check text-forest-700 text-base mt-0.5";
+      }
+      alertBox.classList.remove('hidden');
+    }
+
+    function switchAuthTab(tab) {
+      document.getElementById('auth-alert').classList.add('hidden');
+      const signInForm = document.getElementById('signin-form');
+      const registerForm = document.getElementById('register-form');
+      const btnSignIn = document.getElementById('tab-btn-signin');
+      const btnRegister = document.getElementById('tab-btn-register');
+
+      if (tab === 'register') {
+        signInForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-full bg-white text-forest-900 shadow-2xs transition";
+        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-full text-slate-500 hover:text-forest-800 transition";
+      } else {
+        registerForm.classList.add('hidden');
+        signInForm.classList.remove('hidden');
+        btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-full bg-white text-forest-900 shadow-2xs transition";
+        btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-full text-slate-500 hover:text-forest-800 transition";
+      }
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function selectAccountRole(role) {
+      if (role !== 'guide') role = 'tourist';
+      document.getElementById('reg-role').value = role;
+      const touristCard = document.getElementById('role-card-tourist');
+      const guideCard = document.getElementById('role-card-guide');
+
+      const activeClass = "p-3 rounded-2xl border-2 border-forest-700 bg-forest-100/70 text-left transition flex items-start gap-2.5";
+      const inactiveClass = "p-3 rounded-2xl border border-cream-300 hover:border-forest-600 bg-cream-50 text-left transition flex items-start gap-2.5";
+
+      touristCard.className = role === 'tourist' ? activeClass : inactiveClass;
+      guideCard.className = role === 'guide' ? activeClass : inactiveClass;
+    }
+
+    function checkPasswordStrength(val) {
+      const bar1 = document.getElementById('strength-bar-1');
+      const bar2 = document.getElementById('strength-bar-2');
+      const bar3 = document.getElementById('strength-bar-3');
+      const text = document.getElementById('strength-text');
+
+      bar1.className = 'h-full bg-cream-200 transition-all';
+      bar2.className = 'h-full bg-cream-200 transition-all';
+      bar3.className = 'h-full bg-cream-200 transition-all';
+
+      if (!val) {
+        text.innerText = 'Strength';
+        text.className = 'text-[10px] text-slate-400 font-semibold ml-1';
+        return;
+      }
+      if (val.length < 6) {
+        bar1.className = 'h-full bg-red-500';
+        text.innerText = 'Weak';
+        text.className = 'text-[10px] text-red-600 font-semibold ml-1';
+      } else if (val.length < 8) {
+        bar1.className = 'h-full bg-amber-500';
+        bar2.className = 'h-full bg-amber-500';
+        text.innerText = 'Medium';
+        text.className = 'text-[10px] text-amber-600 font-semibold ml-1';
+      } else {
+        bar1.className = 'h-full bg-forest-600';
+        bar2.className = 'h-full bg-forest-600';
+        bar3.className = 'h-full bg-forest-600';
+        text.innerText = 'Strong';
+        text.className = 'text-[10px] text-forest-700 font-semibold ml-1';
+      }
+    }
+
+    function handleSignIn(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('signin-email').value.trim();
+      const passwordInput = document.getElementById('signin-password').value;
+
+      registeredUsers = loadRegisteredUsers();
+      const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === emailInput.toLowerCase());
+
+      if (!matchedUser || matchedUser.password !== passwordInput) {
+        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
+        return;
+      }
+
+      currentUser = matchedUser;
+      syncUserUI();
+
+      let targetPage = 'home';
+      if (currentUser.role === 'guide') targetPage = 'guide';
+      else if (currentUser.role === 'admin') targetPage = 'admin';
+
+      showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
+
+      setTimeout(() => {
+        document.getElementById('auth-alert').classList.add('hidden');
+        openPage(targetPage);
+      }, 650);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value === 'guide' ? 'guide' : 'tourist';
+
+      if (password.length < 8) {
+        showAuthNotification('error', 'Weak Password', 'Password must be at least 8 characters.');
+        return;
+      }
+
+      registeredUsers = loadRegisteredUsers();
+      if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        showAuthNotification('error', 'Account Exists', 'An account with this email already exists.');
+        return;
+      }
+
+      const newUser = {
+        name,
+        email,
+        password,
+        role,
+        phone,
+        gender: "Not Specified",
+        address: "Dhaka, Bangladesh",
+        emergency: "Not Specified",
+        region: role === 'guide' ? "Bangladesh Regional Trails" : "",
+        exp: role === 'guide' ? "New Guide Applicant" : "",
+        languages: "Bangla, English",
+        license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
+        bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
+      };
+
+      registeredUsers.push(newUser);
+      saveRegisteredUsers(registeredUsers);
+      currentUser = newUser;
+      syncUserUI();
+
+      const targetPage = role === 'guide' ? 'guide' : 'home';
+      showAuthNotification('success', `Welcome, ${name}!`, 'Account created. Entering RoamBD...');
+
+      setTimeout(() => {
+        document.getElementById('auth-alert').classList.add('hidden');
+        openPage(targetPage);
+      }, 750);
+    }
+
+    function handleSocialAuth(provider) {
+      currentUser = {
+        name: `Explorer (${provider})`,
+        email: `explorer.${provider.toLowerCase()}@roambd.org`,
+        role: "tourist",
+        phone: "+880 1700-000000",
+        gender: "Not Specified",
+        address: "Dhaka, Bangladesh",
+        emergency: "Not Specified",
+        bio: `Signed in via ${provider}.`
+      };
+      syncUserUI();
+      showAuthNotification('success', `Connected via ${provider}`, 'Entering RoamBD...');
+      setTimeout(() => {
+        document.getElementById('auth-alert').classList.add('hidden');
+        openPage('home');
+      }, 650);
+    }
+
+    function signOut() {
+      document.getElementById('signin-email').value = '';
+      document.getElementById('signin-password').value = '';
+      switchAuthTab('signin');
+      openPage('auth');
+    }
+
+    // ================= TRIP PLANNER INTERACTIVE LOGIC =================
     let activePlannerDay = 1;
 
     function renderPlannerStops(dayNum) {
@@ -2819,13 +2874,17 @@
       if (!data) return;
       document.getElementById('planner-day-heading').innerText = data.heading;
       document.getElementById('planner-day-sub').innerText = data.sub;
-      document.getElementById('planner-stops-list').innerHTML = data.stops.map(s => `
-        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-200 flex items-start gap-4">
-          <span class="font-mono text-xs font-bold text-forest-800 bg-white px-2.5 py-1 rounded-lg border border-cream-300 flex-shrink-0 mt-0.5">${s.time}</span>
+
+      const list = document.getElementById('planner-stops-list');
+      list.innerHTML = data.stops.map(s => `
+        <div class="flex gap-4 items-start p-4 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-14 text-right flex-shrink-0 pt-0.5">
+            <span class="text-xs font-extrabold text-forest-800 font-mono">${s.time}</span>
+          </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2">
               <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${s.tag}</span>
-              <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2.5 py-0.5 rounded-full">✓ ${s.status}</span>
+              <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2 py-0.5 rounded-full">${s.status}</span>
             </div>
             <h4 class="font-extrabold text-slate-900 text-sm mt-0.5">${s.title}</h4>
             <p class="text-xs text-slate-600 mt-1">${s.desc}</p>
@@ -3053,7 +3112,10 @@
 
     function switchMapRegion(region) {
       const names = { coxs: "Around Cox's Bazar", sylhet: "Around Srimangal, Sylhet", dhaka: "Around Old Dhaka Heritage" };
+      const radius = document.getElementById('map-radius-select')?.value || '10 km';
       document.getElementById('map-region-heading').innerText = names[region] || "Around Cox's Bazar";
+      const overlay = document.getElementById('map-badge-overlay');
+      if (overlay) overlay.innerText = `${names[region] || "Around Cox's Bazar"} • ${radius}`;
       if (region === 'sylhet') {
         selectMapPin('Lawachara National Park', 'NATURE • 4.2 km away', 'Tropical rainforest trail, Hoolock Gibbon sanctuary & certified eco-guides.');
       } else if (region === 'dhaka') {
@@ -3066,6 +3128,9 @@
 
     function updateMapRadius(radius) {
       document.getElementById('map-radius-label').innerText = `Within ${radius}`;
+      const regionHeading = document.getElementById('map-region-heading')?.innerText || "Around Cox's Bazar";
+      const overlay = document.getElementById('map-badge-overlay');
+      if (overlay) overlay.innerText = `${regionHeading} • ${radius}`;
       showToast(`Search radius updated to ${radius}`);
     }
 
@@ -3188,11 +3253,51 @@
       showToast('Recovery link dispatched!');
     }
 
-    let currentLang = 'EN';
-    function toggleLanguagePill() {
-      currentLang = currentLang === 'EN' ? 'BN' : 'EN';
-      document.getElementById('lang-pill-text').innerText = currentLang;
-      showToast(currentLang === 'BN' ? 'Language switched to বাংলা (BN)' : 'Language switched to English (EN)');
+    function openFooterInfoModal(topic) {
+      const tag = document.getElementById('footer-modal-tag');
+      const title = document.getElementById('footer-modal-title');
+      const body = document.getElementById('footer-modal-body');
+
+      if (topic === 'contact') {
+        tag.innerText = 'GET IN TOUCH';
+        title.innerText = 'Contact RoamBD Support Desk';
+        body.innerHTML = `
+          <p>Have questions about destination entries, local guide verification, or regional safety advisories? Reach our team directly:</p>
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 space-y-1.5">
+            <p><strong class="text-slate-900">Support Email:</strong> support@roambd.org</p>
+            <p><strong class="text-slate-900">Guide Verification Desk:</strong> guides@roambd.org</p>
+            <p><strong class="text-slate-900">Office Location:</strong> Agargaon Tourism Bhaban, Dhaka-1207, Bangladesh</p>
+            <p><strong class="text-slate-900">24/7 Tourist Police Helpline:</strong> +880 1320-169999 (or Dial 999)</p>
+          </div>
+          <form onsubmit="event.preventDefault(); closeModal('footer-info-modal'); showToast('Message sent to RoamBD Support!');" class="space-y-2.5 pt-1">
+            <input type="email" required placeholder="Your email address" class="w-full px-3.5 py-2 rounded-xl bg-cream-50 border border-cream-300 font-medium">
+            <textarea rows="2" required placeholder="Write your message or feedback..." class="w-full px-3.5 py-2 rounded-xl bg-cream-50 border border-cream-300 font-medium"></textarea>
+            <button type="submit" class="w-full bg-forest-100 hover:bg-forest-200 text-forest-900 font-bold py-2 rounded-full text-xs transition">Send Message</button>
+          </form>
+        `;
+      } else if (topic === 'privacy') {
+        tag.innerText = 'DATA & PRIVACY';
+        title.innerText = 'Privacy Policy';
+        body.innerHTML = `
+          <p><strong>Location Privacy (BR-07):</strong> RoamBD requests browser geolocation strictly on demand for the Nearby Map and Emergency SOS features. Your movement history is never tracked or stored.</p>
+          <p><strong>Account Security:</strong> Minimal personal details are collected to maintain your Traveler Notebook and verify local guide credentials.</p>
+        `;
+      } else if (topic === 'terms') {
+        tag.innerText = 'COMMUNITY GUIDELINES';
+        title.innerText = 'Terms of Use';
+        body.innerHTML = `
+          <p><strong>Non-Commercial Directory:</strong> RoamBD v1.0 is an informational tourism &amp; safety platform. No commercial payments, commissions, or financial transactions are processed on this site.</p>
+          <p><strong>Responsible Travel:</strong> Users agree to follow local heritage preservation laws, forest permit rules, and eco-tourism guidelines across Bangladesh.</p>
+        `;
+      } else {
+        tag.innerText = 'OUR MISSION';
+        title.innerText = 'About RoamBD';
+        body.innerHTML = `
+          <p><strong>RoamBD</strong> is an integrated smart tourism and travel assistance web platform built to showcase all 64 districts of Bangladesh—from the Sundarbans mangrove waterways to Srimangal tea trails and Cox's Bazar.</p>
+          <p>Designed around safety, cultural authenticity, and community trust, RoamBD connects travelers with BPC-verified local guides, curated itineraries, and 24/7 emergency response contacts.</p>
+        `;
+      }
+      openModal('footer-info-modal');
     }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
