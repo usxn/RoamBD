@@ -2546,9 +2546,6 @@
       }
     ];
 
-    // ================= SUPABASE LIVE DATA SYNC =================
-    function withTimeout(promise, ms = 3000) {
-      return Promise.race([
     // ================= SUPABASE LIVE DATA SYNC (NON-BLOCKING BACKGROUND) =================
     function withTimeout(promise, ms = 2000) {
       return Promise.race([
@@ -2950,74 +2947,19 @@
       }
     }
 
-    async function handleSignIn(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('signin-email').value.trim();
-      const passwordInput = document.getElementById('signin-password').value;
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Signing in...';
-      }
-
-      try {
-        // 1. Check built-in / local accounts first if matching so demo credentials log in instantaneously
-        registeredUsers = loadRegisteredUsers();
-        const localMatch = registeredUsers.find(
-          u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
-        );
-
-        if (localMatch) {
-          currentUser = localMatch;
-          syncUserUI();
-          const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-          showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
-          setTimeout(() => {
-            document.getElementById('auth-alert').classList.add('hidden');
-            openPage(targetPage);
-          }, 450);
-          return;
-        }
-
-        // 2. Otherwise try Live Supabase Auth with a 3-second timeout
-        if (supabaseClient) {
-          const { data, error } = await withTimeout(
-            supabaseClient.auth.signInWithPassword({
-              email: emailInput,
-              password: passwordInput
-            }),
-            3000
-          );
-          if (!error && data && data.user) {
-            let profile = null;
-            try {
-              const res = await withTimeout(
-                supabaseClient.from('profiles').select('*').eq('id', data.user.id).single(),
-                2500
-              );
-              profile = res.data;
-            } catch (pErr) {}
-
-            currentUser = {
-              id: data.user.id,
-              name: profile?.full_name || data.user.user_metadata?.full_name || emailInput.split('@')[0],
-              email: data.user.email,
-              role: profile?.role || data.user.user_metadata?.role || 'tourist',
     function handleSignIn(e) {
       e.preventDefault();
       const emailInput = document.getElementById('signin-email').value.trim();
       const passwordInput = document.getElementById('signin-password').value;
 
-      // 1. Instant local & built-in account match (0ms, never blocked by Supabase network)
-      registeredUsers = loadRegisteredUsers();
-      const localMatch = registeredUsers.find(
+      showAuthNotification('success', 'Verifying Credentials...', 'Checking Supabase Auth & local directory...');
+
+      // 1. Check built-in demo accounts first (instant)
+      const builtinMatch = BUILTIN_USERS.find(
         u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
       );
-
-      if (localMatch) {
-        currentUser = localMatch;
+      if (builtinMatch) {
+        currentUser = builtinMatch;
         syncUserUI();
         const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
         showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
@@ -3027,6 +2969,173 @@
         }, 300);
         return;
       }
+
+      // 2. Authenticate against Supabase Auth & PostgreSQL profiles table
+      if (supabaseClient) {
+        withTimeout(
+          supabaseClient.auth.signInWithPassword({ email: emailInput, password: passwordInput }),
+          4000
+        ).then(async ({ data, error }) => {
+          if (!error && data && data.user) {
+            updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
+            let profileRow = null;
+            try {
+              const res = await withTimeout(
+                supabaseClient.from('profiles').select('*').eq('id', data.user.id).single(),
+                2500
+              );
+              profileRow = res.data;
+            } catch (err) {}
+
+            currentUser = {
+              id: data.user.id,
+              name: (profileRow && profileRow.full_name) || data.user.user_metadata?.full_name || emailInput.split('@')[0],
+              email: data.user.email,
+              role: (profileRow && profileRow.role) || data.user.user_metadata?.role || 'tourist',
+              phone: (profileRow && profileRow.phone) || data.user.user_metadata?.phone || '+880 1700-000000',
+              gender: 'Not Specified',
+              address: (profileRow && profileRow.address) || 'Dhaka, Bangladesh',
+              bio: (profileRow && profileRow.bio) || 'Verified RoamBD Explorer.'
+            };
+            syncUserUI();
+            const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
+            showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Verified via Supabase Auth.');
+            setTimeout(() => {
+              document.getElementById('auth-alert').classList.add('hidden');
+              openPage(targetPage);
+            }, 350);
+            return;
+          }
+
+          // Fallback to local saved credentials if Supabase Auth didn't match or timed out
+          fallbackLocalSignIn(emailInput, passwordInput);
+        }).catch(() => {
+          fallbackLocalSignIn(emailInput, passwordInput);
+        });
+        return;
+      }
+
+      fallbackLocalSignIn(emailInput, passwordInput);
+    }
+
+    function fallbackLocalSignIn(emailInput, passwordInput) {
+      registeredUsers = loadRegisteredUsers();
+      const localMatch = registeredUsers.find(
+        u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
+      );
+      if (localMatch) {
+        currentUser = localMatch;
+        syncUserUI();
+        const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
+        showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
+        setTimeout(() => {
+          document.getElementById('auth-alert').classList.add('hidden');
+          openPage(targetPage);
+        }, 300);
+      } else {
+        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value === 'guide' ? 'guide' : 'tourist';
+
+      if (password.length < 8) {
+        showAuthNotification('error', 'Weak Password', 'Password must be at least 8 characters.');
+        return;
+      }
+
+      showAuthNotification('success', 'Recording Credentials...', 'Saving your account to Supabase PostgreSQL...');
+
+      let supabaseUserId = null;
+      let savedToSupabase = false;
+
+      if (supabaseClient) {
+        try {
+          const { data, error } = await withTimeout(
+            supabaseClient.auth.signUp({
+              email,
+              password,
+              options: { data: { full_name: name, role, phone } }
+            }),
+            4500
+          );
+
+          if (error) {
+            const msg = (error.message || '').toLowerCase();
+            if (msg.includes('already registered')) {
+              showAuthNotification('error', 'Account Exists', 'This email is already registered in Supabase. Please sign in.');
+              return;
+            }
+          } else if (data && data.user) {
+            supabaseUserId = data.user.id;
+            const { error: profErr } = await withTimeout(
+              supabaseClient.from('profiles').upsert({
+                id: data.user.id,
+                full_name: name,
+                email,
+                phone,
+                role,
+                address: 'Dhaka, Bangladesh',
+                bio: role === 'guide' ? 'Certified local guide applicant.' : 'Exploring Bangladesh via RoamBD.'
+              }),
+              3000
+            );
+            if (!profErr) {
+              savedToSupabase = true;
+              updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
+            }
+          }
+        } catch (err) {
+          // Graceful fallback if Supabase rate-limits or times out
+        }
+      }
+
+      const newUser = {
+        id: supabaseUserId,
+        name,
+        email,
+        password,
+        role,
+        phone,
+        gender: "Not Specified",
+        address: "Dhaka, Bangladesh",
+        emergency: "Not Specified",
+        region: role === 'guide' ? "Bangladesh Regional Trails" : "",
+        exp: role === 'guide' ? "New Guide Applicant" : "",
+        languages: "Bangla, English",
+        license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
+        bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
+      };
+
+      registeredUsers = loadRegisteredUsers();
+      const existingIdx = registeredUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+      if (existingIdx !== -1) registeredUsers[existingIdx] = newUser;
+      else registeredUsers.push(newUser);
+      saveRegisteredUsers(registeredUsers);
+
+      currentUser = newUser;
+      syncUserUI();
+
+      const targetPage = role === 'guide' ? 'guide' : 'home';
+      showAuthNotification(
+        'success',
+        `Welcome, ${name}!`,
+        savedToSupabase
+          ? 'Credentials recorded in Supabase Auth & PostgreSQL!'
+          : 'Account created & saved locally. Entering RoamBD...'
+      );
+
+      setTimeout(() => {
+        document.getElementById('auth-alert').classList.add('hidden');
+        openPage(targetPage);
+      }, 450);
+    }
 
       // 2. Also check Supabase profiles table in background if user registered on another device
       if (supabaseClient) {
