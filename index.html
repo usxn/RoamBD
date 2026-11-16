@@ -1359,9 +1359,9 @@
   <div id="page-admin" class="app-page hidden max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10 space-y-6">
     <div class="bg-white rounded-3xl p-6 border border-cream-300 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <span class="text-[10px] font-bold text-purple-700 uppercase tracking-widest">SYSTEM GOVERNANCE</span>
+        <span class="text-[10px] font-bold text-purple-700 uppercase tracking-widest">SYSTEM GOVERNANCE &bull; ROLE: ADMIN</span>
         <h2 class="text-2xl font-extrabold text-slate-900 mt-0.5">RoamBD Administration Desk</h2>
-        <p class="text-xs text-slate-500">Verify local guides and manage public destination records.</p>
+        <p class="text-xs text-slate-500">Verify local guides, manage destination directory, moderate reviews, and audit 24/7 safety hotlines.</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <button onclick="openModal('add-destination-modal')" class="bg-forest-700 hover:bg-forest-800 text-white px-4 py-2 rounded-full text-xs font-bold transition">+ Add Destination</button>
@@ -1370,28 +1370,39 @@
       </div>
     </div>
 
+    <!-- KPI Metrics -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
         <span class="text-[11px] font-bold text-slate-400">Active Spots</span>
         <p id="admin-dest-count" class="text-2xl font-extrabold text-slate-900 mt-1">9</p>
       </div>
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
-        <span class="text-[11px] font-bold text-slate-400">Pending Guides</span>
-        <p class="text-2xl font-extrabold text-amber-600 mt-1">2</p>
+        <span class="text-[11px] font-bold text-slate-400">Verified Guides</span>
+        <p id="admin-guides-count" class="text-2xl font-extrabold text-forest-700 mt-1">6</p>
       </div>
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
         <span class="text-[11px] font-bold text-slate-400">Safety Hotlines</span>
-        <p class="text-2xl font-extrabold text-forest-700 mt-1">Active</p>
+        <p id="admin-safety-status" class="text-2xl font-extrabold text-forest-700 mt-1">Verified</p>
       </div>
       <div class="bg-white p-5 rounded-3xl border border-cream-300">
-        <span class="text-[11px] font-bold text-slate-400">Field Notes</span>
-        <p class="text-2xl font-extrabold text-slate-900 mt-1">1,428</p>
+        <span class="text-[11px] font-bold text-slate-400">Field Notes &amp; Reviews</span>
+        <p id="admin-reviews-count" class="text-2xl font-extrabold text-slate-900 mt-1">3</p>
       </div>
     </div>
 
-    <div class="bg-white rounded-3xl border border-cream-300 overflow-hidden">
-      <div class="px-6 py-4 border-b border-cream-200">
-        <h3 class="font-extrabold text-slate-900 text-sm">Tour Guide Verification Queue</h3>
+    <!-- Admin Governance Sub-Tabs -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+      <button onclick="switchAdminTab('guides', this)" class="admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">1. Guide Verification Queue</button>
+      <button onclick="switchAdminTab('destinations', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">2. Manage Destinations</button>
+      <button onclick="switchAdminTab('reviews', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">3. Moderate Reviews</button>
+      <button onclick="switchAdminTab('safety', this)" class="admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">4. Safety Advisories &amp; 999 Audit</button>
+    </div>
+
+    <!-- PANEL 1: TOUR GUIDE VERIFICATION QUEUE -->
+    <div id="admin-panel-guides" class="admin-panel bg-white rounded-3xl border border-cream-300 overflow-hidden">
+      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
+        <h3 class="font-extrabold text-slate-900 text-sm">Tour Guide Verification Queue (BPC License &amp; NID Audit)</h3>
+        <span class="text-[11px] font-semibold text-slate-500">Rule BR-03: Only verified guides appear publicly</span>
       </div>
 
       <div class="hidden md:block overflow-x-auto">
@@ -1412,7 +1423,7 @@
               <td class="px-6 py-4 font-mono text-forest-700">BPC-902834</td>
               <td class="px-6 py-4"><span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">Pending</span></td>
               <td class="px-6 py-4 text-right space-x-2">
-                <button onclick="approveGuide(this)" class="bg-forest-700 text-white px-3.5 py-1.5 rounded-full font-bold">Verify</button>
+                <button onclick="approveGuide(this)" class="bg-forest-700 text-white px-3.5 py-1.5 rounded-full font-bold">Verify &amp; Publish</button>
                 <button onclick="rejectGuide(this)" class="bg-red-50 text-red-600 px-3.5 py-1.5 rounded-full font-bold">Decline</button>
               </td>
             </tr>
@@ -1422,7 +1433,7 @@
               <td class="px-6 py-4 font-mono text-forest-700">BPC-774129</td>
               <td class="px-6 py-4"><span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">Pending</span></td>
               <td class="px-6 py-4 text-right space-x-2">
-                <button onclick="approveGuide(this)" class="bg-forest-700 text-white px-3.5 py-1.5 rounded-full font-bold">Verify</button>
+                <button onclick="approveGuide(this)" class="bg-forest-700 text-white px-3.5 py-1.5 rounded-full font-bold">Verify &amp; Publish</button>
                 <button onclick="rejectGuide(this)" class="bg-red-50 text-red-600 px-3.5 py-1.5 rounded-full font-bold">Decline</button>
               </td>
             </tr>
@@ -1440,6 +1451,77 @@
           <div class="flex gap-2">
             <button onclick="approveGuideCard(this)" class="flex-1 bg-forest-700 text-white py-2 rounded-full font-bold">Verify</button>
             <button onclick="rejectGuideCard(this)" class="px-4 py-2 bg-red-50 text-red-600 rounded-full font-bold">Decline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: DESTINATION DIRECTORY MANAGEMENT (CRUD) -->
+    <div id="admin-panel-destinations" class="admin-panel hidden bg-white rounded-3xl border border-cream-300 overflow-hidden">
+      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
+        <h3 class="font-extrabold text-slate-900 text-sm">Published Destinations Directory (PostgreSQL Sync)</h3>
+        <button onclick="openModal('add-destination-modal')" class="bg-forest-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold">+ New Spot</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-cream-100 text-slate-500 font-bold border-b border-cream-200">
+            <tr>
+              <th class="px-6 py-3.5">Destination</th>
+              <th class="px-6 py-3.5">District</th>
+              <th class="px-6 py-3.5">Category</th>
+              <th class="px-6 py-3.5">Rating</th>
+              <th class="px-6 py-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-destinations-tbody" class="divide-y divide-cream-200"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 3: COMMUNITY REVIEWS & GUIDE FEEDBACK MODERATION -->
+    <div id="admin-panel-reviews" class="admin-panel hidden bg-white rounded-3xl border border-cream-300 overflow-hidden">
+      <div class="px-6 py-4 border-b border-cream-200 flex items-center justify-between">
+        <h3 class="font-extrabold text-slate-900 text-sm">Traveler Field Notes &amp; Guide Reviews Moderation</h3>
+        <span class="text-[11px] font-semibold text-slate-500">Remove spam or inappropriate submissions</span>
+      </div>
+      <div id="admin-reviews-list" class="divide-y divide-cream-200"></div>
+    </div>
+
+    <!-- PANEL 4: SAFETY ADVISORIES & EMERGENCY AUDIT (BR-09) -->
+    <div id="admin-panel-safety" class="admin-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-6 bg-white rounded-3xl border border-cream-300 p-6 space-y-4 text-xs">
+        <h3 class="font-extrabold text-slate-900 text-base">Broadcast Regional Travel Safety Advisory</h3>
+        <p class="text-slate-500">Publish an urgent weather, transit, or tide advisory banner visible to travelers on the Discovery Portal.</p>
+        <div class="space-y-3">
+          <input id="admin-advisory-region" type="text" placeholder="Target Region (e.g. Saint Martin's & Teknaf Jetty)" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-semibold">
+          <textarea id="admin-advisory-msg" rows="2" placeholder="Advisory message (e.g. Signal No. 3 cautionary maritime weather; tourist ships suspended today.)" class="w-full px-3.5 py-2.5 rounded-xl bg-cream-50 border border-cream-300 font-medium"></textarea>
+          <button onclick="publishSafetyAdvisory()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-full text-xs transition">
+            <i class="fa-solid fa-bullhorn mr-1.5"></i> Publish Live Safety Alert
+          </button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 bg-white rounded-3xl border border-cream-300 p-6 space-y-4 text-xs">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-900 text-base">24/7 Emergency Directory Audit (BR-09)</h3>
+          <button onclick="verifyAllHotlinesToday()" class="bg-forest-100 hover:bg-forest-200 text-forest-900 font-bold px-3.5 py-1.5 rounded-full text-[11px]">
+            <i class="fa-solid fa-check-double mr-1"></i> Stamp Verified Today
+          </button>
+        </div>
+        <div class="space-y-2.5">
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-slate-900">National Emergency Helpline (999)</p>
+              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-16</span></p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">Active</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-slate-900">Tourist Police Control Room (+880 1320-169999)</p>
+              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-16</span></p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">Active</span>
           </div>
         </div>
       </div>
@@ -3420,9 +3502,136 @@
 
     function approveGuide(btn) {
       const row = btn.closest('tr');
+      const name = row.children[0].innerText.trim();
+      const region = row.children[1].innerText.trim();
+      const license = row.children[2].innerText.trim();
+
       row.children[3].innerHTML = '<span class="bg-forest-100 text-forest-800 px-2.5 py-1 rounded-full font-bold">Verified</span>';
       btn.parentElement.innerHTML = '<span class="text-xs text-slate-400 font-bold">Published</span>';
-      showToast('Guide verified!');
+
+      verifiedGuidesList.unshift({
+        name,
+        region,
+        trips: 12,
+        rating: "5.0",
+        specialty: "hills",
+        tags: ["Verified Local", "Regional Expert"],
+        bio: `Newly BPC-verified local storyteller and trail specialist in ${region}.`,
+        languages: "Bangla, English",
+        phone: "+880 1711-000999",
+        email: `${name.toLowerCase().replace(/\s+/g, '.')}@roambd-guides.org`,
+        license,
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
+      });
+      renderGuidesDirectory(verifiedGuidesList);
+      updateAdminCounters();
+      showToast(`${name} verified & published to Local Guides!`);
+    }
+    function rejectGuide(btn) { btn.closest('tr').remove(); }
+    function approveGuideCard(btn) { btn.parentElement.innerHTML = '<span class="text-xs text-forest-700 font-bold">Verified</span>'; }
+    function rejectGuideCard(btn) { btn.closest('div.p-4').remove(); }
+
+    function switchAdminTab(tabName, btn) {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => {
+        b.className = "admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
+      });
+      if (btn) btn.className = "admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
+
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+      const target = document.getElementById('admin-panel-' + tabName);
+      if (target) target.classList.remove('hidden');
+
+      if (tabName === 'destinations') renderAdminDestinationsTable();
+      if (tabName === 'reviews') renderAdminReviewsList();
+    }
+
+    function updateAdminCounters() {
+      const destEl = document.getElementById('admin-dest-count');
+      const guidesEl = document.getElementById('admin-guides-count');
+      const revEl = document.getElementById('admin-reviews-count');
+      if (destEl) destEl.innerText = destinations.length;
+      if (guidesEl) guidesEl.innerText = verifiedGuidesList.length;
+      if (revEl) revEl.innerText = communityReviews.length;
+    }
+
+    function renderAdminDestinationsTable() {
+      const tbody = document.getElementById('admin-destinations-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = destinations.map((d, idx) => `
+        <tr>
+          <td class="px-6 py-3.5 font-bold text-slate-900">${d.title}</td>
+          <td class="px-6 py-3.5 text-slate-600">${d.district}</td>
+          <td class="px-6 py-3.5 uppercase text-[10px] font-bold text-forest-700">${d.category}</td>
+          <td class="px-6 py-3.5 font-bold text-amber-600">★ ${d.rating}</td>
+          <td class="px-6 py-3.5 text-right space-x-2">
+            <button onclick="openDestinationModal(${d.id})" class="text-forest-700 font-bold hover:underline">Preview</button>
+            <button onclick="deleteDestinationAdmin(${idx}, ${d.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">Remove</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteDestinationAdmin(index, id) {
+      const removed = destinations[index];
+      if (!removed) return;
+      if (supabaseClient && typeof id === 'number' && id < 1000000) {
+        await supabaseClient.from('destinations').update({ is_active: false }).eq('id', id);
+      }
+      destinations.splice(index, 1);
+      renderDestinations(destinations);
+      renderAdminDestinationsTable();
+      updateAdminCounters();
+      showToast(`"${removed.title}" archived from directory.`);
+    }
+
+    function renderAdminReviewsList() {
+      const list = document.getElementById('admin-reviews-list');
+      if (!list) return;
+      if (communityReviews.length === 0) {
+        list.innerHTML = `<p class="p-6 text-xs text-slate-400">No traveler reviews or field notes pending moderation.</p>`;
+        return;
+      }
+      list.innerHTML = communityReviews.map((r, idx) => `
+        <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-slate-900">${r.name}</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-forest-100 text-forest-800 text-[10px] font-bold">${r.region}</span>
+              <span class="text-slate-400 text-[10px]">${r.date}</span>
+            </div>
+            <p class="text-slate-600">"${r.content}"</p>
+          </div>
+          <button onclick="deleteReviewAdmin(${idx})" class="self-start sm:self-center bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-1.5 rounded-full font-bold flex-shrink-0">
+            <i class="fa-solid fa-trash-can mr-1"></i> Delete
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function deleteReviewAdmin(index) {
+      communityReviews.splice(index, 1);
+      renderReviews();
+      renderAdminReviewsList();
+      updateAdminCounters();
+      showToast('Review removed by System Admin.');
+    }
+
+    function publishSafetyAdvisory() {
+      const region = document.getElementById('admin-advisory-region').value.trim();
+      const msg = document.getElementById('admin-advisory-msg').value.trim();
+      if (!region || !msg) {
+        showToast('Enter both target region and advisory message.');
+        return;
+      }
+      showToast(`Safety Alert Broadcasted for ${region}: "${msg}"`);
+      document.getElementById('admin-advisory-region').value = '';
+      document.getElementById('admin-advisory-msg').value = '';
+    }
+
+    function verifyAllHotlinesToday() {
+      const today = new Date().toISOString().split('T')[0];
+      document.querySelectorAll('.hotline-verified-date').forEach(el => el.innerText = today);
+      showToast(`All emergency hotlines stamped Verified (${today}) per BR-09!`);
     }
     function rejectGuide(btn) { btn.closest('tr').remove(); }
     function approveGuideCard(btn) { btn.parentElement.innerHTML = '<span class="text-xs text-forest-700 font-bold">Verified</span>'; }
