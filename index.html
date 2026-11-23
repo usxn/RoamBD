@@ -123,6 +123,21 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #leaflet-map-canvas { z-index: 10; }
+
+    /* Refined Editorial Micro-interactions & Modal Animations */
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(14px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .fixed.z-50:not(.hidden) > div:last-child {
+      animation: modalSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .editorial-card {
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+    }
+    .editorial-card:hover {
+      transform: translateY(-4px);
+    }
   </style>
 </head>
 <body class="bg-cream-100 text-[#17231E] antialiased selection:bg-forest-700 selection:text-white transition-colors duration-200 min-h-screen flex flex-col pb-16 md:pb-0">
@@ -351,6 +366,15 @@
 
       <!-- TAB 1: SIGN IN FORM -->
       <form id="signin-form" onsubmit="handleSignIn(event)" class="space-y-4">
+        <div class="bg-cream-100 border border-cream-300/80 rounded-2xl p-3 text-[11px]">
+          <span class="font-bold text-forest-800 uppercase tracking-wider text-[10px] block mb-1.5">Quick Role Access (Evaluation)</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="fillDemoCredentials('tanvir.ahmed@example.com', 'password123')" class="px-2.5 py-1 rounded-full bg-white border border-cream-300 hover:border-forest-700 font-semibold text-slate-700 transition">Tourist</button>
+            <button type="button" onclick="fillDemoCredentials('mahmud.guide@example.com', 'password123')" class="px-2.5 py-1 rounded-full bg-white border border-cream-300 hover:border-forest-700 font-semibold text-slate-700 transition">Tour Guide</button>
+            <button type="button" onclick="fillDemoCredentials('admin@roambd.com', 'admin123')" class="px-2.5 py-1 rounded-full bg-white border border-cream-300 hover:border-purple-600 font-semibold text-purple-800 transition">Admin</button>
+          </div>
+        </div>
+
         <div>
           <label for="signin-email" class="block text-xs font-bold text-slate-700 mb-1.5">Email Address</label>
           <div class="relative">
@@ -486,11 +510,11 @@
 
       <section class="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-widest text-slate-400 block mb-1">SUNDAY, 22 NOVEMBER</span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <span class="text-[11px] font-bold uppercase tracking-widest text-slate-400 block mb-1">MONDAY, 23 NOVEMBER</span>
+          <h1 class="font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold text-slate-900 tracking-tight leading-tight">
             <span data-i18n="hero_greeting">Good afternoon</span>, <span id="hero-user-firstname" class="text-forest-800">Tanvir</span>.
           </h1>
-          <p data-i18n="hero_subtitle" class="text-xs sm:text-sm text-slate-500 mt-1">Where will your curiosity take you today?</p>
+          <p data-i18n="hero_subtitle" class="text-xs sm:text-sm text-slate-500 mt-1.5">Where will your curiosity take you today?</p>
         </div>
 
         <form onsubmit="event.preventDefault(); openPage('explore');" class="w-full lg:w-[420px]">
@@ -515,7 +539,7 @@
             </div>
 
             <div class="max-w-lg space-y-3">
-              <h2 data-i18n="banner_title" class="text-2xl sm:text-4xl lg:text-[42px] font-extrabold text-white leading-[1.12] tracking-tight">
+              <h2 data-i18n="banner_title" class="font-serif text-2xl sm:text-4xl lg:text-[44px] font-bold text-white leading-[1.12] tracking-tight">
                 Stories are waiting beyond the familiar.
               </h2>
               <p data-i18n="banner_desc" class="text-xs sm:text-sm text-cream-200/90 leading-relaxed">
@@ -532,7 +556,7 @@
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <button onclick="openPage('map')" class="bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 transition shadow-2xs text-left group">
+          <button onclick="openPage('map')" class="editorial-card bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs text-left group">
             <div class="w-9 h-9 rounded-xl bg-forest-100 text-forest-700 flex items-center justify-center text-sm flex-shrink-0 group-hover:bg-forest-700 group-hover:text-white transition">
               <i class="fa-solid fa-location-crosshairs"></i>
             </div>
@@ -542,7 +566,7 @@
             </div>
           </button>
 
-          <button onclick="openPage('planner')" class="bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 transition shadow-2xs text-left group">
+          <button onclick="openPage('planner')" class="editorial-card bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs text-left group">
             <div class="w-9 h-9 rounded-xl bg-forest-100 text-forest-700 flex items-center justify-center text-sm flex-shrink-0 group-hover:bg-forest-700 group-hover:text-white transition">
               <i class="fa-regular fa-calendar"></i>
             </div>
@@ -552,7 +576,7 @@
             </div>
           </button>
 
-          <button onclick="openPage('guides')" class="bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 transition shadow-2xs text-left group">
+          <button onclick="openPage('guides')" class="editorial-card bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs text-left group">
             <div class="w-9 h-9 rounded-xl bg-forest-100 text-forest-700 flex items-center justify-center text-sm flex-shrink-0 group-hover:bg-forest-700 group-hover:text-white transition">
               <i class="fa-solid fa-user-group"></i>
             </div>
@@ -562,7 +586,7 @@
             </div>
           </button>
 
-          <button onclick="openPage('explore')" class="bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 transition shadow-2xs text-left group">
+          <button onclick="openPage('explore')" class="editorial-card bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs text-left group">
             <div class="w-9 h-9 rounded-xl bg-forest-100 text-forest-700 flex items-center justify-center text-sm flex-shrink-0 group-hover:bg-forest-700 group-hover:text-white transition">
               <i class="fa-solid fa-bed"></i>
             </div>
@@ -572,7 +596,7 @@
             </div>
           </button>
 
-          <button onclick="openPage('explore')" class="col-span-2 sm:col-span-1 bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 transition shadow-2xs text-left group">
+          <button onclick="openPage('explore')" class="editorial-card col-span-2 sm:col-span-1 bg-white hover:border-forest-600 border border-cream-300/90 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs text-left group">
             <div class="w-9 h-9 rounded-xl bg-forest-100 text-forest-700 flex items-center justify-center text-sm flex-shrink-0 group-hover:bg-forest-700 group-hover:text-white transition">
               <i class="fa-solid fa-utensils"></i>
             </div>
@@ -588,7 +612,7 @@
         <div class="flex items-end justify-between gap-4">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">HANDPICKED FOR YOU</span>
-            <h2 data-i18n="featured_heading" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Places worth the journey</h2>
+            <h2 data-i18n="featured_heading" class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Places worth the journey</h2>
           </div>
           <button onclick="openPage('explore')" class="text-xs font-bold text-forest-700 hover:underline flex items-center gap-1.5">
             <span>View all 64 districts</span>
@@ -678,7 +702,7 @@
         <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">FIND YOUR NEXT STORY</span>
-            <h1 data-i18n="explore_title" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Explore Bangladesh</h1>
+            <h1 data-i18n="explore_title" class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Explore Bangladesh</h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-1">From tea country to the coast. Find a place that feels like you.</p>
           </div>
 
@@ -901,7 +925,7 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">YOUR JOURNEY, YOUR WAY</span>
-          <h1 data-i18n="planner_title" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Trip planner</h1>
+          <h1 data-i18n="planner_title" class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Trip planner</h1>
           <p class="text-xs sm:text-sm text-slate-500 mt-1">A little planning. A lot of possibility. Keep your whole journey in one place.</p>
         </div>
 
@@ -1062,7 +1086,7 @@
       <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">OPENSTREETMAP &amp; GEOSPATIAL DIRECTORY</span>
-          <h1 data-i18n="map_title" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Discover around you</h1>
+          <h1 data-i18n="map_title" class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Discover around you</h1>
           <p class="text-xs sm:text-sm text-slate-500 mt-1">Interactive map showing verified attractions, local dining, and 24/7 Tourist Police units.</p>
         </div>
 
@@ -1163,7 +1187,7 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">LOCAL PEOPLE. UNFORGETTABLE PLACES.</span>
-          <h1 data-i18n="guides_title" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">A local makes all the difference</h1>
+          <h1 data-i18n="guides_title" class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">A local makes all the difference</h1>
           <p class="text-xs sm:text-sm text-slate-500 mt-1">Meet the storytellers, trail-finders and friendly faces who bring Bangladesh to life.</p>
         </div>
         <span class="inline-flex items-center gap-2 text-xs font-semibold text-forest-800 bg-forest-100 px-3.5 py-2 rounded-full border border-forest-200 self-start md:self-auto">
@@ -2305,7 +2329,7 @@
         district: "Bagerhat",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&w=900&q=80",
+        image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=900&q=80",
         rating: "4.8",
         badge: "HERITAGE",
         subtitle: "15th-century terracotta mosque city",
@@ -2350,7 +2374,7 @@
         district: "Naogaon, Rajshahi",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=900&q=80",
+        image: "https://images.unsplash.com/photo-1609948543911-7f01ff385be5?auto=format&fit=crop&w=900&q=80",
         rating: "4.8",
         badge: "UNESCO HERITAGE",
         subtitle: "8th-century Pala dynasty monastery",
@@ -2934,21 +2958,11 @@
       guideCard.className = role === 'guide' ? activeClass : inactiveClass;
     }
 
-    function checkPasswordStrength(val) {
-      const bar1 = document.getElementById('strength-bar-1');
-      const bar2 = document.getElementById('strength-bar-2');
-      const bar3 = document.getElementById('strength-bar-3');
-      const text = document.getElementById('strength-text');
-
-      bar1.className = 'h-full bg-cream-200 transition-all';
-      bar2.className = 'h-full bg-cream-200 transition-all';
-      bar3.className = 'h-full bg-cream-200 transition-all';
-
-      if (!val) {
-        text.innerText = 'Strength';
-        text.className = 'text-[10px] text-slate-400 font-semibold ml-1';
-        return;
-      }
+    function fillDemoCredentials(email, password) {
+      document.getElementById('signin-email').value = email;
+      document.getElementById('signin-password').value = password;
+      showToast(`Filled credentials for ${email}`);
+    }
       if (val.length < 6) {
         bar1.className = 'h-full bg-red-500';
         text.innerText = 'Weak';
@@ -3352,7 +3366,7 @@
       const buildCard = (item) => {
         const isSaved = savedWishlistIds.includes(item.id);
         return `
-        <article onclick="openDestinationModal(${item.id})" class="bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-md transition cursor-pointer group">
+        <article onclick="openDestinationModal(${item.id})" class="editorial-card bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-lg cursor-pointer group">
           <div class="relative h-56 overflow-hidden bg-cream-200">
             <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/184D38/F8F7F3?text=${encodeURIComponent(item.title)}'">
             <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
@@ -3406,7 +3420,7 @@
       if (!grid) return;
 
       grid.innerHTML = guides.map(g => `
-        <div data-spec="${g.specialty}" class="guide-card bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-md transition flex flex-col justify-between">
+        <div data-spec="${g.specialty}" class="editorial-card guide-card bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-lg flex flex-col justify-between">
           <div>
             <div class="relative h-52 bg-cream-200">
               <img src="${g.image}" alt="${g.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/184D38/F8F7F3?text=${encodeURIComponent(g.name)}'">
