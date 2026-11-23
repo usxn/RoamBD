@@ -600,11 +600,35 @@
               <p class="text-[11px] text-slate-500 truncate">Taste the culture</p>
             </div>
           </button>
-          <button onclick="openPage('planner')" class="text-xs font-bold text-forest-700 hover:underline inline-flex items-center gap-1.5 text-left">
-            <span>View itinerary</span>
+        </div>
+      </section>
+
+      <!-- Featured Destinations Preview -->
+      <section class="space-y-4">
+        <div class="flex items-end justify-between">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">HANDPICKED FOR YOU</span>
+            <h3 data-i18n="featured_heading" class="font-serif text-2xl font-bold text-slate-900">Places worth the journey</h3>
+          </div>
+          <button onclick="openPage('explore')" class="text-xs font-bold text-forest-700 hover:underline inline-flex items-center gap-1">
+            <span>View all 64 districts</span>
             <span>&rarr;</span>
           </button>
         </div>
+        <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- Active Trip Quick Card -->
+      <section class="bg-forest-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-300">UPCOMING JOURNEY • IN 12 DAYS</span>
+          <h3 class="text-xl font-extrabold">Cox's Bazar coastal escape</h3>
+          <p class="text-xs text-cream-200/80">Dec 03 – Dec 06 • 4 days, 3 nights • 8 curated stops saved</p>
+        </div>
+        <button onclick="openPage('planner')" class="bg-white hover:bg-cream-100 text-forest-900 font-bold px-5 py-2.5 rounded-full text-xs transition inline-flex items-center gap-1.5 self-start sm:self-auto">
+          <span>View itinerary</span>
+          <span>&rarr;</span>
+        </button>
       </section>
 
       <!-- ================= MEANINGFUL FEATURE: 64-DISTRICT TRAVEL PASSPORT & ECO-TRACKER ================= -->
@@ -1195,6 +1219,73 @@
   </div>
 
   <!-- ===================================================================== -->
+  <!-- PAGE 4: DEDICATED NEARBY MAP & GEOSPATIAL ESSENTIALS                  -->
+  <!-- ===================================================================== -->
+  <div id="page-map" class="app-page hidden">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-6">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-forest-700 block mb-1">GEOSPATIAL DISCOVERY &amp; SAFETY</span>
+          <h1 data-i18n="map_title" class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Discover around you</h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Explore nearby beaches, heritage landmarks, local kitchens, and 24/7 emergency desks.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 text-xs">
+          <select id="map-region-select" onchange="switchMapRegion(this.value)" class="bg-white border border-cream-300 rounded-full px-4 py-2 font-bold text-slate-800 focus:outline-none">
+            <option value="coxs">Region: Cox's Bazar</option>
+            <option value="sylhet">Region: Srimangal, Sylhet</option>
+            <option value="dhaka">Region: Old Dhaka Heritage</option>
+          </select>
+          <select id="map-radius-select" onchange="updateMapRadius(this.value)" class="bg-forest-100 border border-forest-200 rounded-full px-4 py-2 font-bold text-forest-900 focus:outline-none">
+            <option value="5 km">Radius: 5 km</option>
+            <option value="10 km" selected>Radius: 10 km</option>
+            <option value="25 km">Radius: 25 km</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="filterMapPins('all', this)" class="map-filter-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap flex-shrink-0">All nearby</button>
+        <button onclick="filterMapPins('attraction', this)" class="map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0">Beaches &amp; Nature</button>
+        <button onclick="filterMapPins('stay', this)" class="map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0">Stays &amp; Local Food</button>
+        <button onclick="filterMapPins('emergency', this)" class="map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0">Essentials &amp; Police</button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Interactive Leaflet Map Container -->
+        <div class="lg:col-span-8 bg-white rounded-3xl border border-cream-300 overflow-hidden shadow-2xs relative">
+          <div class="px-5 py-3.5 bg-cream-50 border-b border-cream-200 flex items-center justify-between text-xs">
+            <span id="map-region-heading" class="font-extrabold text-slate-900">Around Cox's Bazar</span>
+            <span id="map-badge-overlay" class="font-mono text-[11px] font-bold text-forest-700 bg-forest-100 px-3 py-0.5 rounded-full">Around Cox's Bazar • 10 km</span>
+          </div>
+          <div id="leaflet-map-canvas" class="w-full h-[380px] sm:h-[440px]"></div>
+
+          <!-- Selected Pin Quick Info Bar -->
+          <div class="p-4 sm:p-5 bg-white border-t border-cream-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span id="map-card-badge" class="text-[10px] font-bold uppercase tracking-wider text-forest-700 block">BEACH • 0.8 km away</span>
+              <h4 id="map-card-title" class="font-extrabold text-slate-900 text-base">Sugandha Beach</h4>
+              <p id="map-card-desc" class="text-xs text-slate-500 mt-0.5">Wide sands, sea breeze &amp; sunset views. Tourist Police watchtower active.</p>
+            </div>
+            <button onclick="openModal('emergency-modal')" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-4 py-2 rounded-full text-xs font-bold flex-shrink-0 self-start sm:self-center">
+              <i class="fa-solid fa-shield-halved mr-1"></i> Nearby 999 Desk
+            </button>
+          </div>
+        </div>
+
+        <!-- Nearby Points of Interest Sidebar -->
+        <div class="lg:col-span-4 space-y-3">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-extrabold text-slate-900">Nearby Verified Spots</span>
+            <span id="map-radius-label" class="text-[11px] font-bold text-forest-700">Within 10 km</span>
+          </div>
+          <div id="map-sidebar-list" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
   <!-- PAGE 5: DEDICATED LOCAL GUIDES DIRECTORY PAGE                         -->
   <!-- ===================================================================== -->
   <div id="page-guides" class="app-page hidden">
@@ -1392,6 +1483,22 @@
             </button>
           </form>
           <div id="guide-briefing-output" class="hidden p-4 rounded-2xl bg-forest-100/70 border border-forest-200 space-y-1.5"></div>
+        </div>
+      </div>
+
+      <!-- Right Column: Traveler Inquiries & Verified Reviews -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-extrabold text-slate-900">Traveler Field Inquiries</h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider bg-forest-100 text-forest-800 px-2.5 py-0.5 rounded-full">UC-03 Workflow</span>
+          </div>
+          <div id="guide-inquiries-list" class="space-y-3"></div>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-cream-300 p-6 space-y-3 text-xs">
+          <h3 class="text-base font-extrabold text-slate-900">Recent Traveler Reviews</h3>
+          <div id="guide-portal-reviews-list" class="space-y-2.5"></div>
         </div>
       </div>
     </div>
@@ -1611,6 +1718,95 @@
         </div>
       </div>
       <div id="admin-division-coverage-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5"></div>
+    </div>
+  </div>
+
+  <!-- ================= EDITORIAL FOOTER & MOBILE BOTTOM DOCK ================= -->
+  <footer id="main-footer" class="hidden bg-white border-t border-cream-300/90 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-forest-700 text-white flex items-center justify-center text-xs">
+          <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <span class="font-extrabold text-forest-900">RoamBD</span>
+        <span class="text-slate-400">• Non-Commercial Bangladesh Travel &amp; Safety Portal</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-5 font-semibold">
+        <button onclick="openFooterInfoModal('about')" class="hover:text-forest-800 transition">About</button>
+        <button onclick="openFooterInfoModal('contact')" class="hover:text-forest-800 transition">Contact</button>
+        <button onclick="openFooterInfoModal('privacy')" class="hover:text-forest-800 transition">Privacy</button>
+        <button onclick="openFooterInfoModal('terms')" class="hover:text-forest-800 transition">Terms</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom 5-Tab Navigation Dock -->
+  <nav id="mobile-bottom-nav" class="hidden md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-cream-300 px-2 py-1.5 grid grid-cols-5 text-[10px]">
+    <button type="button" data-page="home" onclick="openPage('home')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 text-forest-700 font-bold">
+      <i class="fa-solid fa-house text-sm mb-0.5"></i>
+      <span>Home</span>
+    </button>
+    <button type="button" data-page="explore" onclick="openPage('explore')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700">
+      <i class="fa-solid fa-compass text-sm mb-0.5"></i>
+      <span>Explore</span>
+    </button>
+    <button type="button" data-page="planner" onclick="openPage('planner')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700">
+      <i class="fa-solid fa-calendar-check text-sm mb-0.5"></i>
+      <span>Planner</span>
+    </button>
+    <button type="button" data-page="map" onclick="openPage('map')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700">
+      <i class="fa-solid fa-map-location-dot text-sm mb-0.5"></i>
+      <span>Map</span>
+    </button>
+    <button type="button" data-page="guides" onclick="openPage('guides')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700">
+      <i class="fa-solid fa-user-check text-sm mb-0.5"></i>
+      <span>Guides</span>
+    </button>
+  </nav>
+
+  <!-- 1. DESTINATION DETAIL MODAL -->
+  <div id="destination-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl relative border border-cream-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <button onclick="closeModal('destination-modal')" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/55 text-white hover:bg-black/75 flex items-center justify-center text-sm">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="relative h-56 sm:h-64 bg-cream-200">
+        <img id="dest-modal-img" src="" alt="Destination" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+        <div class="absolute bottom-4 left-6 right-6 text-white">
+          <span id="dest-modal-badge" class="text-[10px] font-bold uppercase tracking-widest bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full">DISTRICT</span>
+          <h3 id="dest-modal-title" class="font-serif text-2xl sm:text-3xl font-bold mt-2">Destination Title</h3>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <p id="dest-modal-desc" class="text-slate-600 leading-relaxed text-sm"></p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300">
+            <span class="text-[10px] font-bold uppercase text-forest-700 block mb-1"><i class="fa-solid fa-train-subway mr-1"></i> How to Reach</span>
+            <p id="dest-modal-transit" class="text-slate-700 font-medium"></p>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300">
+            <span class="text-[10px] font-bold uppercase text-amber-800 block mb-1"><i class="fa-regular fa-sun mr-1"></i> Best Season</span>
+            <p id="dest-modal-season" class="text-slate-700 font-medium"></p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-forest-100/70 border border-forest-200">
+          <span class="text-[10px] font-bold uppercase text-forest-900 block mb-1"><i class="fa-solid fa-shield-halved mr-1"></i> Local Etiquette &amp; Safety</span>
+          <p id="dest-modal-etiquette" class="text-slate-700"></p>
+        </div>
+
+        <div class="flex flex-wrap gap-2.5 pt-1">
+          <button onclick="saveCurrentModalDestinationToWishlist()" class="flex-1 bg-forest-700 hover:bg-forest-800 text-white font-bold py-2.5 px-4 rounded-full text-xs transition">
+            <i class="fa-regular fa-heart mr-1.5"></i> Save to Traveler Notebook
+          </button>
+          <button onclick="closeModal('destination-modal'); openPage('planner');" class="bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold py-2.5 px-5 rounded-full text-xs transition">
+            Add to Planner
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2562,19 +2758,21 @@
       document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
 
       if (pageName === 'auth') {
-        navbar.classList.add('hidden');
-        bottomNav.classList.add('hidden');
+        if (navbar) navbar.classList.add('hidden');
+        if (bottomNav) bottomNav.classList.add('hidden');
         if (footer) footer.classList.add('hidden');
-        document.getElementById('page-auth').classList.remove('hidden');
+        const authPage = document.getElementById('page-auth');
+        if (authPage) authPage.classList.remove('hidden');
       } else {
-        navbar.classList.remove('hidden');
-        bottomNav.classList.remove('hidden');
+        if (navbar) navbar.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
         if (footer) footer.classList.remove('hidden');
         const target = document.getElementById('page-' + pageName);
         if (target) {
           target.classList.remove('hidden');
         } else {
-          document.getElementById('page-home').classList.remove('hidden');
+          const homePage = document.getElementById('page-home');
+          if (homePage) homePage.classList.remove('hidden');
         }
         updateRolePortalsUI();
         updateActiveNavIndicators(pageName);
