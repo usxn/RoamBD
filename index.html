@@ -1391,6 +1391,21 @@
         <div class="bg-white rounded-3xl border border-cream-300 p-6">
           <h3 class="text-lg font-extrabold text-slate-900 mb-4">Public Directory Profile</h3>
           <form onsubmit="saveGuideProfileDetails(event)" class="space-y-3 text-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-3.5 rounded-2xl bg-cream-50 border border-cream-300">
+              <img id="guide-edit-avatar-preview" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" alt="Guide Avatar Preview" class="w-16 h-16 rounded-2xl object-cover border border-cream-300 flex-shrink-0">
+              <div class="flex-1 space-y-1.5">
+                <label for="guide-edit-avatar-file" class="block font-bold text-slate-800">Guide Profile Picture</label>
+                <p class="text-[11px] text-slate-500">Upload a clear portrait photo (JPG, PNG, or WEBP up to 2 MB). Updates your public directory card.</p>
+                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                  <label for="guide-edit-avatar-file" class="cursor-pointer inline-flex items-center gap-1.5 bg-white hover:bg-forest-50 text-forest-800 border border-cream-300 px-3.5 py-1.5 rounded-full font-bold text-[11px] transition">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>Choose Photo</span>
+                  </label>
+                  <input id="guide-edit-avatar-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleGuideAvatarUpload(event)" class="hidden">
+                  <span id="guide-avatar-filename" class="text-[11px] text-slate-500 truncate max-w-[200px]">Current portrait active</span>
+                </div>
+              </div>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 mb-1">Full Name</label>
@@ -3991,6 +4006,9 @@
 
     function populateGuidePortalData() {
       if (!currentUser) return;
+      const matchedGuide = verifiedGuidesList.find(g => g.email === currentUser.email) || verifiedGuidesList[0];
+      const avatarUrl = currentUser.img || matchedGuide?.img || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80";
+
       document.getElementById('guide-portal-name').innerText = currentUser.name;
       document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region || 'Sundarbans & Bagerhat Heritage'}`;
       document.getElementById('guide-edit-name').value = currentUser.name;
@@ -4001,7 +4019,85 @@
       document.getElementById('guide-edit-license').value = currentUser.license || 'BPC-2018-KHULNA-084';
       document.getElementById('guide-edit-address').value = currentUser.address || 'Khulna Sadar, Khulna';
       document.getElementById('guide-edit-bio').value = currentUser.bio || '';
+
+      const previewEl = document.getElementById('guide-edit-avatar-preview');
+      const fileLabelEl = document.getElementById('guide-avatar-filename');
+      if (previewEl) previewEl.src = avatarUrl;
+      if (fileLabelEl) fileLabelEl.innerText = 'Current portrait active';
       renderGuideInquiries();
+    }
+
+    function handleGuideAvatarUpload(e) {
+      const file = e.target?.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Please choose a valid image file (JPG, PNG, or WEBP).');
+        e.target.value = '';
+        return;
+      }
+
+      const maxBytes = 2 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        showToast('Image must be 2 MB or smaller.');
+        e.target.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const previewEl = document.getElementById('guide-edit-avatar-preview');
+        const fileLabelEl = document.getElementById('guide-avatar-filename');
+        if (previewEl && typeof dataUrl === 'string') previewEl.src = dataUrl;
+        if (fileLabelEl) fileLabelEl.innerText = file.name;
+        if (currentUser && typeof dataUrl === 'string') {
+          currentUser.img = dataUrl;
+          saveRegisteredUsers(registeredUsers);
+        }
+        showToast(`Loaded "${file.name}" — click Save & Sync to publish.`);
+      };
+      reader.onerror = () => {
+        showToast('Could not read the selected image file.');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveGuideProfileDetails(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      const previewSrc = document.getElementById('guide-edit-avatar-preview')?.src;
+
+      currentUser.name = document.getElementById('guide-edit-name').value.trim();
+      currentUser.region = document.getElementById('guide-edit-region').value.trim();
+      currentUser.phone = document.getElementById('guide-edit-phone').value.trim();
+      currentUser.exp = document.getElementById('guide-edit-exp').value.trim();
+      currentUser.languages = document.getElementById('guide-edit-languages').value.trim();
+      currentUser.license = document.getElementById('guide-edit-license').value.trim();
+      currentUser.address = document.getElementById('guide-edit-address').value.trim();
+      currentUser.bio = document.getElementById('guide-edit-bio').value.trim();
+      if (previewSrc) currentUser.img = previewSrc;
+
+      saveRegisteredUsers(registeredUsers);
+      document.getElementById('guide-portal-name').innerText = currentUser.name;
+      document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region}`;
+
+      const dirIdx = verifiedGuidesList.findIndex(g => g.email === currentUser.email);
+      if (dirIdx > -1) {
+        verifiedGuidesList[dirIdx] = {
+          ...verifiedGuidesList[dirIdx],
+          name: currentUser.name,
+          region: currentUser.region,
+          specialty: document.getElementById('guide-edit-specialty').value,
+          phone: currentUser.phone,
+          languages: currentUser.languages,
+          license: currentUser.license,
+          bio: currentUser.bio,
+          ...(previewSrc ? { img: previewSrc } : {})
+        };
+        renderGuidesDirectory(verifiedGuidesList);
+      }
+      showToast('Guide profile & photo synced with public directory!');
     }
 
     function saveGuideProfileDetails(e) {
