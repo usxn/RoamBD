@@ -523,7 +523,7 @@
 
       <section class="space-y-4">
         <div class="relative rounded-3xl overflow-hidden h-[300px] sm:h-[380px] shadow-sm group">
-          <img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1800&q=85" alt="Srimangal Tea Trails" class="w-full h-full object-cover group-hover:scale-[1.02] transition duration-700" onerror="this.src='https://placehold.co/1600x600/184D38/F8F7F3?text=Discover+Bangladesh'">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=1400" referrerpolicy="no-referrer" alt="Srimangal Tea Trails" class="w-full h-full object-cover group-hover:scale-[1.02] transition duration-700" onerror="this.src='https://placehold.co/1600x600/184D38/F8F7F3?text=Discover+Bangladesh'">
           <div class="absolute inset-0 bg-gradient-to-r from-[#0F241B]/90 via-[#0F241B]/55 to-transparent"></div>
 
           <div class="absolute inset-0 p-6 sm:p-10 lg:p-12 flex flex-col justify-between">
@@ -787,7 +787,7 @@
       </section>
 
       <section class="relative rounded-3xl overflow-hidden h-[230px] sm:h-[260px] shadow-sm">
-        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80" alt="Tea Trails of Sylhet" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/1600x400/184D38/F8F7F3?text=Sylhet+Tea+Trails'">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=1400" referrerpolicy="no-referrer" alt="Tea Trails of Sylhet" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/1600x400/184D38/F8F7F3?text=Sylhet+Tea+Trails'">
         <div class="absolute inset-0 bg-gradient-to-r from-[#0F241B]/90 via-[#0F241B]/65 to-transparent"></div>
         <div class="relative h-full p-6 sm:p-10 flex flex-col justify-center max-w-xl space-y-2.5">
           <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-300">THIS SEASON'S SLOW ESCAPE</span>
@@ -2234,6 +2234,13 @@
       }
     }
 
+    function withTimeout(promise, ms = 3500) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms))
+      ]);
+    }
+
     // ================= 2. SESSION, WISHLIST & USER STATE =================
     const STORAGE_KEY = 'roambd_registered_users_v1';
     const WISHLIST_STORAGE_KEY = 'roambd_saved_wishlist_v1';
@@ -2368,7 +2375,38 @@
       });
     }
 
-    // ================= 4. CURATED SEED DATASETS =================
+    function toggleLanguagePill() {
+      currentLang = currentLang === 'EN' ? 'BN' : 'EN';
+      const pill = document.getElementById('lang-pill-text');
+      if (pill) pill.innerText = currentLang;
+      applyLanguageTranslations();
+      showToast(currentLang === 'BN' ? 'ভাষা বাংলায় পরিবর্তিত হয়েছে' : 'Language switched to English');
+    }
+
+    // ================= 4. CURATED SEED DATASETS & AUTHENTIC IMAGES =================
+    const AUTHENTIC_PLACE_IMAGES = [
+      { match: "cox", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Cox%27s_Bazar_Beach.JPG?width=900" },
+      { match: "sundarban", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Boat,_trees_and_water_in_Sundarbans.jpg?width=900" },
+      { match: "sajek", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Sajek_Valley_2.jpg?width=900" },
+      { match: "srimangal", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=900" },
+      { match: "sixty dome", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Shat_Gambuj_Mosque.jpg?width=900" },
+      { match: "shat gambuj", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Shat_Gambuj_Mosque.jpg?width=900" },
+      { match: "kaptai", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Kaptai_Lake_(19833365911).jpg?width=900" },
+      { match: "saint martin", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Saint_Martin%27s_Island.JPG?width=900" },
+      { match: "paharpur", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_Somapura_Mahavihara.jpg?width=900" },
+      { match: "somapura", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_Somapura_Mahavihara.jpg?width=900" },
+      { match: "kuakata", url: "https://commons.wikimedia.org/wiki/Special:FilePath/Beautiful_Kuakata_Beach.jpg?width=900" }
+    ];
+
+    function resolveDestinationImage(title, rawUrl) {
+      const normalizedTitle = (title || "").toLowerCase();
+      const matched = AUTHENTIC_PLACE_IMAGES.find(entry => normalizedTitle.includes(entry.match));
+      if (matched && (!rawUrl || rawUrl.includes("images.unsplash.com"))) {
+        return matched.url;
+      }
+      return rawUrl || (matched ? matched.url : "https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=900");
+    }
+
     let destinations = [
       {
         id: 1,
@@ -2376,7 +2414,7 @@
         district: "Chattogram",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Cox%27s_Bazar_Beach.JPG?width=900",
         rating: "4.9",
         badge: "BEACH",
         subtitle: "Long coastlines & golden sunsets",
@@ -2391,7 +2429,7 @@
         district: "Khulna",
         category: "forest",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Boat,_trees_and_water_in_Sundarbans.jpg?width=900",
         rating: "4.8",
         badge: "WILDLIFE",
         subtitle: "Mangrove waterways & wild encounters",
@@ -2406,7 +2444,7 @@
         district: "Rangamati",
         category: "hill",
         season: "monsoon",
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Sajek_Valley_2.jpg?width=900",
         rating: "4.7",
         badge: "HILLS",
         subtitle: "Cloud-kissed hills & mountain stays",
@@ -2421,7 +2459,7 @@
         district: "Sylhet",
         category: "tea",
         season: "year-round",
-        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=900",
         rating: "4.9",
         badge: "NATURE ESCAPE",
         subtitle: "Tea trails & quiet forest walks",
@@ -2436,7 +2474,7 @@
         district: "Bagerhat",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Shat_Gambuj_Mosque.jpg?width=900",
         rating: "4.8",
         badge: "HERITAGE",
         subtitle: "15th-century terracotta mosque city",
@@ -2451,7 +2489,7 @@
         district: "Rangamati",
         category: "hill",
         season: "monsoon",
-        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kaptai_Lake_(19833365911).jpg?width=900",
         rating: "4.8",
         badge: "LAKE & HILLS",
         subtitle: "Lakeside mornings & boat rides",
@@ -2466,7 +2504,7 @@
         district: "Cox's Bazar",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Saint_Martin%27s_Island.JPG?width=900",
         rating: "4.9",
         badge: "CORAL ISLAND",
         subtitle: "Turquoise reefs & coconut groves",
@@ -2481,7 +2519,7 @@
         district: "Naogaon, Rajshahi",
         category: "historical",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1609948543911-7f01ff385be5?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_Somapura_Mahavihara.jpg?width=900",
         rating: "4.8",
         badge: "UNESCO HERITAGE",
         subtitle: "8th-century Pala dynasty monastery",
@@ -2496,7 +2534,7 @@
         district: "Patuakhali, Barishal",
         category: "beach",
         season: "winter",
-        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&w=900&q=80",
+        image: "https://commons.wikimedia.org/wiki/Special:FilePath/Beautiful_Kuakata_Beach.jpg?width=900",
         rating: "4.7",
         badge: "SUNRISE & SUNSET",
         subtitle: "Panoramic sunrise & sunset over the sea",
@@ -2511,169 +2549,129 @@
       {
         name: "Mahmudul Hasan",
         region: "Sundarbans & Bagerhat",
-        trips: 142,
+        trips: "142 trips",
         rating: "4.9",
         specialty: "wildlife",
-        tags: ["Wildlife safaris", "Heritage"],
-        bio: "A patient eye for birds and 11+ years guiding photography vessels across Kotka, Hiron Point, and Sixty Dome Mosque.",
+        bio: "Certified wildlife naturalist specializing in Sundarbans waterways and Sixty Dome Mosque.",
         languages: "Bangla, English",
         phone: "+880 1712-987654",
-        email: "mahmud.sundarban@roambd-guides.org",
+        email: "mahmud.guide@example.com",
         license: "BPC-2018-KHULNA-084",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+        reviews: [
+          { author: "Tanvir Ahmed", rating: 5, date: "Nov 2026", text: "Mahmud knew every quiet mangrove creek and arranged our Forest Department permit seamlessly." }
+        ]
       },
       {
-        name: "Mong Prue Marma",
-        region: "Rangamati & Bandarban",
-        trips: 98,
+        name: "Chingma Marma",
+        region: "Bandarban & Rangamati",
+        trips: "98 trips",
         rating: "5.0",
         specialty: "hills",
-        tags: ["Hill culture", "Lake journeys"],
-        bio: "Explore Kaptai Lake, Boga Lake ridge trails, and indigenous hill communities with local perspective and permit assistance.",
-        languages: "Bangla, English, Marma",
-        phone: "+880 1823-456789",
-        email: "mong.marma@roambd-guides.org",
-        license: "CHT-2020-BANDAR-119",
-        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80"
+        bio: "Indigenous mountain guide leading responsible treks across Boga Lake and Sajek ridges.",
+        languages: "Marma, Bangla, English",
+        phone: "+880 1819-443322",
+        email: "chingma.hills@example.com",
+        license: "CHT-2020-BANDARBAN-019",
+        img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+        reviews: [
+          { author: "Nusrat Jahan", rating: 5, date: "Oct 2026", text: "Deep cultural insight into Marma villages and super attentive to trail safety." }
+        ]
       },
       {
-        name: "Nusrat Jahan",
-        region: "Old Dhaka & Sylhet",
-        trips: 115,
+        name: "Farhana Yasmin",
+        region: "Old Dhaka & Sonargaon",
+        trips: "215 trips",
         rating: "4.9",
         specialty: "heritage",
-        tags: ["Heritage", "Street food"],
-        bio: "Winding lanes of Panam City and Lalbagh, living history, and culinary flavors you will remember long after.",
+        bio: "Architectural historian offering curated Mughal heritage walks and Old Dhaka food trails.",
         languages: "Bangla, English, French",
-        phone: "+880 1611-223344",
-        email: "nusrat.heritage@roambd-guides.org",
-        license: "BPC-2021-DHAKA-302",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80"
+        phone: "+880 1911-556677",
+        email: "farhana.heritage@example.com",
+        license: "BPC-2017-DHAKA-112",
+        img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+        reviews: [
+          { author: "Arifur Rahman", rating: 5, date: "Nov 2026", text: "Unmatched knowledge of Lalbagh Fort and Panam City history. Best Bakarkhani stop!" }
+        ]
       },
       {
-        name: "Rafiqul Islam",
-        region: "Cox's Bazar & Saint Martin's",
-        trips: 180,
-        rating: "4.9",
+        name: "Rashedul Karim",
+        region: "Srimangal & Lawachara",
+        trips: "164 trips",
+        rating: "4.8",
         specialty: "wildlife",
-        tags: ["Coastal trails", "Marine ecology"],
-        bio: "Quiet beaches, fishing villages, and safe marine tide guidance along Inani, Teknaf, and Saint Martin's coral island.",
+        bio: "Rainforest birding specialist and tea-estate storyteller based in Moulvibazar.",
         languages: "Bangla, English",
-        phone: "+880 1715-445566",
-        email: "rafiq.coast@roambd-guides.org",
-        license: "BPC-2019-COXS-145",
-        image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80"
+        phone: "+880 1715-882211",
+        email: "rashed.sylhet@example.com",
+        license: "BPC-2019-SYLHET-045",
+        img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+        reviews: [
+          { author: "Sadia Islam", rating: 5, date: "Sep 2026", text: "Spotted Hoolock Gibbons at dawn in Lawachara thanks to Rashed's patience." }
+        ]
       },
       {
-        name: "Meherun Nisa",
-        region: "Srimangal & Tanguar Haor",
-        trips: 124,
-        rating: "4.9",
-        specialty: "wildlife",
-        tags: ["Tea trails", "Birdwatching"],
-        bio: "Discover tea country slowly, with stories from Monipuri weavers and guided rainforest walks in Lawachara.",
-        languages: "Bangla, English, Hindi",
-        phone: "+880 1732-778899",
-        email: "meherun.sylhet@roambd-guides.org",
-        license: "BPC-2020-SYLHET-210",
-        image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        name: "Tenzing Tripura",
-        region: "Sajek Valley & Khagrachhari",
-        trips: 87,
+        name: "Nabanita Chakma",
+        region: "Kaptai Lake & Sajek Valley",
+        trips: "118 trips",
         rating: "4.9",
         specialty: "hills",
-        tags: ["Cloud ridges", "Photography"],
-        bio: "Chase the morning clouds across Konglak Peak and discover hidden waterfall trails with full convoy coordination.",
-        languages: "Bangla, English, Kokborok",
-        phone: "+880 1844-112200",
-        email: "tenzing.sajek@roambd-guides.org",
-        license: "CHT-2021-KHAGRA-054",
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80"
+        bio: "Community-based eco-guide connecting travelers with lakeside homestays and artisan weavers.",
+        languages: "Chakma, Bangla, English",
+        phone: "+880 1552-774411",
+        email: "nabanita.kaptai@example.com",
+        license: "CHT-2021-RANGAMATI-031",
+        img: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80",
+        reviews: []
+      },
+      {
+        name: "Kamrul Ahsan",
+        region: "Cox's Bazar & Saint Martin's",
+        trips: "189 trips",
+        rating: "4.8",
+        specialty: "wildlife",
+        bio: "Marine conservation volunteer and coastal trail guide covering Inani, Teknaf, and Chhera Dwip.",
+        languages: "Bangla, English",
+        phone: "+880 1814-669900",
+        email: "kamrul.coast@example.com",
+        license: "BPC-2018-COXS-062",
+        img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+        reviews: []
       }
     ];
 
-    const plannerDaysData = {
-      1: {
-        heading: "Arrival & a first taste of the coast",
-        sub: "Thursday, December 03 • 3 stops • A relaxed start",
-        stops: [
-          { time: "09:30", tag: "TRANSIT", title: "Arrive at Cox's Bazar Iconic Railway Station", desc: "Transfer along Marine Drive to Sayeman Beach Heritage Resort.", status: "Verified" },
-          { time: "13:00", tag: "LOCAL FOOD", title: "Coastal Seafood & Bhorta Lunch at Poushee", desc: "Fresh Rupchanda grill, loitta fry, and traditional 12-item Bangla bhorta.", status: "Saved" },
-          { time: "16:45", tag: "EXPERIENCE", title: "Golden Sunset Walk at Inani Coral Beach", desc: "Walk the coral-stone shoreline and watch the light change over the Bay of Bengal.", status: "Planned" }
-        ]
-      },
-      2: {
-        heading: "Marine Drive waterfalls & hill viewpoints",
-        sub: "Friday, December 04 • 3 stops • Nature & scenic coastal drive",
-        stops: [
-          { time: "08:30", tag: "NATURE", title: "Himchari National Park & Hilltop Viewpoint", desc: "Climb the forest stairs for sweeping Bay of Bengal views.", status: "Verified" },
-          { time: "12:30", tag: "LOCAL FOOD", title: "Lunch at Mermaid Beach Cafe, Pechar Dwip", desc: "Eco-friendly coastal dining overlooking Reju Khal estuary.", status: "Planned" },
-          { time: "17:00", tag: "EXPERIENCE", title: "Sampan Boat Harbor at Teknaf Road", desc: "Photograph colorful traditional wooden moon-boats at dusk.", status: "Planned" }
-        ]
-      },
-      3: {
-        heading: "Ramu Buddhist monasteries & return journey",
-        sub: "Saturday, December 05 • 2 stops • Culture & departure",
-        stops: [
-          { time: "10:00", tag: "CULTURE", title: "Ramu Rangkut Banasram & 100-ft Reclining Buddha", desc: "Explore centuries-old wooden monasteries and local handloom villages.", status: "Verified" },
-          { time: "15:00", tag: "TRANSIT", title: "Evening Express Train Return to Dhaka", desc: "Depart Cox's Bazar Station with saved travel memories.", status: "Verified" }
-        ]
-      }
-    };
-
-    const communityReviews = [
+    let reviewsList = [
       {
-        name: "Dr. Farhana Rahman",
-        role: "Architectural Historian",
-        date: "2 days ago",
-        stars: 5,
-        region: "Sixty Dome Mosque",
-        content: "Visiting Bagerhat just after sunrise gives the best light on the terracotta brickwork. Hiring a local guide unlocked so many historical details."
+        author: "Nusrat Jahan",
+        role: "Explorer",
+        region: "Srimangal Tea Trails",
+        text: "Early morning walks through Lawachara with a local naturalist were unforgettable. Book Parabat Express tickets early."
       },
       {
-        name: "Arifuzzaman Noyon",
-        role: "Wildlife Photographer",
-        date: "1 week ago",
-        stars: 5,
-        region: "Sundarbans",
-        content: "Used RoamBD to connect with Mahmudul Hasan for our Kotka creek trail. Having the Forest Department and Tourist Police numbers saved gave complete peace of mind."
+        author: "Arifur Rahman",
+        role: "Heritage Photographer",
+        region: "Bagerhat & Sixty Dome",
+        text: "Golden hour light across the terracotta arches of Shat Gambuj Mosque is pure magic. Respect local prayer times."
       },
       {
-        name: "Nabila Tasnim",
+        author: "Sadia Islam",
         role: "Solo Traveler",
-        date: "2 weeks ago",
-        stars: 5,
-        region: "Srimangal",
-        content: "The Parabat Express train combined with an early morning walk in Lawachara and 7-layer tea at Nilkantha was effortless."
+        region: "Cox's Bazar Marine Drive",
+        text: "Having 24/7 Tourist Police contacts offline gave complete peace of mind while exploring Inani and Himchari."
       }
     ];
 
-    // ================= 5. SUPABASE LIVE POSTGRESQL SYNC =================
-    function withTimeout(promise, ms = 2000) {
-      return Promise.race([
-        promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), ms))
-      ]);
-    }
-
+    // ================= 5. LIVE SUPABASE DATABASE SYNC =================
     async function syncLiveDatabase() {
       if (!supabaseClient) {
         updateDatabaseBadge(false, 'Local Cache Mode');
         return;
       }
-
       try {
         const { data: dbDestinations, error: destErr } = await withTimeout(
-          supabaseClient
-            .from('destinations')
-            .select('*')
-            .eq('is_active', true)
-            .order('id', { ascending: true }),
-          2000
+          supabaseClient.from('destinations').select('*').eq('is_active', true).order('id', { ascending: true }),
+          3500
         );
-
         if (destErr) throw destErr;
 
         if (dbDestinations && dbDestinations.length > 0) {
@@ -2681,9 +2679,9 @@
             id: d.id,
             title: d.title,
             district: d.district,
-            category: d.category || 'heritage',
+            category: d.category || 'historical',
             season: d.season || 'year-round',
-            image: d.image_url || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=900&q=80',
+            image: resolveDestinationImage(d.title, d.image_url),
             rating: String(d.rating || '4.8'),
             badge: (d.category || 'DISCOVER').toUpperCase(),
             subtitle: d.subtitle || d.district,
@@ -2695,50 +2693,17 @@
           renderDestinations(destinations);
         }
 
-        const { data: dbGuides, error: guideErr } = await withTimeout(
-          supabaseClient
-            .from('guides')
-            .select('*')
-            .eq('verification_status', 'VERIFIED'),
-          2000
+        const { data: dbNotes } = await withTimeout(
+          supabaseClient.from('field_notes').select('*').order('created_at', { ascending: false }).limit(12),
+          3500
         );
-
-        if (!guideErr && dbGuides && dbGuides.length > 0) {
-          verifiedGuidesList = dbGuides.map(g => ({
-            name: g.full_name || 'Verified Guide',
-            region: g.region || 'Bangladesh',
-            trips: g.trips_hosted || 45,
-            rating: String(g.rating || '4.9'),
-            specialty: g.specialty || 'heritage',
-            tags: g.tags || ['Local Expert', 'Verified'],
-            bio: g.bio || 'Certified regional naturalist and cultural guide.',
-            languages: g.languages || 'Bangla, English',
-            phone: g.phone || '+880 1700-000000',
-            email: g.email || 'guides@roambd.org',
-            license: g.license_id || 'BPC-VERIFIED',
-            image: g.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'
+        if (dbNotes && dbNotes.length > 0) {
+          reviewsList = dbNotes.map(n => ({
+            author: n.author_name,
+            role: n.author_role || 'Explorer',
+            region: n.region,
+            text: n.content
           }));
-          renderGuidesDirectory(verifiedGuidesList);
-        }
-
-        const { data: dbReviews, error: revErr } = await withTimeout(
-          supabaseClient
-            .from('field_notes')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(6),
-          2000
-        );
-
-        if (!revErr && dbReviews && dbReviews.length > 0) {
-          communityReviews.splice(0, communityReviews.length, ...dbReviews.map(r => ({
-            name: r.author_name,
-            role: r.author_role || 'Explorer',
-            date: 'Supabase DB',
-            stars: 5,
-            region: r.region,
-            content: r.content
-          })));
           renderReviews();
         }
 
@@ -2748,287 +2713,13 @@
       }
     }
 
-    // ================= 6. CLIENT-SIDE ROUTER & NAVIGATION =================
-    function openPage(pageName) {
-      activePage = pageName;
-      const navbar = document.getElementById('main-navbar');
-      const bottomNav = document.getElementById('mobile-bottom-nav');
-      const footer = document.getElementById('main-footer');
-
-      document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
-
-      if (pageName === 'auth') {
-        if (navbar) navbar.classList.add('hidden');
-        if (bottomNav) bottomNav.classList.add('hidden');
-        if (footer) footer.classList.add('hidden');
-        const authPage = document.getElementById('page-auth');
-        if (authPage) authPage.classList.remove('hidden');
-      } else {
-        if (navbar) navbar.classList.remove('hidden');
-        if (bottomNav) bottomNav.classList.remove('hidden');
-        if (footer) footer.classList.remove('hidden');
-        const target = document.getElementById('page-' + pageName);
-        if (target) {
-          target.classList.remove('hidden');
-        } else {
-          const homePage = document.getElementById('page-home');
-          if (homePage) homePage.classList.remove('hidden');
-        }
-        updateRolePortalsUI();
-        updateActiveNavIndicators(pageName);
-        if (pageName === 'map') {
-          setTimeout(() => initInteractiveLeafletMap(), 80);
-        }
-        if (pageName === 'guide') populateGuideDashboard();
-        if (pageName === 'admin') {
-          updateAdminCounters();
-          renderAdminAuditLog();
-          fetchAdminProfilesFromSupabase();
-        }
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function updateActiveNavIndicators(pageName) {
-      document.querySelectorAll('.nav-page-btn').forEach(btn => {
-        if (btn.dataset.page === pageName) {
-          btn.className = "nav-page-btn text-forest-800 font-bold border-b-2 border-forest-700 pb-1 transition";
-        } else {
-          btn.className = "nav-page-btn hover:text-forest-800 pb-1 border-b-2 border-transparent transition";
-        }
-      });
-
-      document.querySelectorAll('.mobile-dock-btn').forEach(btn => {
-        if (btn.dataset.page === pageName) {
-          btn.className = "mobile-dock-btn flex flex-col items-center justify-center py-1 text-forest-700 font-bold";
-        } else {
-          btn.className = "mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700";
-        }
-      });
-    }
-
-    function toggleMobileDrawer(open) {
-      const drawer = document.getElementById('mobile-drawer');
-      if (open) drawer.classList.remove('hidden');
-      else drawer.classList.add('hidden');
-    }
-
-    function toggleLanguagePill() {
-      currentLang = currentLang === 'EN' ? 'BN' : 'EN';
-      document.getElementById('lang-pill-text').innerText = currentLang;
-      applyLanguageTranslations();
-      showToast(currentLang === 'BN' ? 'ভাষা বাংলায় পরিবর্তিত হয়েছে (Bangla Mode)' : 'Language switched to English (EN)');
-    }
-
-    function navigateHomeByRole() {
-      if (currentUser && currentUser.role === 'admin') {
-        openPage('admin');
-      } else if (currentUser && currentUser.role === 'guide') {
-        openPage('guide');
-      } else {
-        openPage('home');
-      }
-    }
-
-    function updateRolePortalsUI() {
-      const adminNavBtn = document.getElementById('btn-return-admin-portal');
-      const guideNavBtn = document.getElementById('btn-return-guide-portal');
-      const drawerAdminBtn = document.getElementById('drawer-btn-admin');
-      const drawerGuideBtn = document.getElementById('drawer-btn-guide');
-
-      adminNavBtn.classList.add('hidden');
-      adminNavBtn.classList.remove('inline-flex');
-      guideNavBtn.classList.add('hidden');
-      guideNavBtn.classList.remove('inline-flex');
-      drawerAdminBtn.classList.add('hidden');
-      drawerAdminBtn.classList.remove('flex');
-      drawerGuideBtn.classList.add('hidden');
-      drawerGuideBtn.classList.remove('flex');
-
-      if (currentUser && currentUser.role === 'admin') {
-        adminNavBtn.classList.remove('hidden');
-        adminNavBtn.classList.add('inline-flex');
-        drawerAdminBtn.classList.remove('hidden');
-        drawerAdminBtn.classList.add('flex');
-      } else if (currentUser && currentUser.role === 'guide') {
-        guideNavBtn.classList.remove('hidden');
-        guideNavBtn.classList.add('inline-flex');
-        drawerGuideBtn.classList.remove('hidden');
-        drawerGuideBtn.classList.add('flex');
-      }
-    }
-
-    function getInitials(name) {
-      return (name || "TA").split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-    }
-
-    // ================= 7. WISHLIST & USER PROFILE MANAGEMENT =================
-    function renderSavedWishlistInProfile() {
-      const labelEl = document.getElementById('profile-saved-count-label');
-      const listEl = document.getElementById('profile-saved-places-list');
-      if (!labelEl || !listEl) return;
-
-      const savedItems = destinations.filter(d => savedWishlistIds.includes(d.id));
-      labelEl.innerText = `Saved Places (${savedItems.length})`;
-
-      if (savedItems.length === 0) {
-        listEl.innerHTML = `<p class="text-slate-500 text-[11px] italic bg-white p-2.5 rounded-xl">Tap the heart icon on any destination card to save it here.</p>`;
-        return;
-      }
-
-      listEl.innerHTML = savedItems.map(item => `
-        <div class="bg-white p-2.5 rounded-xl flex items-center justify-between gap-2">
-          <div class="min-w-0">
-            <span class="font-bold text-slate-800 block truncate">${item.title}</span>
-            <span class="text-[10px] text-slate-400">${item.district}</span>
-          </div>
-          <button onclick="toggleDestinationWishlist(${item.id}); renderSavedWishlistInProfile();" class="text-red-500 hover:text-red-700 text-xs px-2" title="Remove from wishlist">
-            <i class="fa-solid fa-heart"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function toggleDestinationWishlist(id) {
-      const spot = destinations.find(d => d.id === id);
-      if (!spot) return;
-      const idx = savedWishlistIds.indexOf(id);
-      if (idx === -1) {
-        savedWishlistIds.push(id);
-        showToast(`Saved "${spot.title}" to your Traveler Notebook!`);
-      } else {
-        savedWishlistIds.splice(idx, 1);
-        showToast(`Removed "${spot.title}" from Saved Places.`);
-      }
-      persistWishlist();
-      renderDestinations(destinations);
-      renderSavedWishlistInProfile();
-    }
-
-    function syncUserUI() {
-      const profilePill = document.getElementById('nav-profile-pill');
-      const guestSignInBtn = document.getElementById('nav-guest-signin-btn');
-      const drawerProfileCard = document.getElementById('drawer-profile-card');
-      const drawerGuestCard = document.getElementById('drawer-guest-card');
-      const drawerSignOutBtn = document.getElementById('drawer-signout-btn');
-      const heroFirst = document.getElementById('hero-user-firstname');
-
-      renderSavedWishlistInProfile();
-
-      if (!currentUser || currentUser.role === 'guest') {
-        if (profilePill) { profilePill.classList.add('hidden'); profilePill.classList.remove('flex'); }
-        if (guestSignInBtn) { guestSignInBtn.classList.remove('hidden'); guestSignInBtn.classList.add('inline-flex'); }
-        if (drawerProfileCard) { drawerProfileCard.classList.add('hidden'); drawerProfileCard.classList.remove('flex'); }
-        if (drawerGuestCard) drawerGuestCard.classList.remove('hidden');
-        if (drawerSignOutBtn) drawerSignOutBtn.classList.add('hidden');
-        if (heroFirst) heroFirst.innerText = 'Traveler';
-        return;
-      }
-
-      if (profilePill) { profilePill.classList.remove('hidden'); profilePill.classList.add('flex'); }
-      if (guestSignInBtn) { guestSignInBtn.classList.add('hidden'); guestSignInBtn.classList.remove('inline-flex'); }
-      if (drawerProfileCard) { drawerProfileCard.classList.remove('hidden'); drawerProfileCard.classList.add('flex'); }
-      if (drawerGuestCard) drawerGuestCard.classList.add('hidden');
-      if (drawerSignOutBtn) drawerSignOutBtn.classList.remove('hidden');
-
-      const initials = getInitials(currentUser.name);
-      const firstName = currentUser.name.split(' ')[0];
-      const roleMap = { tourist: "Explorer", guide: "Verified Guide", admin: "System Admin" };
-
-      document.getElementById('nav-user-initials').innerText = initials;
-      document.getElementById('nav-user-name').innerText = currentUser.name;
-      document.getElementById('nav-user-role-label').innerText = roleMap[currentUser.role] || "Explorer";
-
-      document.getElementById('drawer-user-initials').innerText = initials;
-      document.getElementById('drawer-user-name').innerText = currentUser.name;
-      document.getElementById('drawer-user-role').innerText = roleMap[currentUser.role] || "Explorer";
-
-      if (heroFirst) heroFirst.innerText = firstName;
-
-      document.getElementById('profile-card-initials').innerText = initials;
-      document.getElementById('profile-card-name').innerText = currentUser.name;
-      document.getElementById('profile-card-email').innerText = currentUser.email;
-      document.getElementById('profile-card-role').innerText = roleMap[currentUser.role] || "Explorer";
-
-      document.getElementById('profile-view-gender').innerText = currentUser.gender || "Not Specified";
-      document.getElementById('profile-view-phone').innerText = currentUser.phone || "+880 1711-223344";
-      document.getElementById('profile-view-address').innerText = currentUser.address || "Dhaka, Bangladesh";
-      document.getElementById('profile-view-emergency').innerText = currentUser.emergency || "Not Specified";
-      document.getElementById('profile-view-bio').innerText = currentUser.bio || "Exploring heritage & natural beauty across Bangladesh.";
-    }
-
-    function toggleProfileEditMode() {
-      const viewSec = document.getElementById('profile-view-section');
-      const editForm = document.getElementById('profile-edit-form');
-      if (editForm.classList.contains('hidden')) {
-        document.getElementById('edit-prof-name').value = currentUser.name || '';
-        document.getElementById('edit-prof-gender').value = currentUser.gender || 'Not Specified';
-        document.getElementById('edit-prof-phone').value = currentUser.phone || '';
-        document.getElementById('edit-prof-emergency').value = currentUser.emergency || '';
-        document.getElementById('edit-prof-address').value = currentUser.address || '';
-        document.getElementById('edit-prof-bio').value = currentUser.bio || '';
-        viewSec.classList.add('hidden');
-        editForm.classList.remove('hidden');
-      } else {
-        editForm.classList.add('hidden');
-        viewSec.classList.remove('hidden');
-      }
-    }
-
-    async function saveTouristProfileEdits(e) {
-      e.preventDefault();
-      currentUser.name = document.getElementById('edit-prof-name').value.trim();
-      currentUser.gender = document.getElementById('edit-prof-gender').value;
-      currentUser.phone = document.getElementById('edit-prof-phone').value.trim();
-      currentUser.emergency = document.getElementById('edit-prof-emergency').value.trim();
-      currentUser.address = document.getElementById('edit-prof-address').value.trim();
-      currentUser.bio = document.getElementById('edit-prof-bio').value.trim();
-
-      if (supabaseClient && currentUser.id) {
-        await supabaseClient.from('profiles').update({
-          full_name: currentUser.name,
-          phone: currentUser.phone,
-          address: currentUser.address,
-          bio: currentUser.bio
-        }).eq('id', currentUser.id);
-      }
-
-      const idx = registeredUsers.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (idx !== -1) {
-        registeredUsers[idx] = currentUser;
-        saveRegisteredUsers(registeredUsers);
-      }
-      syncUserUI();
-      toggleProfileEditMode();
-      showToast('Profile saved to Supabase & local notebook!');
-    }
-
-    // ================= 8. AUTHENTICATION & REGISTRATION =================
-    function showAuthNotification(type, title, message) {
-      const alertBox = document.getElementById('auth-alert');
-      const alertIcon = document.getElementById('auth-alert-icon');
-      const alertTitle = document.getElementById('auth-alert-title');
-      const alertMsg = document.getElementById('auth-alert-msg');
-
-      alertTitle.innerText = title;
-      alertMsg.innerText = message;
-
-      if (type === 'error') {
-        alertBox.className = "mb-5 bg-red-50 border border-red-200 text-red-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
-        alertIcon.className = "fa-solid fa-circle-exclamation text-red-600 text-base mt-0.5";
-      } else {
-        alertBox.className = "mb-5 bg-forest-100 border border-forest-200 text-forest-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
-        alertIcon.className = "fa-solid fa-circle-check text-forest-700 text-base mt-0.5";
-      }
-      alertBox.classList.remove('hidden');
-    }
-
+    // ================= 6. AUTHENTICATION & SESSION HANDLERS =================
     function switchAuthTab(tab) {
-      document.getElementById('auth-alert').classList.add('hidden');
       const signInForm = document.getElementById('signin-form');
       const registerForm = document.getElementById('register-form');
       const btnSignIn = document.getElementById('tab-btn-signin');
       const btnRegister = document.getElementById('tab-btn-register');
+      document.getElementById('auth-alert').classList.add('hidden');
 
       if (tab === 'register') {
         signInForm.classList.add('hidden');
@@ -3043,18 +2734,6 @@
       }
     }
 
-    function togglePasswordVisibility(inputId, iconId) {
-      const input = document.getElementById(inputId);
-      const icon = document.getElementById(iconId);
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash';
-      } else {
-        input.type = 'password';
-        icon.className = 'fa-regular fa-eye';
-      }
-    }
-
     function selectAccountRole(role) {
       if (role !== 'guide') role = 'tourist';
       document.getElementById('reg-role').value = role;
@@ -3066,6 +2745,18 @@
 
       touristCard.className = role === 'tourist' ? activeClass : inactiveClass;
       guideCard.className = role === 'guide' ? activeClass : inactiveClass;
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
     }
 
     function checkPasswordStrength(val) {
@@ -3083,110 +2774,84 @@
         text.className = 'text-[10px] text-slate-400 font-semibold ml-1';
         return;
       }
-
       if (val.length < 6) {
         bar1.className = 'h-full bg-red-500';
         text.innerText = 'Weak';
-        text.className = 'text-[10px] text-red-600 font-semibold ml-1';
-      } else if (val.length < 8) {
+        text.className = 'text-[10px] text-red-600 font-bold ml-1';
+      } else if (val.length < 10) {
         bar1.className = 'h-full bg-amber-500';
         bar2.className = 'h-full bg-amber-500';
         text.innerText = 'Medium';
-        text.className = 'text-[10px] text-amber-600 font-semibold ml-1';
+        text.className = 'text-[10px] text-amber-600 font-bold ml-1';
       } else {
-        bar1.className = 'h-full bg-forest-600';
-        bar2.className = 'h-full bg-forest-600';
-        bar3.className = 'h-full bg-forest-600';
+        bar1.className = 'h-full bg-forest-700';
+        bar2.className = 'h-full bg-forest-700';
+        bar3.className = 'h-full bg-forest-700';
         text.innerText = 'Strong';
-        text.className = 'text-[10px] text-forest-700 font-semibold ml-1';
+        text.className = 'text-[10px] text-forest-700 font-bold ml-1';
       }
     }
 
-    function handleSignIn(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('signin-email').value.trim();
-      const passwordInput = document.getElementById('signin-password').value;
+    function showAuthBanner(isError, title, msg) {
+      const alertBox = document.getElementById('auth-alert');
+      const alertIcon = document.getElementById('auth-alert-icon');
+      const alertTitle = document.getElementById('auth-alert-title');
+      const alertMsg = document.getElementById('auth-alert-msg');
 
-      showAuthNotification('success', 'Verifying Credentials...', 'Checking Supabase Auth & local directory...');
+      alertTitle.innerText = title;
+      alertMsg.innerText = msg;
+      alertBox.classList.remove('hidden');
 
-      const builtinMatch = BUILTIN_USERS.find(
-        u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
-      );
-      if (builtinMatch) {
-        currentUser = builtinMatch;
-        syncUserUI();
-        const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-        showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
-        setTimeout(() => {
-          document.getElementById('auth-alert').classList.add('hidden');
-          openPage(targetPage);
-        }, 300);
-        return;
+      if (isError) {
+        alertBox.className = "mb-5 bg-red-50 border border-red-200 text-red-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
+        alertIcon.className = "fa-solid fa-circle-exclamation text-red-600 text-base mt-0.5";
+      } else {
+        alertBox.className = "mb-5 bg-forest-100 border border-forest-200 text-forest-900 p-3.5 rounded-2xl text-xs flex items-start gap-3";
+        alertIcon.className = "fa-solid fa-circle-check text-forest-700 text-base mt-0.5";
       }
+    }
+
+    async function handleSignIn(e) {
+      e.preventDefault();
+      const email = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
 
       if (supabaseClient) {
-        withTimeout(
-          supabaseClient.auth.signInWithPassword({ email: emailInput, password: passwordInput }),
-          4000
-        ).then(async ({ data, error }) => {
-          if (!error && data && data.user) {
-            updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
-            let profileRow = null;
-            try {
-              const res = await withTimeout(
-                supabaseClient.from('profiles').select('*').eq('id', data.user.id).single(),
-                2500
-              );
-              profileRow = res.data;
-            } catch (err) {}
-
-            currentUser = {
-              id: data.user.id,
-              name: (profileRow && profileRow.full_name) || data.user.user_metadata?.full_name || emailInput.split('@')[0],
-              email: data.user.email,
-              role: (profileRow && profileRow.role) || data.user.user_metadata?.role || 'tourist',
-              phone: (profileRow && profileRow.phone) || data.user.user_metadata?.phone || '+880 1700-000000',
-              gender: 'Not Specified',
-              address: (profileRow && profileRow.address) || 'Dhaka, Bangladesh',
-              bio: (profileRow && profileRow.bio) || 'Verified RoamBD Explorer.'
+        try {
+          const { data: authData, error: authErr } = await withTimeout(
+            supabaseClient.auth.signInWithPassword({ email, password }),
+            3500
+          );
+          if (!authErr && authData && authData.user) {
+            const { data: prof } = await withTimeout(
+              supabaseClient.from('profiles').select('*').eq('email', email).maybeSingle(),
+              2500
+            );
+            const liveUser = {
+              id: authData.user.id,
+              name: prof?.full_name || authData.user.user_metadata?.full_name || email.split('@')[0],
+              email: email,
+              role: prof?.role || authData.user.user_metadata?.role || 'tourist',
+              phone: prof?.phone || '+880 1700-000000',
+              address: prof?.address || 'Dhaka, Bangladesh',
+              bio: prof?.bio || 'Exploring Bangladesh with RoamBD.'
             };
-            syncUserUI();
-            const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-            showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Verified via Supabase Auth.');
-            setTimeout(() => {
-              document.getElementById('auth-alert').classList.add('hidden');
-              openPage(targetPage);
-            }, 350);
+            updateDatabaseBadge(true, 'Supabase Auth Live');
+            showAuthBanner(false, `Welcome back, ${liveUser.name}!`, 'Authenticated via Supabase PostgreSQL.');
+            setTimeout(() => completeLoginSession(liveUser), 450);
             return;
           }
+        } catch (err) {}
+      }
 
-          fallbackLocalSignIn(emailInput, passwordInput);
-        }).catch(() => {
-          fallbackLocalSignIn(emailInput, passwordInput);
-        });
+      const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (!matchedUser || matchedUser.password !== password) {
+        showAuthBanner(true, 'Authentication Failed', "That email or password isn't right.");
         return;
       }
 
-      fallbackLocalSignIn(emailInput, passwordInput);
-    }
-
-    function fallbackLocalSignIn(emailInput, passwordInput) {
-      registeredUsers = loadRegisteredUsers();
-      const localMatch = registeredUsers.find(
-        u => u.email.toLowerCase() === emailInput.toLowerCase() && u.password === passwordInput
-      );
-      if (localMatch) {
-        currentUser = localMatch;
-        syncUserUI();
-        const targetPage = currentUser.role === 'guide' ? 'guide' : currentUser.role === 'admin' ? 'admin' : 'home';
-        showAuthNotification('success', `Welcome back, ${currentUser.name}!`, 'Opening your RoamBD workspace...');
-        setTimeout(() => {
-          document.getElementById('auth-alert').classList.add('hidden');
-          openPage(targetPage);
-        }, 300);
-      } else {
-        showAuthNotification('error', 'Authentication Failed', "That email or password isn't right.");
-      }
+      showAuthBanner(false, `Welcome back, ${matchedUser.name}!`, 'Opening your travel workspace...');
+      setTimeout(() => completeLoginSession(matchedUser), 450);
     }
 
     async function handleRegister(e) {
@@ -3194,461 +2859,368 @@
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
       const phone = document.getElementById('reg-phone').value.trim();
-      const password = document.getElementById('reg-password').value;
       const role = document.getElementById('reg-role').value === 'guide' ? 'guide' : 'tourist';
+      const password = document.getElementById('reg-password').value;
 
       if (password.length < 8) {
-        showAuthNotification('error', 'Weak Password', 'Password must be at least 8 characters.');
+        showAuthBanner(true, 'Password Too Short', 'Please use at least 8 characters for your password.');
         return;
       }
 
-      showAuthNotification('success', 'Recording Credentials...', 'Saving your account to Supabase PostgreSQL...');
-
-      let supabaseUserId = null;
-      let savedToSupabase = false;
+      const newUser = {
+        name,
+        email,
+        password,
+        phone,
+        role,
+        gender: 'Not Specified',
+        address: 'Dhaka, Bangladesh',
+        emergency: 'Not Specified',
+        region: role === 'guide' ? 'Bangladesh Regional Trails' : '',
+        exp: role === 'guide' ? '1 Year' : '',
+        languages: role === 'guide' ? 'Bangla, English' : '',
+        license: role === 'guide' ? 'PENDING-VERIFICATION' : '',
+        bio: role === 'guide'
+          ? 'Local guide applicant awaiting administrative verification.'
+          : 'Exploring Bangladesh with RoamBD.'
+      };
 
       if (supabaseClient) {
         try {
-          const { data, error } = await withTimeout(
+          const { data: signUpData, error: signUpErr } = await withTimeout(
             supabaseClient.auth.signUp({
               email,
               password,
               options: { data: { full_name: name, role, phone } }
             }),
-            4500
+            4000
           );
-
-          if (error) {
-            const msg = (error.message || '').toLowerCase();
-            if (msg.includes('already registered')) {
-              showAuthNotification('error', 'Account Exists', 'This email is already registered in Supabase. Please sign in.');
-              return;
-            }
-          } else if (data && data.user) {
-            supabaseUserId = data.user.id;
-            const { error: profErr } = await withTimeout(
+          if (!signUpErr && signUpData?.user) {
+            newUser.id = signUpData.user.id;
+            await withTimeout(
               supabaseClient.from('profiles').upsert({
-                id: data.user.id,
+                id: signUpData.user.id,
                 full_name: name,
                 email,
                 phone,
-                role,
                 address: 'Dhaka, Bangladesh',
-                bio: role === 'guide' ? 'Certified local guide applicant.' : 'Exploring Bangladesh via RoamBD.'
+                bio: newUser.bio,
+                role
               }),
               3000
             );
-            if (!profErr) {
-              savedToSupabase = true;
-              updateDatabaseBadge(true, 'Supabase PostgreSQL Live');
-            }
+            updateDatabaseBadge(true, 'Saved to Supabase');
           }
         } catch (err) {}
       }
 
-      const newUser = {
-        id: supabaseUserId,
-        name,
-        email,
-        password,
-        role,
-        phone,
-        gender: "Not Specified",
-        address: "Dhaka, Bangladesh",
-        emergency: "Not Specified",
-        region: role === 'guide' ? "Bangladesh Regional Trails" : "",
-        exp: role === 'guide' ? "New Guide Applicant" : "",
-        languages: "Bangla, English",
-        license: role === 'guide' ? "PENDING-ADMIN-CHECK" : "",
-        bio: role === 'guide' ? "Certified local guide applicant." : "New RoamBD traveler."
-      };
-
-      registeredUsers = loadRegisteredUsers();
-      const existingIdx = registeredUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-      if (existingIdx !== -1) registeredUsers[existingIdx] = newUser;
-      else registeredUsers.push(newUser);
+      registeredUsers.push(newUser);
       saveRegisteredUsers(registeredUsers);
+      showAuthBanner(false, `Welcome, ${name}!`, 'Account created! Entering RoamBD...');
+      setTimeout(() => completeLoginSession(newUser), 500);
+    }
 
-      currentUser = newUser;
-      syncUserUI();
-
-      const targetPage = role === 'guide' ? 'guide' : 'home';
-      showAuthNotification(
-        'success',
-        `Welcome, ${name}!`,
-        savedToSupabase
-          ? 'Credentials recorded in Supabase Auth & PostgreSQL!'
-          : 'Account created & saved locally. Entering RoamBD...'
-      );
-
-      setTimeout(() => {
-        document.getElementById('auth-alert').classList.add('hidden');
-        openPage(targetPage);
-      }, 450);
+    function handleSocialAuth(provider) {
+      const ssoUser = {
+        name: `Explorer (${provider})`,
+        email: `explorer.${provider.toLowerCase()}@example.com`,
+        role: 'tourist',
+        phone: '+880 1700-000000',
+        gender: 'Not Specified',
+        address: 'Dhaka, Bangladesh',
+        emergency: 'Not Specified',
+        bio: `Signed in via ${provider} Single Sign-On.`
+      };
+      showAuthBanner(false, `Connected via ${provider}`, 'Entering RoamBD...');
+      setTimeout(() => completeLoginSession(ssoUser), 450);
     }
 
     function enterAsGuest() {
-      currentUser = { name: "Traveler", email: "", role: "guest" };
-      syncUserUI();
+      currentUser = null;
+      document.getElementById('nav-profile-pill').classList.add('hidden');
+      document.getElementById('nav-guest-signin-btn').classList.remove('hidden');
+      document.getElementById('nav-guest-signin-btn').classList.add('inline-flex');
+      document.getElementById('drawer-profile-card').classList.add('hidden');
+      document.getElementById('drawer-guest-card').classList.remove('hidden');
+      document.getElementById('drawer-signout-btn').classList.add('hidden');
+      document.getElementById('btn-return-guide-portal').classList.add('hidden');
+      document.getElementById('btn-return-admin-portal').classList.add('hidden');
+      document.getElementById('hero-user-firstname').innerText = 'Explorer';
       openPage('home');
-      showToast('Exploring RoamBD as a Guest Visitor.');
     }
 
     function signOut() {
+      currentUser = null;
       if (supabaseClient) {
         try { supabaseClient.auth.signOut(); } catch (e) {}
       }
-      currentUser = null;
-      syncUserUI();
       openPage('auth');
       showToast('Signed out safely.');
     }
 
-    function handleSocialAuth(provider) {
-      currentUser = {
-        name: "Tanvir Ahmed",
-        email: "tanvir.ahmed@example.com",
-        role: "tourist",
-        phone: "+880 1711-223344",
-        gender: "Male",
-        address: "Dhanmondi, Dhaka",
-        bio: `Signed in via ${provider} SSO.`
-      };
-      syncUserUI();
-      openPage('home');
-      showToast(`Signed in with ${provider}!`);
-    }
+    function completeLoginSession(user) {
+      currentUser = user;
+      const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      const firstName = user.name.split(' ')[0];
 
-    // ================= 9. GUIDE REVIEWS & INTERACTIVE TRIP PLANNER =================
-    let activeGuideModalName = '';
+      document.getElementById('nav-guest-signin-btn').classList.add('hidden');
+      document.getElementById('nav-guest-signin-btn').classList.remove('inline-flex');
+      document.getElementById('nav-profile-pill').classList.remove('hidden');
+      document.getElementById('drawer-profile-card').classList.remove('hidden');
+      document.getElementById('drawer-guest-card').classList.add('hidden');
+      document.getElementById('drawer-signout-btn').classList.remove('hidden');
 
-    function setGuideRating(val) {
-      document.getElementById('guide-review-rating').value = val;
-      document.querySelectorAll('.guide-star-btn').forEach(btn => {
-        const starNum = parseInt(btn.dataset.star, 10);
-        btn.className = starNum <= val
-          ? 'guide-star-btn text-amber-500 hover:scale-110 transition'
-          : 'guide-star-btn text-slate-300 hover:scale-110 transition';
-      });
-    }
+      document.getElementById('nav-user-initials').innerText = initials;
+      document.getElementById('nav-user-name').innerText = user.name;
+      document.getElementById('drawer-user-initials').innerText = initials;
+      document.getElementById('drawer-user-name').innerText = user.name;
+      document.getElementById('hero-user-firstname').innerText = firstName;
 
-    function renderGuideReviewsInModal(guideName) {
-      const listEl = document.getElementById('guide-modal-reviews-list');
-      const countEl = document.getElementById('guide-modal-review-count');
-      if (!listEl || !countEl) return;
+      syncProfileModalUI();
 
-      const matching = communityReviews.filter(r =>
-        (r.region || '').toLowerCase().includes(guideName.toLowerCase()) ||
-        (r.content || '').toLowerCase().includes(guideName.toLowerCase())
-      );
+      const btnGuide = document.getElementById('btn-return-guide-portal');
+      const btnAdmin = document.getElementById('btn-return-admin-portal');
+      const drawerGuide = document.getElementById('drawer-btn-guide');
+      const drawerAdmin = document.getElementById('drawer-btn-admin');
 
-      countEl.innerText = `${matching.length} review${matching.length === 1 ? '' : 's'}`;
-      if (matching.length === 0) {
-        listEl.innerHTML = `<p class="text-[11px] text-slate-400 italic">No reviews yet. Be the first traveler to share feedback!</p>`;
-        return;
+      btnGuide.classList.add('hidden');
+      btnAdmin.classList.add('hidden');
+      drawerGuide.classList.add('hidden');
+      drawerAdmin.classList.add('hidden');
+
+      if (user.role === 'guide') {
+        document.getElementById('nav-user-role-label').innerText = 'Verified Guide';
+        document.getElementById('drawer-user-role').innerText = 'Verified Guide';
+        btnGuide.classList.remove('hidden');
+        btnGuide.classList.add('inline-flex');
+        drawerGuide.classList.remove('hidden');
+        drawerGuide.classList.add('flex');
+        populateGuidePortalData();
+        openPage('guide');
+      } else if (user.role === 'admin') {
+        document.getElementById('nav-user-role-label').innerText = 'Admin';
+        document.getElementById('drawer-user-role').innerText = 'System Admin';
+        btnAdmin.classList.remove('hidden');
+        btnAdmin.classList.add('inline-flex');
+        drawerAdmin.classList.remove('hidden');
+        drawerAdmin.classList.add('flex');
+        refreshAdminPanels();
+        openPage('admin');
+      } else {
+        document.getElementById('nav-user-role-label').innerText = 'Explorer';
+        document.getElementById('drawer-user-role').innerText = 'Explorer';
+        openPage('home');
       }
-
-      listEl.innerHTML = matching.map(r => `
-        <div class="bg-white p-2.5 rounded-xl border border-cream-200 text-[11px] space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-900">${r.name}</span>
-            <span class="text-amber-500 font-bold">${'★'.repeat(r.stars || 5)}</span>
-          </div>
-          <p class="text-slate-600 leading-snug">"${r.content}"</p>
-        </div>
-      `).join('');
     }
 
-    async function submitGuideReview(e) {
+    function handlePasswordReset(e) {
       e.preventDefault();
-      if (!currentUser || currentUser.role === 'guest') {
-        closeModal('guide-contact-modal');
-        showToast('Please sign in as a Tourist to post a guide review.');
-        openPage('auth');
-        return;
+      const contact = document.getElementById('reset-input').value;
+      closeModal('forgot-modal');
+      showToast(`Recovery link sent to ${contact}`);
+    }
+
+    // ================= 7. MULTI-PAGE ROUTING & RESPONSIVE NAVIGATION =================
+    function openPage(pageName) {
+      activePage = pageName;
+      document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+
+      const targetPage = document.getElementById(`page-${pageName}`);
+      if (targetPage) targetPage.classList.remove('hidden');
+
+      const navbar = document.getElementById('main-navbar');
+      const footer = document.getElementById('main-footer');
+      const bottomNav = document.getElementById('mobile-bottom-nav');
+
+      if (pageName === 'auth') {
+        if (navbar) navbar.classList.add('hidden');
+        if (footer) footer.classList.add('hidden');
+        if (bottomNav) bottomNav.classList.add('hidden');
+      } else {
+        if (navbar) navbar.classList.remove('hidden');
+        if (footer) footer.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
       }
 
-      const rating = parseInt(document.getElementById('guide-review-rating').value || '5', 10);
-      const comment = document.getElementById('guide-review-comment').value.trim();
-      if (!comment) return;
+      document.querySelectorAll('.nav-page-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-page') === pageName;
+        btn.className = isTarget
+          ? 'nav-page-btn text-forest-800 font-bold border-b-2 border-forest-700 pb-1 transition'
+          : 'nav-page-btn hover:text-forest-800 pb-1 border-b-2 border-transparent transition';
+      });
 
-      const authorName = currentUser.name || 'Verified Explorer';
-      const regionTag = `Guide: ${activeGuideModalName}`;
+      document.querySelectorAll('.mobile-dock-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-page') === pageName;
+        btn.className = isTarget
+          ? 'mobile-dock-btn flex flex-col items-center justify-center py-1 text-forest-700 font-bold'
+          : 'mobile-dock-btn flex flex-col items-center justify-center py-1 text-slate-500 hover:text-forest-700';
+      });
 
-      if (supabaseClient) {
-        await supabaseClient.from('field_notes').insert({
-          author_name: authorName,
-          author_role: `${rating}★ Tourist Review`,
-          region: regionTag,
-          content: comment
-        });
+      if (pageName === 'map') {
+        setTimeout(() => initOrRefreshLeafletMap(), 80);
       }
-
-      communityReviews.unshift({
-        name: authorName,
-        role: 'Verified Tourist',
-        date: 'Just now',
-        stars: rating,
-        region: regionTag,
-        content: comment
-      });
-
-      document.getElementById('guide-review-comment').value = '';
-      renderGuideReviewsInModal(activeGuideModalName);
-      renderReviews();
-      showToast(`Your ${rating}★ review for ${activeGuideModalName} has been published!`);
+      if (pageName === 'admin') {
+        refreshAdminPanels();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function toggleAddStopDrawer() {
-      const form = document.getElementById('custom-stop-form');
-      if (form) form.classList.toggle('hidden');
+    function navigateHomeByRole() {
+      if (!currentUser) { openPage('home'); return; }
+      if (currentUser.role === 'guide') openPage('guide');
+      else if (currentUser.role === 'admin') openPage('admin');
+      else openPage('home');
     }
 
-    let activePlannerDay = 1;
-
-    function selectPlannerDay(dayNum, btn) {
-      activePlannerDay = dayNum;
-      document.querySelectorAll('.planner-day-btn').forEach(b => {
-        b.className = "planner-day-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
-      });
-      if (btn) btn.className = "planner-day-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
-      renderPlannerStops(dayNum);
+    function toggleMobileDrawer(open) {
+      const drawer = document.getElementById('mobile-drawer');
+      if (!drawer) return;
+      if (open) drawer.classList.remove('hidden');
+      else drawer.classList.add('hidden');
     }
 
-    function renderPlannerStops(dayNum) {
-      activePlannerDay = dayNum || 1;
-      const dayInfo = plannerDaysData[activePlannerDay] || plannerDaysData[1];
-      const headingEl = document.getElementById('planner-day-heading');
-      const subEl = document.getElementById('planner-day-sub');
-      const listEl = document.getElementById('planner-stops-list');
-
-      if (headingEl) headingEl.innerText = dayInfo.heading;
-      if (subEl) subEl.innerText = dayInfo.sub;
-      if (!listEl) return;
-
-      listEl.innerHTML = dayInfo.stops.map((stop, idx) => `
-        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-300 flex items-start justify-between gap-3">
-          <div class="flex items-start gap-3.5">
-            <span class="font-mono text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-lg flex-shrink-0">${stop.time}</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${stop.tag}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-cream-300 text-slate-600">${stop.status}</span>
-              </div>
-              <h4 class="font-extrabold text-slate-900 text-sm mt-1">${stop.title}</h4>
-              <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${stop.desc}</p>
-            </div>
-          </div>
-          <button onclick="removePlannerStop(${activePlannerDay}, ${idx})" class="text-slate-400 hover:text-red-600 text-xs p-1" title="Remove stop">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function removePlannerStop(dayNum, index) {
-      if (!plannerDaysData[dayNum]) return;
-      plannerDaysData[dayNum].stops.splice(index, 1);
-      renderPlannerStops(dayNum);
-      showToast('Stop removed from itinerary.');
-    }
-
-    function submitCustomStop(e) {
-      e.preventDefault();
-      const time = document.getElementById('stop-time-input').value || "18:30";
-      const tag = document.getElementById('stop-tag-input').value || "EXPERIENCE";
-      const title = document.getElementById('stop-title-input').value.trim();
-      const desc = document.getElementById('stop-desc-input').value.trim() || "Custom planned stop added to your daily route.";
-      if (!title) return;
-
-      plannerDaysData[activePlannerDay].stops.push({
-        time, tag, title, desc, status: "Added"
-      });
-      plannerDaysData[activePlannerDay].stops.sort((a, b) => a.time.localeCompare(b.time));
-      renderPlannerStops(activePlannerDay);
-      document.getElementById('stop-title-input').value = '';
-      document.getElementById('stop-desc-input').value = '';
-      toggleAddStopDrawer();
-      showToast(`"${title}" added to Day ${activePlannerDay}!`);
-    }
-
-    function updateChecklistCount() {
-      const boxes = document.querySelectorAll('#planner-checklist input[type="checkbox"]');
-      const checked = Array.from(boxes).filter(b => b.checked).length;
-      document.getElementById('checklist-counter').innerText = `${checked} of ${boxes.length} complete`;
-    }
-
-    // ================= 10. DESTINATIONS & GUIDES DIRECTORY RENDERING =================
+    // ================= 8. EXPLORE DESTINATIONS & WISHLIST =================
     let activeCategory = 'all';
+    let activeModalDestinationId = null;
 
-    function renderDestinations(items) {
-      const container = document.getElementById('destinations-grid');
+    function toggleWishlist(e, id) {
+      if (e) e.stopPropagation();
+      const idx = savedWishlistIds.indexOf(id);
+      const item = destinations.find(d => d.id === id);
+      if (idx > -1) {
+        savedWishlistIds.splice(idx, 1);
+        showToast(`Removed "${item ? item.title : 'place'}" from Saved Places.`);
+      } else {
+        savedWishlistIds.push(id);
+        showToast(`Saved "${item ? item.title : 'place'}" to your Traveler Notebook!`);
+      }
+      persistWishlist();
+      filterDestinations();
+      renderSavedPlacesInProfile();
+    }
+
+    function saveCurrentModalDestinationToWishlist() {
+      if (activeModalDestinationId !== null && !savedWishlistIds.includes(activeModalDestinationId)) {
+        savedWishlistIds.push(activeModalDestinationId);
+        persistWishlist();
+        filterDestinations();
+        renderSavedPlacesInProfile();
+      }
+      closeModal('destination-modal');
+      showToast('Saved to your Traveler Notebook!');
+    }
+
+    function renderSavedPlacesInProfile() {
+      const container = document.getElementById('profile-saved-places-list');
+      const countLabel = document.getElementById('profile-saved-count-label');
+      if (!container) return;
+
+      const savedItems = destinations.filter(d => savedWishlistIds.includes(d.id));
+      if (countLabel) countLabel.innerText = `Saved Places (${savedItems.length})`;
+
+      if (savedItems.length === 0) {
+        container.innerHTML = `<p class="text-[11px] text-slate-500">No saved places yet. Click the heart icon on any destination to save it.</p>`;
+        return;
+      }
+
+      container.innerHTML = savedItems.map(item => `
+        <div onclick="closeModal('profile-modal'); openDestinationModal(${item.id});" class="flex items-center justify-between text-xs bg-white px-3 py-2 rounded-xl border border-cream-300 cursor-pointer hover:border-forest-600 transition">
+          <span class="font-semibold text-slate-800">${item.title} (${item.district})</span>
+          <span class="text-forest-700 font-bold">Saved &rarr;</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDestinations(list) {
+      const grid = document.getElementById('destinations-grid');
       const homeGrid = document.getElementById('home-featured-grid');
+      const countLabel = document.getElementById('explore-result-count');
+      if (countLabel) countLabel.innerText = `Showing ${list.length} of 64 destinations`;
 
       const buildCard = (item) => {
         const isSaved = savedWishlistIds.includes(item.id);
         return `
         <article onclick="openDestinationModal(${item.id})" class="editorial-card bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-lg cursor-pointer group">
           <div class="relative h-56 overflow-hidden bg-cream-200">
-            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/184D38/F8F7F3?text=${encodeURIComponent(item.title)}'">
+            <img src="${item.image}" referrerpolicy="no-referrer" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/184D38/F8F7F3?text=${encodeURIComponent(item.title)}'">
             <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
-            <span class="absolute top-3.5 left-3.5 bg-black/50 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
-              ${item.badge}
-            </span>
-            <button onclick="event.stopPropagation(); toggleDestinationWishlist(${item.id});" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/95 ${isSaved ? 'text-red-500' : 'text-slate-700 hover:text-red-500'} flex items-center justify-center text-xs transition shadow-2xs" title="${isSaved ? 'Saved in Wishlist' : 'Save to Wishlist'}">
+            <button type="button" onclick="toggleWishlist(event, ${item.id})" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full ${isSaved ? 'bg-red-500 text-white' : 'bg-white/90 text-slate-700 hover:text-red-600'} flex items-center justify-center text-xs shadow-xs transition" aria-label="Save place">
               <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
             </button>
-
-            <div class="absolute bottom-3.5 left-4 right-4 text-white flex items-end justify-between">
-              <div>
-                <h3 class="font-extrabold text-lg leading-tight">${item.title}</h3>
-                <p class="text-[11px] text-cream-200 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-location-dot text-[10px]"></i> ${item.district}</p>
-              </div>
-              <span class="text-xs font-bold bg-black/45 backdrop-blur-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-                <i class="fa-solid fa-star text-amber-400 text-[10px]"></i> ${item.rating}
+            <div class="absolute top-3.5 left-3.5 flex items-center gap-1.5">
+              <span class="px-2.5 py-1 rounded-full bg-white/90 text-forest-900 text-[10px] font-extrabold uppercase tracking-wider">${item.badge}</span>
+              <span class="px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-xs text-white text-[10px] font-bold">
+                <i class="fa-solid fa-star text-amber-400 mr-0.5"></i> ${item.rating}
               </span>
             </div>
+            <div class="absolute bottom-3.5 left-4 right-4 text-white">
+              <span class="text-[11px] font-medium text-cream-200 block">${item.district}</span>
+              <h3 class="font-serif text-xl font-bold leading-tight">${item.title}</h3>
+            </div>
           </div>
-
           <div class="p-4 flex items-center justify-between text-xs">
             <span class="text-slate-600 font-medium truncate pr-2">${item.subtitle}</span>
-            <span class="text-forest-700 font-bold flex-shrink-0 group-hover:translate-x-0.5 transition">&rarr;</span>
+            <span class="font-bold text-forest-700 flex-shrink-0 group-hover:translate-x-0.5 transition">Explore &rarr;</span>
           </div>
-        </article>
-      `;
+        </article>`;
       };
+
+      if (grid) {
+        grid.innerHTML = list.length > 0
+          ? list.map(buildCard).join('')
+          : `<div class="col-span-full bg-white rounded-3xl p-10 text-center border border-cream-300 text-xs text-slate-500">No destinations matched your filter criteria.</div>`;
+      }
 
       if (homeGrid) {
         homeGrid.innerHTML = destinations.slice(0, 3).map(buildCard).join('');
       }
-
-      if (container) {
-        if (items.length === 0) {
-          container.innerHTML = `<div class="col-span-full bg-white rounded-3xl p-10 text-center border border-cream-300"><p class="font-bold text-slate-700">No places match your filter.</p><button onclick="resetDestinationFilters()" class="mt-2 text-xs font-bold text-forest-700 underline">Reset all</button></div>`;
-        } else {
-          container.innerHTML = items.map(buildCard).join('');
-        }
-      }
-
-      const resCounter = document.getElementById('explore-result-count');
-      if (resCounter) resCounter.innerText = `Showing ${items.length} of 64 destinations`;
-
-      const countEl = document.getElementById('admin-dest-count');
-      if (countEl) countEl.innerText = destinations.length;
-    }
-
-    function renderGuidesDirectory(guides) {
-      const grid = document.getElementById('guides-directory-grid');
-      if (!grid) return;
-
-      grid.innerHTML = guides.map(g => `
-        <div data-spec="${g.specialty}" class="editorial-card guide-card bg-white rounded-3xl overflow-hidden border border-cream-300/90 shadow-2xs hover:shadow-lg flex flex-col justify-between">
-          <div>
-            <div class="relative h-52 bg-cream-200">
-              <img src="${g.image}" alt="${g.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/184D38/F8F7F3?text=${encodeURIComponent(g.name)}'">
-              <span class="absolute top-3.5 left-3.5 bg-white/95 backdrop-blur-xs text-forest-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-2xs flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-check text-forest-700"></i> Verified local
-              </span>
-            </div>
-
-            <div class="p-5 space-y-3">
-              <div class="flex items-start justify-between gap-2">
-                <div>
-                  <h3 class="font-extrabold text-slate-900 text-base">${g.name}</h3>
-                  <p class="text-xs text-slate-500">${g.region} • ${g.trips} trips hosted</p>
-                </div>
-                <span class="text-xs font-bold text-slate-800 flex items-center gap-1 flex-shrink-0">
-                  <i class="fa-solid fa-star text-amber-500"></i> ${g.rating}
-                </span>
-              </div>
-
-              <div class="flex flex-wrap gap-1.5">
-                ${(g.tags || []).map(t => `<span class="text-[11px] font-semibold bg-forest-50 text-forest-800 px-2.5 py-0.5 rounded-full">${t}</span>`).join('')}
-              </div>
-
-              <p class="text-xs text-slate-600 leading-relaxed">${g.bio}</p>
-
-              <p class="text-[11px] text-slate-500 font-medium">Languages: ${g.languages}</p>
-            </div>
-          </div>
-
-          <div class="px-5 py-3.5 bg-cream-50 border-t border-cream-200 flex items-center justify-between gap-2">
-            <span class="text-[11px] font-bold text-forest-700 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Available
-            </span>
-            <div class="flex items-center gap-1.5">
-              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}')" class="bg-white border border-cream-300 hover:border-forest-700 text-forest-900 font-bold px-3 py-1.5 rounded-full text-xs transition">
-                ★ Review
-              </button>
-              <button onclick="openGuideContactModal('${g.name.replace(/'/g, "\\'")}', '${g.region.replace(/'/g, "\\'")}', '${g.phone}', '${g.email}', '${g.license}')" class="bg-forest-700 hover:bg-forest-800 text-white font-bold px-3.5 py-1.5 rounded-full text-xs transition">
-                Connect &rarr;
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
     }
 
     function filterCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.cat-pill').forEach(b => {
-        b.className = "cat-pill px-4 py-2 rounded-full text-xs font-semibold bg-white border border-cream-300 text-slate-700 hover:border-forest-600 transition whitespace-nowrap flex-shrink-0";
+      document.querySelectorAll('.cat-pill').forEach(p => {
+        p.className = 'cat-pill px-4 py-2 rounded-full text-xs font-semibold bg-white border border-cream-300 text-slate-700 hover:border-forest-600 transition whitespace-nowrap flex-shrink-0';
       });
-      if (btn) btn.className = "cat-pill px-4 py-2 rounded-full text-xs font-bold bg-forest-700 text-white transition whitespace-nowrap flex-shrink-0";
+      if (btn) {
+        btn.className = 'cat-pill px-4 py-2 rounded-full text-xs font-bold bg-forest-700 text-white transition whitespace-nowrap flex-shrink-0';
+      }
       filterDestinations();
     }
 
     function filterDestinations() {
-      const q = (document.getElementById('search-input')?.value || '').toLowerCase();
-      const division = document.getElementById('division-select')?.value || 'all';
-      const season = document.getElementById('season-select')?.value || 'all';
-      const sortBy = document.getElementById('sort-select')?.value || 'recommended';
+      const q = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const divFilter = document.getElementById('division-select')?.value || 'all';
+      const seasonFilter = document.getElementById('season-select')?.value || 'all';
+      const sortMode = document.getElementById('sort-select')?.value || 'recommended';
 
-      let filtered = destinations.filter(d => {
-        const matchCat = activeCategory === 'all' || d.category === activeCategory;
-        const matchDiv = division === 'all' || d.district.toLowerCase().includes(division.toLowerCase());
-        const matchSeason = season === 'all' || d.season === season || d.season === 'year-round';
-        const matchSearch = d.title.toLowerCase().includes(q) || d.district.toLowerCase().includes(q) || d.subtitle.toLowerCase().includes(q);
-        return matchCat && matchDiv && matchSeason && matchSearch;
+      let filtered = destinations.filter(item => {
+        const matchCat = activeCategory === 'all' || item.category === activeCategory;
+        const matchDiv = divFilter === 'all' || item.district.toLowerCase().includes(divFilter.toLowerCase());
+        const matchSeason = seasonFilter === 'all' || item.season === seasonFilter;
+        const matchQuery = !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.district.toLowerCase().includes(q) ||
+          item.subtitle.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q);
+        return matchCat && matchDiv && matchSeason && matchQuery;
       });
 
-      if (sortBy === 'rating') {
+      if (sortMode === 'rating') {
         filtered = [...filtered].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-      } else if (sortBy === 'az') {
+      } else if (sortMode === 'az') {
         filtered = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
       }
 
       renderDestinations(filtered);
     }
 
-    function resetDestinationFilters() {
-      activeCategory = 'all';
-      document.getElementById('search-input').value = '';
-      if (document.getElementById('division-select')) document.getElementById('division-select').value = 'all';
-      document.getElementById('season-select').value = 'all';
-      if (document.getElementById('sort-select')) document.getElementById('sort-select').value = 'recommended';
-      renderDestinations(destinations);
-    }
-
-    function filterGuidesBySpecialty(spec, btn) {
-      document.querySelectorAll('.guide-spec-btn').forEach(b => {
-        b.className = "guide-spec-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-cream-300 text-slate-700 hover:border-forest-600 transition whitespace-nowrap";
-      });
-      if (btn) btn.className = "guide-spec-btn px-4 py-2 rounded-full text-xs font-bold bg-forest-700 text-white transition whitespace-nowrap";
-
-      document.querySelectorAll('.guide-card').forEach(card => {
-        card.classList.toggle('hidden', spec !== 'all' && card.dataset.spec !== spec);
-      });
-    }
-
-    // ================= 11. MODALS & AI ROUTE PLANNER =================
-    let activeModalDestinationId = null;
-
     function openDestinationModal(id) {
       const item = destinations.find(d => d.id === id);
       if (!item) return;
       activeModalDestinationId = id;
-      document.getElementById('dest-modal-img').src = item.image;
+      const modalImg = document.getElementById('dest-modal-img');
+      modalImg.referrerPolicy = 'no-referrer';
+      modalImg.src = item.image;
       document.getElementById('dest-modal-badge').innerText = `${item.district} • ${item.badge}`;
       document.getElementById('dest-modal-title').innerText = item.title;
       document.getElementById('dest-modal-desc').innerText = item.description;
@@ -3658,49 +3230,7 @@
       openModal('destination-modal');
     }
 
-    function saveCurrentModalDestinationToWishlist() {
-      if (activeModalDestinationId !== null) {
-        toggleDestinationWishlist(activeModalDestinationId);
-      }
-      closeModal('destination-modal');
-    }
-
-    function runModalAIPlanner() {
-      const interest = document.getElementById('modal-ai-interest').value;
-      const days = document.getElementById('modal-ai-days').value;
-      const output = document.getElementById('modal-ai-output');
-
-      const itineraries = {
-        tea: `
-          <span class="font-extrabold text-forest-900 block">TEA GARDENS &amp; NATURE (${days.toUpperCase()})</span>
-          <p class="text-slate-700"><strong>Day 1:</strong> Morning Parabat Express to Srimangal &rarr; Afternoon Madhabpur Lake walk &amp; 7-layer tea tasting.</p>
-          <p class="text-slate-700"><strong>Day 2:</strong> Dawn canopy walk in Lawachara National Park with certified eco-guide.</p>
-          <p class="text-slate-700"><strong>Day 3:</strong> Baikka Beel wetland bird sanctuary &amp; evening return transit.</p>
-        `,
-        beach: `
-          <span class="font-extrabold text-forest-900 block">COASTAL &amp; CORAL ISLANDS (${days.toUpperCase()})</span>
-          <p class="text-slate-700"><strong>Day 1:</strong> Arrive Cox's Bazar &rarr; Sunset walk along Sugandha &amp; Kolatoli Beach.</p>
-          <p class="text-slate-700"><strong>Day 2:</strong> Marine Drive scenic route to Inani Coral Stones &amp; Himchari hilltop viewpoint.</p>
-          <p class="text-slate-700"><strong>Day 3:</strong> Teknaf jetty ferry to Saint Martin's Island &amp; Chhera Dwip tidal lagoon.</p>
-        `,
-        heritage: `
-          <span class="font-extrabold text-forest-900 block">MUGHAL &amp; BUDDHIST HERITAGE (${days.toUpperCase()})</span>
-          <p class="text-slate-700"><strong>Day 1:</strong> Old Dhaka heritage walk: Lalbagh Fort, Ahsan Manzil &amp; Purana Dhaka culinary trail.</p>
-          <p class="text-slate-700"><strong>Day 2:</strong> Padma Bridge express route to Bagerhat Sixty Dome Mosque (UNESCO site).</p>
-          <p class="text-slate-700"><strong>Day 3:</strong> Paharpur Somapura Mahavihara terracotta monastery exploration.</p>
-        `,
-        hills: `
-          <span class="font-extrabold text-forest-900 block">HILL TRACTS &amp; LAKES (${days.toUpperCase()})</span>
-          <p class="text-slate-700"><strong>Day 1:</strong> Rangamati Kaptai Lake wooden boat cruise &amp; Shuvolong Waterfall.</p>
-          <p class="text-slate-700"><strong>Day 2:</strong> Chimbuk Road ridge drive to Nilgiri &amp; Sairu Hill cultural lodge.</p>
-          <p class="text-slate-700"><strong>Day 3:</strong> Sajek Valley sunrise cloud deck at Konglak Peak.</p>
-        `
-      };
-
-      if (output) output.innerHTML = itineraries[interest] || itineraries.tea;
-      showToast('Curated itinerary generated by RoamAI!');
-    }
-
+    // ================= 9. STAYS, FOOD & COMMUNITY REVIEWS =================
     function openDirectoryModal(name, address, phone, email, amenities) {
       document.getElementById('dir-modal-name').innerText = name;
       document.getElementById('dir-modal-address').innerText = address;
@@ -3718,25 +3248,378 @@
       openModal('food-modal');
     }
 
-    function openGuideContactModal(name, region, phone, email, license) {
-      activeGuideModalName = name;
-      document.getElementById('guide-modal-name').innerText = name;
-      document.getElementById('guide-modal-region').innerText = region;
-      document.getElementById('guide-modal-phone').innerText = phone;
-      document.getElementById('guide-modal-call-link').href = `tel:${phone.replace(/\s+/g, '')}`;
-      document.getElementById('guide-modal-email').innerText = email;
-      document.getElementById('guide-modal-license').innerText = `License ID: ${license}`;
-      setGuideRating(5);
-      renderGuideReviewsInModal(name);
-      openModal('guide-contact-modal');
+    function renderReviews() {
+      const grid = document.getElementById('reviews-grid');
+      if (!grid) return;
+      grid.innerHTML = reviewsList.map(r => `
+        <div class="bg-white rounded-3xl p-5 border border-cream-300/90 space-y-2.5 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700 bg-forest-100 px-2.5 py-0.5 rounded-full">${r.region}</span>
+            <span class="text-[11px] font-semibold text-slate-400">${r.role}</span>
+          </div>
+          <p class="text-xs text-slate-700 leading-relaxed">"${r.text}"</p>
+          <p class="text-xs font-extrabold text-slate-900 pt-1">&mdash; ${r.author}</p>
+        </div>
+      `).join('');
+    }
+
+    function openReviewModal() {
+      if (currentUser) {
+        document.getElementById('review-author').value = currentUser.name;
+      }
+      openModal('review-modal');
+    }
+
+    async function submitReviewAction() {
+      const author = document.getElementById('review-author').value.trim() || 'Traveler';
+      const region = document.getElementById('review-subject').value.trim() || 'Bangladesh Trail';
+      const text = document.getElementById('review-text').value.trim();
+      if (!text) return;
+
+      const role = currentUser ? (currentUser.role === 'guide' ? 'Local Guide' : 'Explorer') : 'Visitor';
+      reviewsList.unshift({ author, role, region, text });
+      renderReviews();
+      closeModal('review-modal');
+      document.getElementById('review-subject').value = '';
+      document.getElementById('review-text').value = '';
+      showToast('Field note published!');
+
+      if (supabaseClient) {
+        try {
+          await withTimeout(
+            supabaseClient.from('field_notes').insert({
+              author_name: author,
+              author_role: role,
+              region,
+              content: text
+            }),
+            3000
+          );
+        } catch (e) {}
+      }
+    }
+
+    // ================= 10. TRIP PLANNER, ROAM-AI & MEANINGFUL PROCESSORS =================
+    let activePlannerDay = 1;
+    const plannerDaysData = {
+      1: {
+        heading: "Arrival & a first taste of the coast",
+        sub: "Thursday, December 03 • 3 stops • A relaxed start",
+        stops: [
+          { time: "07:30", tag: "TRANSIT", title: "Cox's Bazar Express from Kamalapur", desc: "Scenic rail journey through Chattogram hills to Cox's Bazar terminal." },
+          { time: "15:30", tag: "EXPERIENCE", title: "Sugandha Beach Sunset Walk", desc: "Golden hour shoreline walk near Tourist Police watchtower." },
+          { time: "20:00", tag: "LOCAL FOOD", title: "Grilled Rupchanda & Bhorta Platter", desc: "Fresh coastal catch at Poushee Restaurant." }
+        ]
+      },
+      2: {
+        heading: "Marine Drive, Himchari & Inani Coral Rocks",
+        sub: "Friday, December 04 • 3 stops • Scenic coastal drive",
+        stops: [
+          { time: "08:30", tag: "NATURE", title: "Himchari Hilltop & Waterfall", desc: "Panoramic Bay of Bengal viewpoint along Marine Drive." },
+          { time: "12:00", tag: "EXPERIENCE", title: "Inani Coral Beach Tide Pools", desc: "Quiet turquoise waters and ancient coral boulders." },
+          { time: "17:00", tag: "LOCAL FOOD", title: "Mermaid Beach Eco-Cafe", desc: "Artisanal seafood and sunset acoustic session." }
+        ]
+      },
+      3: {
+        heading: "Ramu Buddhist Heritage & Evening Return",
+        sub: "Saturday, December 05 • 2 stops • Culture & transit",
+        stops: [
+          { time: "09:30", tag: "CULTURE", title: "Ramu Rangkoot Banasram Monastery", desc: "Historic wooden pagodas and serene hilltop heritage." },
+          { time: "19:00", tag: "TRANSIT", title: "Overnight Return Express to Dhaka", desc: "Comfortable sleeper cabin return journey." }
+        ]
+      }
+    };
+
+    function selectPlannerDay(day, btn) {
+      activePlannerDay = day;
+      document.querySelectorAll('.planner-day-btn').forEach(b => {
+        b.className = 'planner-day-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap';
+      });
+      if (btn) {
+        btn.className = 'planner-day-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap';
+      }
+      renderPlannerStops();
+    }
+
+    function renderPlannerStops() {
+      const dayObj = plannerDaysData[activePlannerDay];
+      if (!dayObj) return;
+      document.getElementById('planner-day-heading').innerText = dayObj.heading;
+      document.getElementById('planner-day-sub').innerText = dayObj.sub;
+
+      const listEl = document.getElementById('planner-stops-list');
+      listEl.innerHTML = dayObj.stops.map((s, idx) => `
+        <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-cream-50 border border-cream-300/80">
+          <span class="font-mono text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-lg flex-shrink-0">${s.time}</span>
+          <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-forest-700">${s.tag}</span>
+            <h4 class="font-extrabold text-slate-900 text-sm">${s.title}</h4>
+            <p class="text-xs text-slate-500 mt-0.5">${s.desc}</p>
+          </div>
+          <button onclick="removePlannerStop(${activePlannerDay}, ${idx})" class="text-slate-400 hover:text-red-600 text-xs p-1" title="Remove stop">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function toggleAddStopDrawer() {
+      document.getElementById('custom-stop-form').classList.toggle('hidden');
+    }
+
+    function submitCustomStop(e) {
+      e.preventDefault();
+      const time = document.getElementById('stop-time-input').value || '18:00';
+      const tag = document.getElementById('stop-tag-input').value || 'EXPERIENCE';
+      const title = document.getElementById('stop-title-input').value.trim();
+      const desc = document.getElementById('stop-desc-input').value.trim() || 'Added to custom itinerary.';
+      if (!title) return;
+
+      plannerDaysData[activePlannerDay].stops.push({ time, tag, title, desc });
+      renderPlannerStops();
+      document.getElementById('stop-title-input').value = '';
+      document.getElementById('stop-desc-input').value = '';
+      toggleAddStopDrawer();
+      showToast(`Added "${title}" to Day ${activePlannerDay}!`);
+    }
+
+    function removePlannerStop(day, idx) {
+      plannerDaysData[day].stops.splice(idx, 1);
+      renderPlannerStops();
+      showToast('Itinerary stop removed.');
+    }
+
+    function updateChecklistCount() {
+      const boxes = document.querySelectorAll('#planner-checklist input[type="checkbox"]');
+      const checked = Array.from(boxes).filter(b => b.checked).length;
+      document.getElementById('checklist-counter').innerText = `${checked} of ${boxes.length} complete`;
+    }
+
+    function runModalAIPlanner() {
+      const interest = document.getElementById('modal-ai-interest').value;
+      const days = document.getElementById('modal-ai-days').value;
+      const out = document.getElementById('modal-ai-output');
+
+      const templates = {
+        tea: `<span class="font-extrabold text-forest-900 block">TEA GARDENS & NATURE (${days.toUpperCase()})</span>
+              <p class="text-slate-700"><strong>Day 1:</strong> Parabat Express to Srimangal &rarr; Madhabpur Lake &amp; Nilkantha 7-Layer Tea.</p>
+              <p class="text-slate-700"><strong>Day 2:</strong> Dawn rainforest trail in Lawachara National Park with certified guide.</p>`,
+        beach: `<span class="font-extrabold text-forest-900 block">COASTAL & CORAL ISLANDS (${days.toUpperCase()})</span>
+                <p class="text-slate-700"><strong>Day 1:</strong> Marine Drive sunset walk &amp; Inani coral boulders.</p>
+                <p class="text-slate-700"><strong>Day 2:</strong> Teknaf jetty ship to Saint Martin's Island &amp; Chhera Dwip tide pools.</p>`,
+        heritage: `<span class="font-extrabold text-forest-900 block">MUGHAL & BUDDHIST HERITAGE (${days.toUpperCase()})</span>
+                   <p class="text-slate-700"><strong>Day 1:</strong> Old Dhaka Lalbagh Fort, Ahsan Manzil &amp; Nazira Bazar culinary walk.</p>
+                   <p class="text-slate-700"><strong>Day 2:</strong> Sonargaon Panam City &amp; Folk Art Museum.</p>`,
+        hills: `<span class="font-extrabold text-forest-900 block">HILL TRACTS & LAKES (${days.toUpperCase()})</span>
+                <p class="text-slate-700"><strong>Day 1:</strong> Kaptai Lake boat cruise to Shuvolong Waterfalls &amp; Hanging Bridge.</p>
+                <p class="text-slate-700"><strong>Day 2:</strong> Cloud ridge sunrise at Sajek Valley &amp; Konglak Peak.</p>`
+      };
+      out.innerHTML = templates[interest] || templates.tea;
+      showToast('RoamAI generated a fresh route!');
+    }
+
+    // Meaningful Feature 1: Permit & Safety Readiness Pass Generator
+    function generatePermitReadinessPass(e) {
+      e.preventDefault();
+      const dest = document.getElementById('permit-dest-input').value;
+      const month = document.getElementById('permit-month-input').value;
+      const nationality = document.getElementById('permit-nationality-input').value;
+      const groupSize = parseInt(document.getElementById('permit-group-input').value || '1', 10);
+
+      let score = 95;
+      let statusLabel = 'CLEARED FOR TRAVEL';
+      let badgeClass = 'bg-emerald-700 text-white';
+      let hotline = 'Tourist Police HQ: +880 1320-169999';
+      const requirements = [];
+
+      if (dest === "Saint Martin's Island" && month === 'July') {
+        score = 35;
+        statusLabel = 'SEASONAL MARITIME SUSPENSION';
+        badgeClass = 'bg-red-600 text-white';
+        requirements.push('Bay of Bengal monsoon warning: Teknaf/Cox’s Bazar tourist ships are suspended in July.');
+      }
+      if (dest === 'Sajek Valley') {
+        hotline = 'Rangamati Tourist Police: +880 1320-160600';
+        requirements.push('Mandatory Baghaihat Army Escort Convoy check-in (10:30 AM or 03:00 PM).');
+        if (nationality === 'FOREIGN') {
+          score = Math.min(score, 65);
+          statusLabel = 'MINISTRY PERMIT REQUIRED';
+          badgeClass = 'bg-amber-600 text-white';
+          requirements.push('Foreign National rule: Apply for Rangamati DC Office & Home Ministry clearance 7 days prior.');
+        } else {
+          requirements.push('Carry original NID or Birth Certificate for checkpoint verification.');
+        }
+      } else if (dest === 'Sundarbans') {
+        score = Math.min(score, 75);
+        statusLabel = 'FOREST PERMIT MANDATORY';
+        badgeClass = 'bg-amber-600 text-white';
+        hotline = 'Khulna Forest & Coast Guard: +880 1769-014400';
+        requirements.push('Obtain Divisional Forest Office (Khulna/Mongla) entry pass + armed eco-guard escort.');
+      } else {
+        requirements.push('Standard highway/rail ID check only; no special restricted-zone clearance needed.');
+      }
+
+      if (groupSize >= 10) {
+        requirements.push(`Large Group (${groupSize} travelers): Pre-register group manifest with local Tourist Police desk.`);
+      }
+
+      try {
+        localStorage.setItem('roambd_last_permit_pass', JSON.stringify({ dest, month, nationality, groupSize, score, statusLabel }));
+      } catch (err) {}
+
+      document.getElementById('permit-pass-output').innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-forest-900">${dest} • ${month}</span>
+          <span class="px-2.5 py-0.5 rounded-full ${badgeClass} font-bold text-[10px]">${statusLabel}</span>
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 pt-1">
+          <span>Trip Readiness Score: <strong class="text-forest-800">${score}%</strong></span>
+          <span class="font-mono text-forest-800">${hotline}</span>
+        </div>
+        <ul class="list-disc pl-4 space-y-1 text-slate-700 pt-1">
+          ${requirements.map(r => `<li>${r}</li>`).join('')}
+        </ul>
+      `;
+      showToast('Travel Clearance & Safety Pass generated!');
+    }
+
+    // Meaningful Feature 2: Smart Route & Transit Feasibility Analyzer
+    function analyzeRouteFeasibility(e) {
+      e.preventDefault();
+      const origin = document.getElementById('route-origin-input').value;
+      const dest = document.getElementById('route-dest-input').value;
+      const days = Math.max(1, parseInt(document.getElementById('route-days-input').value || '2', 10));
+      const mode = document.getElementById('route-mode-input').value;
+
+      const baseHoursMap = {
+        "Cox's Bazar": { rail: 8.5, bus: 10, flight: 1.5, launch: 12 },
+        "Sajek Valley": { rail: 9.5, bus: 11, flight: 3.5, launch: 13 },
+        "Sundarbans": { rail: 7, bus: 6.5, flight: 2.5, launch: 11 },
+        "Srimangal": { rail: 4.5, bus: 5, flight: 2, launch: 8 },
+        "Paharpur": { rail: 6.5, bus: 7, flight: 2.5, launch: 10 }
+      };
+
+      const multiplier = origin === 'Dhaka' ? 1.0 : 0.85;
+      const oneWay = ((baseHoursMap[dest]?.[mode] || 6) * multiplier);
+      const roundTripHours = Math.round(oneWay * 2 * 10) / 10;
+      const wakingHours = days * 14;
+      const transitLoad = Math.min(95, Math.round((roundTripHours / wakingHours) * 100));
+
+      let rating = 'OPTIMAL & BALANCED';
+      let barColor = 'bg-emerald-600';
+      let advice = 'Great exploration-to-transit ratio! Plenty of time for slow local experiences.';
+
+      if (transitLoad > 50) {
+        rating = 'OVERLOADED / RUSHED';
+        barColor = 'bg-red-600';
+        advice = `Warning: ${transitLoad}% of your waking trip is spent in transit. Add +1 buffer day or switch to faster rail/flight transit.`;
+      } else if (transitLoad > 32) {
+        rating = 'MODERATE PACE';
+        barColor = 'bg-amber-500';
+        advice = 'Manageable itinerary. Take an overnight departure to maximize daylight exploration.';
+      }
+
+      document.getElementById('route-feasibility-output').innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-slate-900">${origin} &harr; ${dest} (${days}d)</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-900 font-bold text-[10px]">${rating}</span>
+        </div>
+        <div class="space-y-1 pt-1">
+          <div class="flex justify-between text-[11px] font-bold text-slate-700">
+            <span>Round-Trip Transit: ${roundTripHours} hrs</span>
+            <span>Transit Load: ${transitLoad}%</span>
+          </div>
+          <div class="w-full h-2 bg-white rounded-full overflow-hidden">
+            <div class="h-full ${barColor}" style="width: ${transitLoad}%"></div>
+          </div>
+        </div>
+        <p class="text-slate-700 pt-1">${advice}</p>
+      `;
+      showToast('Route feasibility analyzed!');
+    }
+
+    // ================= 11. 8-DIVISION TRAVEL PASSPORT & ECO-TRACKER =================
+    const ALL_BD_DIVISIONS = ['Dhaka', 'Chattogram', 'Sylhet', 'Khulna', 'Rajshahi', 'Barishal', 'Rangpur', 'Mymensingh'];
+    const PASSPORT_STORAGE_KEY = 'roambd_travel_passport_v1';
+
+    let passportVisits = (() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(PASSPORT_STORAGE_KEY) || 'null');
+        return Array.isArray(saved) && saved.length > 0 ? saved : [
+          { division: 'Dhaka', spot: 'Lalbagh Fort, Old Dhaka', points: 40, date: '2026-10-14' },
+          { division: 'Sylhet', spot: 'Srimangal Tea Trails', points: 45, date: '2026-11-02' }
+        ];
+      } catch (e) {
+        return [];
+      }
+    })();
+
+    function renderTravelPassport() {
+      const uniqueDivisions = new Set(passportVisits.map(v => v.division));
+      const divCount = uniqueDivisions.size;
+      const pct = Math.round((divCount / 8) * 100);
+      const totalEco = passportVisits.reduce((sum, v) => sum + (v.points || 10), 0);
+
+      const divScoreEl = document.getElementById('passport-division-score');
+      const ecoScoreEl = document.getElementById('passport-eco-score');
+      const tierBadge = document.getElementById('passport-tier-badge');
+      const grid = document.getElementById('passport-divisions-grid');
+      const logsList = document.getElementById('passport-logs-list');
+
+      if (divScoreEl) divScoreEl.innerText = `${divCount} / 8 (${pct}%)`;
+      if (ecoScoreEl) ecoScoreEl.innerText = `${totalEco} pts`;
+      if (tierBadge) {
+        tierBadge.innerText = divCount >= 6
+          ? 'Tier: National Heritage Ambassador'
+          : divCount >= 4
+            ? 'Tier: Bengal Trailblazer'
+            : 'Tier: Regional Explorer';
+      }
+
+      if (grid) {
+        grid.innerHTML = ALL_BD_DIVISIONS.map(div => {
+          const visited = uniqueDivisions.has(div);
+          return `
+            <div class="p-2.5 rounded-xl border ${visited ? 'bg-forest-700 text-white border-forest-800' : 'bg-white text-slate-600 border-cream-300'} flex items-center justify-between">
+              <span class="font-bold">${div}</span>
+              <i class="fa-solid ${visited ? 'fa-circle-check text-emerald-300' : 'fa-circle text-cream-300'}"></i>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (logsList) {
+        logsList.innerHTML = passportVisits.map(v => `
+          <div class="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-cream-300">
+            <div>
+              <span class="font-bold text-slate-900">${v.spot}</span>
+              <span class="text-[10px] text-forest-700 font-bold ml-1.5">(${v.division})</span>
+            </div>
+            <span class="font-mono text-[10px] font-bold text-amber-800">+${v.points} pts • ${v.date}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function logTravelPassportVisit(e) {
+      e.preventDefault();
+      const division = document.getElementById('passport-division-input').value;
+      const spot = document.getElementById('passport-spot-input').value.trim();
+      if (!spot) return;
+
+      const checks = document.querySelectorAll('.passport-eco-check:checked').length;
+      const points = 10 + (checks * 15);
+      const today = new Date().toISOString().split('T')[0];
+
+      passportVisits.unshift({ division, spot, points, date: today });
+      try { localStorage.setItem(PASSPORT_STORAGE_KEY, JSON.stringify(passportVisits)); } catch (err) {}
+
+      document.getElementById('passport-spot-input').value = '';
+      renderTravelPassport();
+      showToast(`Stamped "${spot}" (+${points} Eco-Steward pts)!`);
     }
 
     // ================= 12. INTERACTIVE LEAFLET.JS GEOSPATIAL MAP =================
-    let leafletMap = null;
-    let leafletMarkersLayer = null;
-    let activeMapRegion = 'coxs';
-    let activeMapFilter = 'all';
-
     const MAP_REGIONS_DATA = {
       coxs: {
         name: "Around Cox's Bazar",
@@ -3750,7 +3633,7 @@
             lat: 21.4225,
             lng: 91.9740,
             rating: "4.8",
-            img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&q=80",
+            img: "https://commons.wikimedia.org/wiki/Special:FilePath/Cox%27s_Bazar_Beach.JPG?width=400",
             desc: "Wide sands, sea breeze & sunset views. Tourist Police watchtower active."
           },
           {
@@ -3770,7 +3653,7 @@
             lat: 21.3568,
             lng: 92.0245,
             rating: "4.8",
-            img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=200&q=80",
+            img: "https://commons.wikimedia.org/wiki/Special:FilePath/Himchari_National_Park_(1).jpg?width=400",
             desc: "Coastal hills, forest paths & panoramic Bay of Bengal ocean views."
           },
           {
@@ -3797,7 +3680,7 @@
             lat: 24.3270,
             lng: 91.7870,
             rating: "4.9",
-            img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=200&q=80",
+            img: "https://commons.wikimedia.org/wiki/Special:FilePath/Srimangal_Tea_garden.jpg?width=400",
             desc: "Tropical rainforest trail, Hoolock Gibbon sanctuary & certified eco-guides."
           },
           {
@@ -3834,7 +3717,7 @@
             lat: 23.7189,
             lng: 90.3881,
             rating: "4.8",
-            img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&w=200&q=80",
+            img: "https://commons.wikimedia.org/wiki/Special:FilePath/Lalbagh_Fort,_Dhaka,_Bangladesh.jpg?width=400",
             desc: "17th-century Mughal citadel with Pari Bibi's Tomb and manicured gardens."
           },
           {
@@ -3844,7 +3727,7 @@
             lat: 23.7086,
             lng: 90.4060,
             rating: "4.9",
-            img: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=200&q=80",
+            img: "https://commons.wikimedia.org/wiki/Special:FilePath/Ahsan_Manzil-Front_View.jpg?width=400",
             desc: "Historic riverside Nawabi palace overlooking the Buriganga River."
           },
           {
@@ -3871,339 +3754,261 @@
       }
     };
 
-    function initInteractiveLeafletMap() {
-      const mapEl = document.getElementById('leaflet-map-canvas');
-      if (!mapEl) return;
+    let activeMapRegion = 'coxs';
+    let activeMapPinFilter = 'all';
+    let leafletMap = null;
+    let leafletMarkersLayer = null;
 
-      if (!window.L) {
-        mapEl.innerHTML = `<div class="p-8 text-center text-xs text-slate-600">Interactive OpenStreetMap tiles loading...</div>`;
-        return;
-      }
+    function initOrRefreshLeafletMap() {
+      const container = document.getElementById('leaflet-map-canvas');
+      if (!container || !window.L) return;
 
+      const region = MAP_REGIONS_DATA[activeMapRegion];
       if (!leafletMap) {
-        const reg = MAP_REGIONS_DATA[activeMapRegion];
-        leafletMap = L.map('leaflet-map-canvas', { zoomControl: true }).setView(reg.center, reg.zoom);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        leafletMap = L.map('leaflet-map-canvas').setView(region.center, region.zoom);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd',
           maxZoom: 19,
-          attribution: '&copy; OpenStreetMap contributors'
+          attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(leafletMap);
         leafletMarkersLayer = L.layerGroup().addTo(leafletMap);
       } else {
         leafletMap.invalidateSize();
+        leafletMap.setView(region.center, region.zoom);
       }
-
-      renderMapMarkersAndSidebar();
+      renderMapPois();
     }
 
-    function renderMapMarkersAndSidebar() {
-      const reg = MAP_REGIONS_DATA[activeMapRegion];
-      if (!reg) return;
+    function renderMapPois() {
+      const region = MAP_REGIONS_DATA[activeMapRegion];
+      const filteredPois = region.pois.filter(p => activeMapPinFilter === 'all' || p.type === activeMapPinFilter);
 
-      const filteredPois = reg.pois.filter(p => activeMapFilter === 'all' || p.type === activeMapFilter);
+      if (leafletMarkersLayer && window.L) {
+        leafletMarkersLayer.clearLayers();
+        filteredPois.forEach((poi, idx) => {
+          const marker = L.marker([poi.lat, poi.lng]).addTo(leafletMarkersLayer);
+          marker.bindPopup(`<strong>${poi.title}</strong><br><span style="font-size:11px;">${poi.badge}</span>`);
+          marker.on('click', () => selectMapPoi(idx));
+        });
+      }
+
       const sidebar = document.getElementById('map-sidebar-list');
-
       if (sidebar) {
         sidebar.innerHTML = filteredPois.map((poi, idx) => `
-          <div onclick="focusMapPoi(${poi.lat}, ${poi.lng}, '${poi.title.replace(/'/g, "\\'")}', '${poi.badge.replace(/'/g, "\\'")}', '${poi.desc.replace(/'/g, "\\'")}')" class="bg-white border ${idx === 0 ? 'border-2 border-forest-700' : 'border-cream-300 hover:border-forest-600'} rounded-2xl p-3.5 flex items-center gap-3.5 cursor-pointer transition shadow-2xs">
-            <img src="${poi.img}" alt="${poi.title}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
+          <div onclick="selectMapPoi(${idx})" class="bg-white hover:border-forest-600 border border-cream-300 rounded-2xl p-3.5 flex items-center gap-3 cursor-pointer transition shadow-2xs">
+            <img src="${poi.img}" referrerpolicy="no-referrer" alt="${poi.title}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/120x120/184D38/F8F7F3?text=Pin'">
             <div class="min-w-0 flex-1">
-              <span class="text-[9px] font-bold uppercase tracking-wider ${poi.type === 'emergency' ? 'text-red-600' : 'text-forest-700'} block">${poi.badge.split('•')[0]}</span>
-              <h4 class="font-bold text-slate-900 text-sm truncate">${poi.title}</h4>
-              <p class="text-[11px] text-slate-500 mt-0.5">★ ${poi.rating} • ${poi.badge.split('•')[1] || 'Nearby'}</p>
-              <span class="text-[10px] font-bold text-emerald-700 mt-1 inline-block">● Active &amp; Verified</span>
+              <span class="text-[10px] font-bold uppercase text-forest-700 block">${poi.badge}</span>
+              <h5 class="font-extrabold text-slate-900 text-xs truncate">${poi.title}</h5>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${poi.desc}</p>
             </div>
           </div>
         `).join('');
       }
 
-      if (leafletMap && leafletMarkersLayer) {
-        leafletMarkersLayer.clearLayers();
-        filteredPois.forEach(poi => {
-          const pinColor = poi.type === 'emergency' ? '#dc2626' : poi.type === 'stay' ? '#d97706' : '#184D38';
-          const customIcon = L.divIcon({
-            className: 'custom-roambd-pin',
-            html: `<div style="background:${pinColor};color:#fff;padding:4px 10px;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap;border:2px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,0.22);display:inline-flex;align-items:center;gap:4px;">● ${poi.title}</div>`,
-            iconSize: [140, 28],
-            iconAnchor: [70, 14]
-          });
-
-          const marker = L.marker([poi.lat, poi.lng], { icon: customIcon }).addTo(leafletMarkersLayer);
-          marker.bindPopup(`<strong>${poi.title}</strong><br><span style="font-size:11px;">${poi.desc}</span>`);
-          marker.on('click', () => {
-            selectMapPin(poi.title, poi.badge, poi.desc);
-          });
-        });
-
-        if (filteredPois.length > 0) {
-          selectMapPin(filteredPois[0].title, filteredPois[0].badge, filteredPois[0].desc);
-        }
-      }
+      if (filteredPois.length > 0) selectMapPoi(0);
     }
 
-    function focusMapPoi(lat, lng, title, badge, desc) {
-      selectMapPin(title, badge, desc);
-      if (leafletMap) {
-        leafletMap.flyTo([lat, lng], 15, { duration: 0.7 });
-      }
+    function selectMapPoi(index) {
+      const region = MAP_REGIONS_DATA[activeMapRegion];
+      const filteredPois = region.pois.filter(p => activeMapPinFilter === 'all' || p.type === activeMapPinFilter);
+      const poi = filteredPois[index];
+      if (!poi) return;
+
+      document.getElementById('map-card-badge').innerText = poi.badge;
+      document.getElementById('map-card-title').innerText = poi.title;
+      document.getElementById('map-card-desc').innerText = poi.desc;
+      if (leafletMap) leafletMap.panTo([poi.lat, poi.lng]);
+    }
+
+    function switchMapRegion(regionKey) {
+      activeMapRegion = regionKey;
+      const region = MAP_REGIONS_DATA[regionKey];
+      const radius = document.getElementById('map-radius-select')?.value || '10 km';
+      document.getElementById('map-region-heading').innerText = region.name;
+      document.getElementById('map-badge-overlay').innerText = `${region.name} • ${radius}`;
+      initOrRefreshLeafletMap();
+    }
+
+    function updateMapRadius(radiusText) {
+      const region = MAP_REGIONS_DATA[activeMapRegion];
+      document.getElementById('map-radius-label').innerText = `Within ${radiusText}`;
+      document.getElementById('map-badge-overlay').innerText = `${region.name} • ${radiusText}`;
     }
 
     function filterMapPins(type, btn) {
-      activeMapFilter = type;
+      activeMapPinFilter = type;
       document.querySelectorAll('.map-filter-btn').forEach(b => {
-        b.className = "map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0";
+        b.className = 'map-filter-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold hover:border-forest-600 transition whitespace-nowrap flex-shrink-0';
       });
-      if (btn) btn.className = "map-filter-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap flex-shrink-0";
-      renderMapMarkersAndSidebar();
-    }
-
-    function selectMapPin(title, badge, desc) {
-      document.getElementById('map-card-title').innerText = title;
-      document.getElementById('map-card-badge').innerText = badge;
-      document.getElementById('map-card-desc').innerText = desc;
-    }
-
-    function switchMapRegion(region) {
-      activeMapRegion = region;
-      const reg = MAP_REGIONS_DATA[region] || MAP_REGIONS_DATA.coxs;
-      const radius = document.getElementById('map-radius-select')?.value || '10 km';
-      document.getElementById('map-region-heading').innerText = reg.name;
-      const overlay = document.getElementById('map-badge-overlay');
-      if (overlay) overlay.innerText = `${reg.name} • ${radius}`;
-
-      if (leafletMap) {
-        leafletMap.setView(reg.center, reg.zoom);
+      if (btn) {
+        btn.className = 'map-filter-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap flex-shrink-0';
       }
-      renderMapMarkersAndSidebar();
-      showToast(`Map centered on ${reg.name}`);
+      renderMapPois();
     }
 
-    function updateMapRadius(radius) {
-      document.getElementById('map-radius-label').innerText = `Within ${radius}`;
-      const regionHeading = document.getElementById('map-region-heading')?.innerText || "Around Cox's Bazar";
-      const overlay = document.getElementById('map-badge-overlay');
-      if (overlay) overlay.innerText = `${regionHeading} • ${radius}`;
-      showToast(`Search radius updated to ${radius}`);
-    }
+    // ================= 13. VERIFIED LOCAL GUIDES & GUIDE PORTAL =================
+    let activeGuideSpecialty = 'all';
+    let selectedGuideIndex = 0;
+    let guideAvailable = true;
 
-    // ================= 13. COMMUNITY FIELD NOTES =================
-    function renderReviews() {
-      const container = document.getElementById('reviews-grid');
-      if (!container) return;
-      container.innerHTML = communityReviews.map(r => `
-        <div class="bg-white rounded-3xl p-5 border border-cream-300/90 shadow-2xs space-y-2.5 text-xs">
-          <div class="flex items-center justify-between">
-            <div>
-              <h4 class="font-bold text-slate-900">${r.name}</h4>
-              <span class="text-[10px] text-slate-400">${r.role} • ${r.date}</span>
-            </div>
-            <span class="text-[10px] font-bold bg-forest-100 text-forest-800 px-2.5 py-0.5 rounded-full">${r.region}</span>
-          </div>
-          <p class="text-slate-600 leading-relaxed">"${r.content}"</p>
-        </div>
-      `).join('');
-    }
-
-    function openReviewModal() { openModal('review-modal'); }
-
-    async function submitReviewAction() {
-      const author = document.getElementById('review-author').value || (currentUser && currentUser.name) || "Traveler";
-      const subject = document.getElementById('review-subject').value || "Bangladesh Trail";
-      const text = document.getElementById('review-text').value;
-      if (!text) { showToast("Please write a short observation."); return; }
-
-      if (supabaseClient) {
-        await supabaseClient.from('field_notes').insert({
-          author_name: author,
-          author_role: "Explorer",
-          region: subject,
-          content: text
-        });
-      }
-
-      communityReviews.unshift({ name: author, role: "Explorer", date: "Just now", stars: 5, region: subject, content: text });
-      renderReviews();
-      closeModal('review-modal');
-      showToast("Field note saved to Supabase PostgreSQL!");
-    }
-
-    // ================= 14. TOUR GUIDE PORTAL LOGIC =================
-    function populateGuideDashboard() {
-      if (!currentUser) return;
-      document.getElementById('guide-portal-name').innerText = currentUser.name;
-      document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region || 'Sundarbans & Heritage'}`;
-      document.getElementById('guide-edit-name').value = currentUser.name || '';
-      document.getElementById('guide-edit-region').value = currentUser.region || 'Sundarbans & Heritage';
-      if (document.getElementById('guide-edit-specialty')) {
-        document.getElementById('guide-edit-specialty').value = currentUser.specialty || 'wildlife';
-      }
-      document.getElementById('guide-edit-phone').value = currentUser.phone || '+880 1712-987654';
-      document.getElementById('guide-edit-exp').value = currentUser.exp || '5+ Years';
-      document.getElementById('guide-edit-languages').value = currentUser.languages || 'Bangla, English';
-      document.getElementById('guide-edit-license').value = currentUser.license || 'BPC-2026-084';
-      document.getElementById('guide-edit-address').value = currentUser.address || 'Khulna';
-      document.getElementById('guide-edit-bio').value = currentUser.bio || '';
-
-      renderGuideInquiries();
-      renderGuideOwnReviews();
-    }
-
-    const guideInquiriesData = [
-      {
-        id: 1,
-        traveler: "Dr. Farhana Rahman",
-        tag: "Heritage Inquiry",
-        dates: "Dec 14 – Dec 15 • 2 Travelers",
-        message: "Planning a 2-day architectural survey around Sixty Dome Mosque & Bagerhat next month.",
-        status: "REQUESTED"
-      },
-      {
-        id: 2,
-        traveler: "Arifuzzaman Noyon",
-        tag: "Wildlife Trail",
-        dates: "Dec 20 • Solo Photographer",
-        message: "Seeking early morning birdwatching trail permit advice near Karamjal.",
-        status: "REQUESTED"
-      },
-      {
-        id: 3,
-        traveler: "Nabila Tasnim",
-        tag: "Cultural Walk",
-        dates: "Nov 28 • 3 Travelers",
-        message: "Would love a half-day local culinary and craft village walk with family.",
-        status: "CONFIRMED"
-      }
+    let guideInquiries = [
+      { id: 101, tourist: "Nusrat Akter", dates: "Dec 12 – Dec 14", group: "3 Travelers", note: "Looking for early morning Karamjal & Harbaria eco-trail guidance.", status: "REQUESTED" },
+      { id: 102, tourist: "Tanvir Ahmed", dates: "Dec 20 – Dec 21", group: "2 Travelers", note: "Interested in Sixty Dome Mosque & Bagerhat heritage walk.", status: "CONFIRMED" }
     ];
 
-    function renderGuideInquiries() {
-      const container = document.getElementById('guide-inquiries-list');
-      if (!container) return;
+    function renderGuidesDirectory(list) {
+      const grid = document.getElementById('guides-directory-grid');
+      const countEl = document.getElementById('guides-verified-count');
+      if (countEl) countEl.innerText = `${verifiedGuidesList.length} verified guides across Bangladesh`;
+      if (!grid) return;
 
-      const activeCount = guideInquiriesData.filter(i => i.status !== 'DECLINED').length;
-      const kpiEl = document.getElementById('guide-kpi-inquiries');
-      if (kpiEl) kpiEl.innerText = activeCount;
-
-      container.innerHTML = guideInquiriesData.map(item => `
-        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-300 text-xs space-y-2">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <span class="font-bold text-slate-900 block">${item.traveler}</span>
-              <span class="text-[10px] text-slate-400 font-semibold">${item.dates}</span>
+      grid.innerHTML = list.map((g) => {
+        const realIdx = verifiedGuidesList.findIndex(item => item.name === g.name);
+        return `
+          <div class="editorial-card bg-white rounded-3xl p-5 border border-cream-300/90 space-y-4 shadow-2xs flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3.5">
+                <img src="${g.img}" alt="${g.name}" class="w-14 h-14 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/150x150/184D38/F8F7F3?text=Guide'">
+                <div class="min-w-0 flex-1">
+                  <span class="inline-flex items-center gap-1 text-[10px] font-bold text-forest-800 bg-forest-100 px-2.5 py-0.5 rounded-full">
+                    <i class="fa-solid fa-circle-check text-forest-700"></i> Verified local
+                  </span>
+                  <h3 class="font-extrabold text-slate-900 text-base truncate mt-1">${g.name}</h3>
+                  <p class="text-xs text-slate-500 truncate">${g.region}</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">${g.bio}</p>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2.5 py-1 rounded-full bg-cream-100 text-slate-700 font-semibold">${g.languages}</span>
+                <span class="px-2.5 py-1 rounded-full bg-cream-100 text-slate-700 font-semibold">${g.trips}</span>
+                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 font-bold"><i class="fa-solid fa-star text-amber-500 mr-0.5"></i> ${g.rating}</span>
+              </div>
             </div>
-            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-              item.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' :
-              item.status === 'DECLINED' ? 'bg-red-100 text-red-700' :
-              'bg-amber-100 text-amber-800'
-            }">${item.status}</span>
+            <button onclick="openGuideContactModal(${realIdx})" class="w-full bg-forest-700 hover:bg-forest-800 text-white font-bold py-2.5 rounded-full text-xs transition">
+              View Profile, Contact &amp; Reviews
+            </button>
           </div>
-          <p class="text-slate-600 leading-relaxed">"${item.message}"</p>
-          ${item.status === 'REQUESTED' ? `
-            <div class="flex items-center gap-2 pt-1">
-              <button onclick="updateGuideInquiryStatus(${item.id}, 'CONFIRMED')" class="flex-1 bg-forest-700 hover:bg-forest-800 text-white font-bold py-1.5 rounded-full text-[11px] transition">
-                Accept Request
-              </button>
-              <button onclick="updateGuideInquiryStatus(${item.id}, 'DECLINED')" class="px-3.5 py-1.5 bg-white border border-cream-300 hover:border-red-400 text-slate-600 hover:text-red-600 font-bold rounded-full text-[11px] transition">
-                Decline
-              </button>
-            </div>
-          ` : `
-            <div class="pt-1 flex items-center justify-between text-[11px]">
-              <span class="font-semibold text-forest-700">${item.status === 'CONFIRMED' ? '✓ Confirmed on your schedule' : 'Declined'}</span>
-              <button onclick="showToast('Quick WhatsApp/Email reply template copied!')" class="text-forest-800 font-bold hover:underline">Send Note &rarr;</button>
-            </div>
-          `}
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    function updateGuideInquiryStatus(id, newStatus) {
-      const target = guideInquiriesData.find(i => i.id === id);
-      if (!target) return;
-      target.status = newStatus;
-      renderGuideInquiries();
-      showToast(newStatus === 'CONFIRMED'
-        ? `Confirmed trip inquiry from ${target.traveler}!`
-        : `Declined inquiry from ${target.traveler}.`);
-    }
-
-    function renderGuideOwnReviews() {
-      const container = document.getElementById('guide-portal-reviews-list');
-      if (!container || !currentUser) return;
-      const myReviews = communityReviews.filter(r =>
-        (r.region || '').toLowerCase().includes((currentUser.name || '').toLowerCase())
-      );
-      const revKpi = document.getElementById('guide-kpi-reviews');
-      if (revKpi) revKpi.innerText = myReviews.length;
-
-      if (myReviews.length === 0) {
-        container.innerHTML = `<p class="text-slate-400 italic">No reviews yet. Share your public profile card with travelers after a trip!</p>`;
-        return;
-      }
-      container.innerHTML = myReviews.map(r => `
-        <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-900">${r.name}</span>
-            <span class="text-amber-500 font-bold">${'★'.repeat(r.stars || 5)}</span>
-          </div>
-          <p class="text-slate-600">"${r.content}"</p>
-        </div>
-      `).join('');
-    }
-
-    async function publishGuideFieldTip(e) {
-      e.preventDefault();
-      const region = document.getElementById('guide-tip-region').value.trim();
-      const text = document.getElementById('guide-tip-text').value.trim();
-      if (!region || !text) return;
-
-      const guideName = currentUser?.name || 'Verified Local Guide';
-      if (supabaseClient) {
-        await supabaseClient.from('field_notes').insert({
-          author_name: guideName,
-          author_role: 'Verified Guide Tip',
-          region,
-          content: text
-        });
-      }
-
-      communityReviews.unshift({
-        name: guideName,
-        role: 'Verified Local Guide',
-        date: 'Just now',
-        stars: 5,
-        region,
-        content: text
+    function filterGuidesBySpecialty(spec, btn) {
+      activeGuideSpecialty = spec;
+      document.querySelectorAll('.guide-spec-btn').forEach(b => {
+        b.className = 'guide-spec-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-cream-300 text-slate-700 hover:border-forest-600 transition whitespace-nowrap';
       });
-      renderReviews();
-      document.getElementById('guide-tip-region').value = '';
-      document.getElementById('guide-tip-text').value = '';
-      showToast('Trail advisory published to Explore & Supabase!');
+      if (btn) {
+        btn.className = 'guide-spec-btn px-4 py-2 rounded-full text-xs font-bold bg-forest-700 text-white transition whitespace-nowrap';
+      }
+      const filtered = spec === 'all' ? verifiedGuidesList : verifiedGuidesList.filter(g => g.specialty === spec);
+      renderGuidesDirectory(filtered);
     }
 
-    function previewMyGuideCard() {
-      if (!currentUser) return;
-      openGuideContactModal(
-        currentUser.name,
-        currentUser.region || 'Bangladesh Regional Trails',
-        currentUser.phone || '+880 1712-987654',
-        currentUser.email || 'guide@roambd.org',
-        currentUser.license || 'BPC-VERIFIED'
-      );
+    function openGuideContactModal(index) {
+      const g = verifiedGuidesList[index];
+      if (!g) return;
+      selectedGuideIndex = index;
+
+      document.getElementById('guide-modal-name').innerText = g.name;
+      document.getElementById('guide-modal-region').innerText = `${g.region} • ${g.languages}`;
+      document.getElementById('guide-modal-phone').innerText = g.phone;
+      document.getElementById('guide-modal-call-link').href = `tel:${g.phone.replace(/\s+/g, '')}`;
+      document.getElementById('guide-modal-email').innerText = g.email;
+      document.getElementById('guide-modal-license').innerText = `License ID: ${g.license}`;
+
+      renderGuideModalReviews(g);
+      setGuideRating(5);
+      openModal('guide-contact-modal');
     }
 
-    let guideAvailable = true;
+    function renderGuideModalReviews(guide) {
+      const listEl = document.getElementById('guide-modal-reviews-list');
+      const countEl = document.getElementById('guide-modal-review-count');
+      const revs = guide.reviews || [];
+      if (countEl) countEl.innerText = `${revs.length} review${revs.length === 1 ? '' : 's'}`;
+      if (!listEl) return;
+
+      listEl.innerHTML = revs.length > 0
+        ? revs.map(r => `
+            <div class="p-2.5 rounded-xl bg-white border border-cream-200 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-900">${r.author}</span>
+                <span class="text-amber-500 font-bold">${'★'.repeat(r.rating)}</span>
+              </div>
+              <p class="text-slate-600 mt-1">${r.text}</p>
+            </div>
+          `).join('')
+        : `<p class="text-[11px] text-slate-400">No traveler reviews yet. Be the first to share your experience!</p>`;
+    }
+
+    function setGuideRating(stars) {
+      document.getElementById('guide-review-rating').value = stars;
+      document.querySelectorAll('.guide-star-btn').forEach(btn => {
+        const val = parseInt(btn.getAttribute('data-star'), 10);
+        btn.className = val <= stars
+          ? 'guide-star-btn text-amber-500 hover:scale-110 transition'
+          : 'guide-star-btn text-slate-300 hover:scale-110 transition';
+      });
+    }
+
+    async function submitGuideReview(e) {
+      e.preventDefault();
+      const g = verifiedGuidesList[selectedGuideIndex];
+      const comment = document.getElementById('guide-review-comment').value.trim();
+      const rating = parseInt(document.getElementById('guide-review-rating').value || '5', 10);
+      if (!g || !comment) return;
+
+      const author = currentUser ? currentUser.name : 'Verified Traveler';
+      g.reviews = g.reviews || [];
+      g.reviews.unshift({ author, rating, date: 'Nov 2026', text: comment });
+
+      renderGuideModalReviews(g);
+      document.getElementById('guide-review-comment').value = '';
+      showToast(`Review published for ${g.name}!`);
+
+      if (supabaseClient) {
+        try {
+          await withTimeout(
+            supabaseClient.from('field_notes').insert({
+              author_name: author,
+              author_role: 'Guide Review',
+              region: `Guide: ${g.name}`,
+              content: `${'★'.repeat(rating)} — ${comment}`
+            }),
+            3000
+          );
+        } catch (err) {}
+      }
+    }
+
     function toggleGuideAvailability() {
       guideAvailable = !guideAvailable;
-      document.getElementById('guide-availability-text').innerText = guideAvailable ? 'Available this week' : 'On field expedition';
-      showToast(guideAvailable ? 'Marked as Available' : 'Marked as On Expedition');
+      const textEl = document.getElementById('guide-availability-text');
+      if (textEl) textEl.innerText = guideAvailable ? 'Available this week' : 'On field expedition';
+      showToast(guideAvailable ? 'Status updated: Available for inquiries' : 'Status updated: On field expedition');
+    }
+
+    function populateGuidePortalData() {
+      if (!currentUser) return;
+      document.getElementById('guide-portal-name').innerText = currentUser.name;
+      document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region || 'Sundarbans & Bagerhat Heritage'}`;
+      document.getElementById('guide-edit-name').value = currentUser.name;
+      document.getElementById('guide-edit-region').value = currentUser.region || 'Sundarbans & Bagerhat Heritage';
+      document.getElementById('guide-edit-phone').value = currentUser.phone || '+880 1712-987654';
+      document.getElementById('guide-edit-exp').value = currentUser.exp || '11 Years';
+      document.getElementById('guide-edit-languages').value = currentUser.languages || 'Bangla, English';
+      document.getElementById('guide-edit-license').value = currentUser.license || 'BPC-2018-KHULNA-084';
+      document.getElementById('guide-edit-address').value = currentUser.address || 'Khulna Sadar, Khulna';
+      document.getElementById('guide-edit-bio').value = currentUser.bio || '';
+      renderGuideInquiries();
     }
 
     function saveGuideProfileDetails(e) {
       e.preventDefault();
+      if (!currentUser) return;
       currentUser.name = document.getElementById('guide-edit-name').value.trim();
       currentUser.region = document.getElementById('guide-edit-region').value.trim();
-      if (document.getElementById('guide-edit-specialty')) {
-        currentUser.specialty = document.getElementById('guide-edit-specialty').value;
-      }
       currentUser.phone = document.getElementById('guide-edit-phone').value.trim();
       currentUser.exp = document.getElementById('guide-edit-exp').value.trim();
       currentUser.languages = document.getElementById('guide-edit-languages').value.trim();
@@ -4211,129 +4016,334 @@
       currentUser.address = document.getElementById('guide-edit-address').value.trim();
       currentUser.bio = document.getElementById('guide-edit-bio').value.trim();
 
-      const dirIdx = verifiedGuidesList.findIndex(g => g.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (dirIdx !== -1) {
-        verifiedGuidesList[dirIdx].name = currentUser.name;
-        verifiedGuidesList[dirIdx].region = currentUser.region;
-        verifiedGuidesList[dirIdx].specialty = currentUser.specialty || verifiedGuidesList[dirIdx].specialty;
-        verifiedGuidesList[dirIdx].phone = currentUser.phone;
-        verifiedGuidesList[dirIdx].languages = currentUser.languages;
-        verifiedGuidesList[dirIdx].license = currentUser.license;
-        verifiedGuidesList[dirIdx].bio = currentUser.bio;
+      document.getElementById('guide-portal-name').innerText = currentUser.name;
+      document.getElementById('guide-portal-region').innerText = `Primary Region: ${currentUser.region}`;
+
+      const dirIdx = verifiedGuidesList.findIndex(g => g.email === currentUser.email);
+      if (dirIdx > -1) {
+        verifiedGuidesList[dirIdx] = {
+          ...verifiedGuidesList[dirIdx],
+          name: currentUser.name,
+          region: currentUser.region,
+          specialty: document.getElementById('guide-edit-specialty').value,
+          phone: currentUser.phone,
+          languages: currentUser.languages,
+          license: currentUser.license,
+          bio: currentUser.bio
+        };
         renderGuidesDirectory(verifiedGuidesList);
       }
-
-      const idx = registeredUsers.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (idx !== -1) {
-        registeredUsers[idx] = currentUser;
-        saveRegisteredUsers(registeredUsers);
-      }
-      populateGuideDashboard();
-      syncUserUI();
-      showToast('Guide profile updated across public directory!');
+      showToast('Guide profile synced with public directory!');
     }
 
-    // ================= 15. SYSTEM ADMIN GOVERNANCE DESK =================
-    function approveGuide(btn) {
-      const row = btn.closest('tr');
-      const name = row.children[0].innerText.trim();
-      const region = row.children[1].innerText.trim();
-      const license = row.children[2].innerText.trim();
+    function previewMyGuideCard() {
+      const idx = currentUser ? verifiedGuidesList.findIndex(g => g.email === currentUser.email) : 0;
+      openGuideContactModal(idx > -1 ? idx : 0);
+    }
 
-      row.children[4].innerHTML = '<span class="bg-forest-100 text-forest-800 px-2.5 py-1 rounded-full font-bold">Verified</span>';
-      btn.parentElement.innerHTML = '<span class="text-xs text-slate-400 font-bold">Published</span>';
+    function publishGuideFieldTip(e) {
+      e.preventDefault();
+      const region = document.getElementById('guide-tip-region').value.trim();
+      const text = document.getElementById('guide-tip-text').value.trim();
+      if (!region || !text) return;
 
-      verifiedGuidesList.unshift({
-        name,
+      reviewsList.unshift({
+        author: currentUser ? currentUser.name : 'Verified Local Guide',
+        role: 'Verified Guide Tip',
         region,
-        trips: 12,
-        rating: "5.0",
-        specialty: "hills",
-        tags: ["Verified Local", "Regional Expert"],
-        bio: `Newly BPC-verified local storyteller and trail specialist in ${region}.`,
-        languages: "Bangla, English",
-        phone: "+880 1711-000999",
-        email: `${name.toLowerCase().replace(/\s+/g, '.')}@roambd-guides.org`,
-        license,
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
+        text
       });
-      renderGuidesDirectory(verifiedGuidesList);
-      updateAdminCounters();
-      logAdminAction(`Verified and published local guide "${name}" (${license}).`);
-      showToast(`${name} verified & published to Local Guides!`);
+      renderReviews();
+      document.getElementById('guide-tip-region').value = '';
+      document.getElementById('guide-tip-text').value = '';
+      showToast('Trail & weather update published to Explore!');
     }
 
-    function rejectGuide(btn) {
-      const name = btn.closest('tr')?.children[0]?.innerText?.trim() || 'Applicant';
-      btn.closest('tr').remove();
-      logAdminAction(`Declined guide application for "${name}".`);
+    function generateGuideExpeditionBriefing(e) {
+      e.preventDefault();
+      const zone = document.getElementById('guide-brief-zone').value;
+      const size = Math.max(1, parseInt(document.getElementById('guide-brief-size').value || '1', 10));
+      const profile = document.getElementById('guide-brief-profile').value;
+
+      const coGuides = Math.ceil(size / 8);
+      const isMarine = zone.includes('Sundarbans') || zone.includes('Saint Martin');
+      const gearText = isMarine
+        ? `${size + 2} Coast-Guard approved life jackets + 2 marine first-aid kits`
+        : `${Math.ceil(size / 5)} trail first-aid kits + offline GPS & whistle packs`;
+      const compliance = profile === 'Foreign Nationals'
+        ? 'Collect passport & visa photocopies 72 hours before departure for checkpoint clearance.'
+        : 'Verify original NID / student ID copies at entry gate.';
+
+      const out = document.getElementById('guide-briefing-output');
+      out.classList.remove('hidden');
+      out.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-forest-900">Pre-Trip Briefing: ${zone}</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-forest-700 text-white text-[10px] font-bold">${size} Travelers</span>
+        </div>
+        <p class="text-slate-700"><strong>Staffing Ratio:</strong> ${coGuides} Certified Guide(s) required (max 8 travelers/guide).</p>
+        <p class="text-slate-700"><strong>Safety Gear:</strong> ${gearText}.</p>
+        <p class="text-slate-700"><strong>Checkpoint Rule:</strong> ${compliance}</p>
+      `;
+      showToast('Expedition safety briefing generated!');
     }
 
-    const adminAuditLogs = [
-      { time: "03:10 PM", action: "System Administrator signed into Governance Desk." },
-      { time: "02:45 PM", action: "Verified 24/7 Tourist Police & 999 National Helpline records (BR-09)." }
+    function renderGuideInquiries() {
+      const listEl = document.getElementById('guide-inquiries-list');
+      const revEl = document.getElementById('guide-portal-reviews-list');
+      if (listEl) {
+        listEl.innerHTML = guideInquiries.map(inq => `
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-900">${inq.tourist}</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${inq.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${inq.status}</span>
+            </div>
+            <p class="text-[11px] font-semibold text-forest-700">${inq.dates} • ${inq.group}</p>
+            <p class="text-slate-600">${inq.note}</p>
+            <div class="flex gap-2 pt-1">
+              <button onclick="updateInquiryStatus(${inq.id}, 'CONFIRMED')" class="bg-forest-700 text-white font-bold px-3 py-1 rounded-full text-[11px]">Accept</button>
+              <button onclick="updateInquiryStatus(${inq.id}, 'DECLINED')" class="bg-white border border-cream-300 text-slate-700 font-bold px-3 py-1 rounded-full text-[11px]">Decline</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      if (revEl) {
+        const myReviews = verifiedGuidesList[0]?.reviews || [];
+        revEl.innerHTML = myReviews.map(r => `
+          <div class="p-3 rounded-2xl bg-cream-50 border border-cream-300">
+            <div class="flex justify-between font-bold text-slate-900">
+              <span>${r.author}</span>
+              <span class="text-amber-500">${'★'.repeat(r.rating)}</span>
+            </div>
+            <p class="text-slate-600 mt-1">${r.text}</p>
+          </div>
+        `).join('');
+      }
+    }
+
+    function updateInquiryStatus(id, status) {
+      const item = guideInquiries.find(i => i.id === id);
+      if (item) {
+        item.status = status;
+        renderGuideInquiries();
+        showToast(`Inquiry updated to ${status}`);
+      }
+    }
+
+    // ================= 14. ADMIN GOVERNANCE DESK =================
+    let adminAuditLogs = [
+      { time: '10:15 AM', action: 'Verified 24/7 National Emergency (999) & Tourist Police directories.' },
+      { time: '09:40 AM', action: 'Synced 9 regional destinations with PostgreSQL directory.' }
     ];
 
-    function logAdminAction(actionText) {
+    function logAdminAction(msg) {
       const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      adminAuditLogs.unshift({ time: now, action: actionText });
-      renderAdminAuditLog();
+      adminAuditLogs.unshift({ time: now, action: msg });
+      renderAdminAuditLogs();
     }
 
-    function renderAdminAuditLog() {
-      const container = document.getElementById('admin-audit-log-list');
-      if (!container) return;
-      container.innerHTML = adminAuditLogs.map(item => `
-        <div class="px-6 py-3.5 flex items-center justify-between gap-4">
-          <span class="font-medium text-slate-800"><i class="fa-solid fa-circle-check text-forest-700 mr-2"></i>${item.action}</span>
-          <span class="font-mono text-[11px] text-slate-400 flex-shrink-0">${item.time}</span>
+    function renderAdminAuditLogs() {
+      const list = document.getElementById('admin-audit-log-list');
+      if (!list) return;
+      list.innerHTML = adminAuditLogs.map(l => `
+        <div class="px-6 py-3.5 flex items-center justify-between">
+          <span class="text-slate-800 font-medium">${l.action}</span>
+          <span class="font-mono text-[11px] text-slate-400">${l.time}</span>
         </div>
       `).join('');
     }
 
-    function switchAdminTab(tabName, btn) {
+    function switchAdminTab(tab, btn) {
       document.querySelectorAll('.admin-tab-btn').forEach(b => {
-        b.className = "admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap";
+        b.className = 'admin-tab-btn bg-white border border-cream-300 text-slate-700 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap';
       });
-      if (btn) btn.className = "admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap";
-
+      if (btn) {
+        btn.className = 'admin-tab-btn bg-forest-700 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap';
+      }
       document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
-      const target = document.getElementById('admin-panel-' + tabName);
+      const target = document.getElementById(`admin-panel-${tab}`);
       if (target) target.classList.remove('hidden');
 
-      if (tabName === 'destinations') renderAdminDestinationsTable();
-      if (tabName === 'reviews') renderAdminReviewsList();
-      if (tabName === 'users') fetchAdminProfilesFromSupabase();
-      if (tabName === 'coverage') renderAdminDivisionCoverage();
-      if (tabName === 'logs') renderAdminAuditLog();
+      if (tab === 'coverage') renderAdminDivisionCoverage();
     }
 
-    function updateAdminCounters() {
-      const destEl = document.getElementById('admin-dest-count');
-      const guidesEl = document.getElementById('admin-guides-count');
-      const usersEl = document.getElementById('admin-users-count');
-      const revEl = document.getElementById('admin-reviews-count');
-      if (destEl) destEl.innerText = destinations.length;
-      if (guidesEl) guidesEl.innerText = verifiedGuidesList.length;
-      if (usersEl) usersEl.innerText = registeredUsers.length;
-      if (revEl) revEl.innerText = communityReviews.length;
-    }
+    function refreshAdminPanels() {
+      document.getElementById('admin-dest-count').innerText = destinations.length;
+      document.getElementById('admin-guides-count').innerText = verifiedGuidesList.length;
+      document.getElementById('admin-users-count').innerText = registeredUsers.length;
+      document.getElementById('admin-reviews-count').innerText = reviewsList.length;
 
-    function renderAdminDestinationsTable() {
       const tbody = document.getElementById('admin-destinations-tbody');
+      if (tbody) {
+        tbody.innerHTML = destinations.map((d, idx) => `
+          <tr>
+            <td class="px-6 py-3.5 font-bold text-slate-900">${d.title}</td>
+            <td class="px-6 py-3.5 text-slate-600">${d.district}</td>
+            <td class="px-6 py-3.5 uppercase text-[10px] font-bold text-forest-700">${d.category}</td>
+            <td class="px-6 py-3.5 font-bold text-amber-600">★ ${d.rating}</td>
+            <td class="px-6 py-3.5 text-right space-x-2">
+              <button onclick="openEditDestinationModal(${idx})" class="bg-cream-200 hover:bg-cream-300 text-slate-800 px-3 py-1 rounded-full font-bold">Edit</button>
+              <button onclick="deleteDestinationAdmin(${idx})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">Remove</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      const revList = document.getElementById('admin-reviews-list');
+      if (revList) {
+        revList.innerHTML = reviewsList.map((r, idx) => `
+          <div class="px-6 py-4 flex items-center justify-between gap-4 text-xs">
+            <div>
+              <span class="font-extrabold text-slate-900">${r.author}</span>
+              <span class="text-forest-700 font-bold ml-1.5">• ${r.region}</span>
+              <p class="text-slate-600 mt-1">${r.text}</p>
+            </div>
+            <button onclick="deleteReviewAdmin(${idx})" class="bg-red-50 text-red-600 px-3.5 py-1.5 rounded-full font-bold flex-shrink-0">Delete</button>
+          </div>
+        `).join('');
+      }
+
+      renderAdminUsersTable();
+      renderAdminDivisionCoverage();
+      renderAdminAuditLogs();
+    }
+
+    function renderAdminUsersTable() {
+      const tbody = document.getElementById('admin-users-tbody');
       if (!tbody) return;
-      tbody.innerHTML = destinations.map((d, idx) => `
+      tbody.innerHTML = registeredUsers.map(u => `
         <tr>
-          <td class="px-6 py-3.5 font-bold text-slate-900">${d.title}</td>
-          <td class="px-6 py-3.5 text-slate-600">${d.district}</td>
-          <td class="px-6 py-3.5 uppercase text-[10px] font-bold text-forest-700">${d.category}</td>
-          <td class="px-6 py-3.5 font-bold text-amber-600">★ ${d.rating}</td>
-          <td class="px-6 py-3.5 text-right space-x-2">
-            <button onclick="openEditDestinationModal(${idx})" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3 py-1 rounded-full font-bold">Edit</button>
-            <button onclick="deleteDestinationAdmin(${idx}, ${d.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">Remove</button>
+          <td class="px-6 py-3.5 font-bold text-slate-900">${u.name}</td>
+          <td class="px-6 py-3.5 text-slate-600">${u.email}</td>
+          <td class="px-6 py-3.5 text-slate-600">${u.address || 'Dhaka'}</td>
+          <td class="px-6 py-3.5 uppercase font-bold text-[10px] text-forest-700">${u.role}</td>
+          <td class="px-6 py-3.5 text-right">
+            ${u.role !== 'admin'
+              ? `<button onclick="toggleUserRoleAdmin('${u.email}')" class="bg-forest-100 hover:bg-forest-200 text-forest-900 px-3 py-1 rounded-full font-bold">Switch Role</button>`
+              : `<span class="text-slate-400 font-semibold">Protected</span>`
+            }
           </td>
         </tr>
       `).join('');
+    }
+
+    function toggleUserRoleAdmin(email) {
+      const user = registeredUsers.find(u => u.email === email);
+      if (!user || user.role === 'admin') return;
+      user.role = user.role === 'tourist' ? 'guide' : 'tourist';
+      saveRegisteredUsers(registeredUsers);
+      renderAdminUsersTable();
+      logAdminAction(`Switched role for ${user.name} to ${user.role.toUpperCase()}.`);
+      showToast(`Updated ${user.name} to ${user.role}`);
+    }
+
+    async function fetchAdminProfilesFromSupabase() {
+      if (!supabaseClient) {
+        showToast('Showing cached local profiles.');
+        return;
+      }
+      try {
+        const { data } = await withTimeout(supabaseClient.from('profiles').select('*'), 3500);
+        if (data && data.length > 0) {
+          data.forEach(p => {
+            if (!registeredUsers.some(u => u.email === p.email)) {
+              registeredUsers.push({
+                name: p.full_name,
+                email: p.email,
+                role: p.role || 'tourist',
+                address: p.address || 'Bangladesh'
+              });
+            }
+          });
+          refreshAdminPanels();
+          showToast('Synced live profiles from Supabase!');
+        }
+      } catch (e) {
+        showToast('Using cached user list.');
+      }
+    }
+
+    function approveGuide(btn) {
+      const row = btn.closest('tr');
+      if (!row) return;
+      const name = row.children[0].innerText.trim();
+      const region = row.children[1].innerText.trim();
+      const license = row.children[2].innerText.trim();
+
+      row.children[4].innerHTML = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Verified</span>`;
+      row.children[5].innerHTML = `<span class="text-xs font-bold text-forest-700">Published</span>`;
+
+      verifiedGuidesList.unshift({
+        name,
+        region,
+        trips: "12 trips",
+        rating: "4.9",
+        specialty: "heritage",
+        bio: `BPC-verified local storyteller covering ${region}.`,
+        languages: "Bangla, English",
+        phone: "+880 1700-112233",
+        email: `${name.toLowerCase().replace(/\s+/g, '.')}@example.com`,
+        license,
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+        reviews: []
+      });
+      renderGuidesDirectory(verifiedGuidesList);
+      refreshAdminPanels();
+      logAdminAction(`Verified and published guide ${name} (${license}).`);
+      showToast(`${name} verified and published to Local Guides!`);
+    }
+
+    function rejectGuide(btn) {
+      const row = btn.closest('tr');
+      if (!row) return;
+      const name = row.children[0].innerText.trim();
+      row.remove();
+      logAdminAction(`Declined guide application from ${name}.`);
+      showToast(`Application from ${name} declined.`);
+    }
+
+    async function saveNewDestination() {
+      const title = document.getElementById('new-spot-name').value.trim();
+      const district = document.getElementById('new-spot-district').value.trim();
+      const category = document.getElementById('new-spot-category').value;
+      const rawImg = document.getElementById('new-spot-img').value.trim();
+      const desc = document.getElementById('new-spot-desc').value.trim() || 'Newly curated regional destination.';
+      if (!title || !district) return;
+
+      const image = resolveDestinationImage(title, rawImg);
+      const newSpot = {
+        id: Date.now(),
+        title,
+        district,
+        category,
+        season: 'year-round',
+        image,
+        rating: '4.8',
+        badge: category.toUpperCase(),
+        subtitle: `${district} • Curated Spot`,
+        description: desc,
+        transit: 'Accessible via regional highway or rail.',
+        bestSeason: 'October to March',
+        etiquette: 'Follow local heritage and eco-tourism guidelines.'
+      };
+
+      destinations.unshift(newSpot);
+      renderDestinations(destinations);
+      refreshAdminPanels();
+      closeModal('add-destination-modal');
+      logAdminAction(`Added new destination "${title}" (${district}).`);
+      showToast(`"${title}" added to directory!`);
+
+      if (supabaseClient) {
+        try {
+          await withTimeout(
+            supabaseClient.from('destinations').insert({
+              title, district, category, image_url: image, description: desc, is_active: true
+            }),
+            3000
+          );
+        } catch (e) {}
+      }
     }
 
     function openEditDestinationModal(idx) {
@@ -4348,7 +4358,7 @@
       openModal('edit-destination-modal');
     }
 
-    async function saveEditedDestination(e) {
+    function saveEditedDestination(e) {
       e.preventDefault();
       const idx = parseInt(document.getElementById('edit-spot-index').value, 10);
       const d = destinations[idx];
@@ -4356,599 +4366,233 @@
 
       d.title = document.getElementById('edit-spot-name').value.trim();
       d.district = document.getElementById('edit-spot-district').value.trim();
-      d.rating = document.getElementById('edit-spot-rating').value.trim();
+      d.rating = document.getElementById('edit-spot-rating').value;
       d.category = document.getElementById('edit-spot-category').value;
       d.badge = d.category.toUpperCase();
       d.description = document.getElementById('edit-spot-desc').value.trim();
 
-      if (supabaseClient && typeof d.id === 'number' && d.id < 1000000) {
-        await supabaseClient.from('destinations').update({
-          title: d.title,
-          district: d.district,
-          rating: parseFloat(d.rating) || 4.8,
-          category: d.category,
-          description: d.description
-        }).eq('id', d.id);
-      }
-
       renderDestinations(destinations);
-      renderAdminDestinationsTable();
+      refreshAdminPanels();
       closeModal('edit-destination-modal');
-      logAdminAction(`Updated destination "${d.title}" (${d.district}).`);
-      showToast(`"${d.title}" updated in PostgreSQL!`);
+      logAdminAction(`Edited destination "${d.title}".`);
+      showToast(`Updated "${d.title}"!`);
     }
 
-    async function fetchAdminProfilesFromSupabase() {
-      let displayUsers = [...registeredUsers];
-      if (supabaseClient) {
-        try {
-          const { data, error } = await withTimeout(supabaseClient.from('profiles').select('*'), 2500);
-          if (!error && data && data.length > 0) {
-            data.forEach(p => {
-              if (!displayUsers.some(u => u.email.toLowerCase() === (p.email || '').toLowerCase())) {
-                displayUsers.push({
-                  id: p.id,
-                  name: p.full_name,
-                  email: p.email,
-                  address: p.address || 'Bangladesh',
-                  role: p.role || 'tourist'
-                });
-              }
-            });
-          }
-        } catch (err) {}
-      }
-      const usersEl = document.getElementById('admin-users-count');
-      if (usersEl) usersEl.innerText = displayUsers.length;
-
-      const tbody = document.getElementById('admin-users-tbody');
-      if (!tbody) return;
-      tbody.innerHTML = displayUsers.map(u => `
-        <tr>
-          <td class="px-6 py-3.5 font-bold text-slate-900">${u.name}</td>
-          <td class="px-6 py-3.5 text-slate-600 font-mono text-[11px]">${u.email}</td>
-          <td class="px-6 py-3.5 text-slate-600">${u.address || 'Dhaka'}</td>
-          <td class="px-6 py-3.5"><span class="px-2.5 py-0.5 rounded-full font-bold uppercase text-[10px] ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : u.role === 'guide' ? 'bg-amber-100 text-amber-800' : 'bg-forest-100 text-forest-800'}">${u.role}</span></td>
-          <td class="px-6 py-3.5 text-right">
-            ${u.role !== 'admin' ? `<button onclick="promoteUserRole('${u.email}', '${u.role === 'guide' ? 'tourist' : 'guide'}')" class="text-forest-700 font-bold hover:underline">Switch to ${u.role === 'guide' ? 'Tourist' : 'Guide'}</button>` : '<span class="text-slate-400">Protected</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    async function promoteUserRole(email, newRole) {
-      const target = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (target) {
-        target.role = newRole;
-        saveRegisteredUsers(registeredUsers);
-      }
-      if (supabaseClient) {
-        await supabaseClient.from('profiles').update({ role: newRole }).eq('email', email);
-      }
-      fetchAdminProfilesFromSupabase();
-      logAdminAction(`Changed role of ${email} to ${newRole.toUpperCase()}.`);
-      showToast(`Updated ${email} to ${newRole}!`);
-    }
-
-    function exportAdminAuditCSV() {
-      const rows = [
-        ['Destination', 'District', 'Category', 'Rating'],
-        ...destinations.map(d => [d.title, d.district, d.category, d.rating])
-      ];
-      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      const link = document.createElement("a");
-      link.setAttribute("href", encodeURI(csvContent));
-      link.setAttribute("download", "roambd_directory_report.csv");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      logAdminAction("Exported RoamBD Directory CSV Audit Report.");
-      showToast("Directory CSV Report downloaded!");
-    }
-
-    async function deleteDestinationAdmin(index, id) {
-      const removed = destinations[index];
-      if (!removed) return;
-      if (supabaseClient && typeof id === 'number' && id < 1000000) {
-        await supabaseClient.from('destinations').update({ is_active: false }).eq('id', id);
-      }
-      destinations.splice(index, 1);
+    function deleteDestinationAdmin(idx) {
+      const removed = destinations.splice(idx, 1)[0];
       renderDestinations(destinations);
-      renderAdminDestinationsTable();
-      updateAdminCounters();
-      logAdminAction(`Archived destination "${removed.title}".`);
-      showToast(`"${removed.title}" archived from directory.`);
+      refreshAdminPanels();
+      if (removed) logAdminAction(`Archived destination "${removed.title}".`);
+      showToast('Destination removed from active directory.');
     }
 
-    function renderAdminReviewsList() {
-      const list = document.getElementById('admin-reviews-list');
-      if (!list) return;
-      if (communityReviews.length === 0) {
-        list.innerHTML = `<p class="p-6 text-xs text-slate-400">No traveler reviews or field notes pending moderation.</p>`;
-        return;
-      }
-      list.innerHTML = communityReviews.map((r, idx) => `
-        <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-slate-900">${r.name}</span>
-              <span class="px-2.5 py-0.5 rounded-full bg-forest-100 text-forest-800 text-[10px] font-bold">${r.region}</span>
-              <span class="text-slate-400 text-[10px]">${r.date}</span>
-            </div>
-            <p class="text-slate-600">"${r.content}"</p>
-          </div>
-          <button onclick="deleteReviewAdmin(${idx})" class="self-start sm:self-center bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-1.5 rounded-full font-bold flex-shrink-0">
-            <i class="fa-solid fa-trash-can mr-1"></i> Delete
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function deleteReviewAdmin(index) {
-      const removed = communityReviews[index];
-      communityReviews.splice(index, 1);
+    function deleteReviewAdmin(idx) {
+      reviewsList.splice(idx, 1);
       renderReviews();
-      renderAdminReviewsList();
-      updateAdminCounters();
-      logAdminAction(`Removed review by "${removed?.name || 'User'}".`);
-      showToast('Review removed by System Admin.');
+      refreshAdminPanels();
+      logAdminAction('Moderated and removed a community review.');
+      showToast('Review removed.');
     }
 
     function publishSafetyAdvisory() {
       const region = document.getElementById('admin-advisory-region').value.trim();
       const msg = document.getElementById('admin-advisory-msg').value.trim();
-      if (!region || !msg) {
-        showToast('Enter both target region and advisory message.');
-        return;
-      }
+      if (!region || !msg) return;
+
       document.getElementById('banner-advisory-region').innerText = region;
       document.getElementById('banner-advisory-msg').innerText = msg;
       document.getElementById('global-safety-banner').classList.remove('hidden');
-      logAdminAction(`Published live safety banner for ${region}.`);
-      showToast(`Live safety banner published for ${region}!`);
-      document.getElementById('admin-advisory-region').value = '';
-      document.getElementById('admin-advisory-msg').value = '';
+      logAdminAction(`Published global safety advisory for ${region}.`);
+      showToast('Live travel safety banner published!');
     }
 
     function clearSafetyAdvisory() {
       document.getElementById('global-safety-banner').classList.add('hidden');
-      logAdminAction("Cleared active regional safety banner.");
-      showToast("Safety banner cleared.");
+      logAdminAction('Cleared global travel safety banner.');
+      showToast('Travel safety banner cleared.');
     }
 
     function verifyAllHotlinesToday() {
       const today = new Date().toISOString().split('T')[0];
-      document.querySelectorAll('.hotline-verified-date').forEach(el => el.innerText = today);
-      logAdminAction(`Stamped all 24/7 emergency hotlines Verified (${today}).`);
-      showToast(`All emergency hotlines stamped Verified (${today}) per BR-09!`);
+      document.querySelectorAll('.hotline-verified-date').forEach(el => { el.innerText = today; });
+      logAdminAction(`Audited and stamped 24/7 emergency hotlines (${today}).`);
+      showToast(`Emergency hotlines verified for ${today}!`);
     }
 
-    async function saveNewDestination() {
-      const name = document.getElementById('new-spot-name').value;
-      if (!name) return;
-
-      const district = document.getElementById('new-spot-district').value || "Bangladesh";
-      const category = document.getElementById('new-spot-category').value;
-      const image = document.getElementById('new-spot-img').value || "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80";
-      const desc = document.getElementById('new-spot-desc').value || "Verified destination entry.";
-
-      if (supabaseClient) {
-        await supabaseClient.from('destinations').insert({
-          title: name,
-          district,
-          category,
-          season: "winter",
-          image_url: image,
-          rating: 5.0,
-          subtitle: "Newly documented destination",
-          description: desc,
-          is_active: true
-        });
-      }
-
-      destinations.unshift({
-        id: Date.now(),
-        title: name,
-        district,
-        category,
-        season: "winter",
-        image,
-        rating: "5.0",
-        badge: "FEATURED",
-        subtitle: "Newly documented destination",
-        description: desc,
-        transit: "Accessible via regional highway.",
-        bestSeason: "October to March",
-        etiquette: "Respect local heritage guidelines."
-      });
-      renderDestinations(destinations);
-      closeModal('add-destination-modal');
-      showToast(`"${name}" saved to Supabase PostgreSQL!`);
-      openPage('explore');
-    }
-
-    // ================= 16. UTILITY MODALS, THEME & TOASTS =================
-    function locateNearestHospital() {
-      showToast("Nearest Hospitals: Dhaka Medical College (2.4 km) & BSMMU (3.1 km).");
-      closeModal('emergency-modal');
-    }
-
-    function handlePasswordReset(e) {
-      e.preventDefault();
-      closeModal('forgot-modal');
-      showToast('Recovery link dispatched!');
-    }
-
-    function openFooterInfoModal(topic) {
-      const tag = document.getElementById('footer-modal-tag');
-      const title = document.getElementById('footer-modal-title');
-      const body = document.getElementById('footer-modal-body');
-
-      if (topic === 'contact') {
-        tag.innerText = 'GET IN TOUCH';
-        title.innerText = 'Contact RoamBD Support Desk';
-        body.innerHTML = `
-          <p>Have questions about destination entries, local guide verification, or regional safety advisories? Reach our team directly:</p>
-          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 space-y-1.5">
-            <p><strong class="text-slate-900">Support Email:</strong> support@roambd.org</p>
-            <p><strong class="text-slate-900">Guide Verification Desk:</strong> guides@roambd.org</p>
-            <p><strong class="text-slate-900">Office Location:</strong> Agargaon Tourism Bhaban, Dhaka-1207, Bangladesh</p>
-            <p><strong class="text-slate-900">24/7 Tourist Police Helpline:</strong> +880 1320-169999 (or Dial 999)</p>
-          </div>
-          <form onsubmit="event.preventDefault(); closeModal('footer-info-modal'); showToast('Message sent to RoamBD Support!');" class="space-y-2.5 pt-1">
-            <input type="email" required placeholder="Your email address" class="w-full px-3.5 py-2 rounded-xl bg-cream-50 border border-cream-300 font-medium">
-            <textarea rows="2" required placeholder="Write your message or feedback..." class="w-full px-3.5 py-2 rounded-xl bg-cream-50 border border-cream-300 font-medium"></textarea>
-            <button type="submit" class="w-full bg-forest-100 hover:bg-forest-200 text-forest-900 font-bold py-2 rounded-full text-xs transition">Send Message</button>
-          </form>
-        `;
-      } else if (topic === 'privacy') {
-        tag.innerText = 'DATA & PRIVACY';
-        title.innerText = 'Privacy Policy';
-        body.innerHTML = `
-          <p><strong>Location Privacy (BR-07):</strong> RoamBD requests browser geolocation strictly on demand for the Nearby Map and Emergency SOS features. Your movement history is never tracked or stored.</p>
-          <p><strong>Account Security:</strong> Minimal personal details are collected to maintain your Traveler Notebook and verify local guide credentials.</p>
-        `;
-      } else if (topic === 'terms') {
-        tag.innerText = 'COMMUNITY GUIDELINES';
-        title.innerText = 'Terms of Use';
-        body.innerHTML = `
-          <p><strong>Non-Commercial Directory:</strong> RoamBD v1.0 is an informational tourism &amp; safety platform. No commercial payments, commissions, or financial transactions are processed on this site.</p>
-          <p><strong>Responsible Travel:</strong> Users agree to follow local heritage preservation laws, forest permit rules, and eco-tourism guidelines across Bangladesh.</p>
-        `;
-      } else {
-        tag.innerText = 'OUR MISSION';
-        title.innerText = 'About RoamBD';
-        body.innerHTML = `
-          <p><strong>RoamBD</strong> is an integrated smart tourism and travel assistance web platform built to showcase all 64 districts of Bangladesh—from the Sundarbans mangrove waterways to Srimangal tea trails and Cox's Bazar.</p>
-          <p>Designed around safety, cultural authenticity, and community trust, RoamBD connects travelers with BPC-verified local guides, curated itineraries, and 24/7 emergency response contacts.</p>
-        `;
-      }
-      openModal('footer-info-modal');
-    }
-
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-    function setFidelity(mode) {
-      const body = document.body;
-      const btnHigh = document.getElementById('btn-highfi');
-      const btnLow = document.getElementById('btn-lowfi');
-      if (mode === 'low') {
-        body.classList.add('low-fi');
-        btnLow.className = "px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-700 text-white transition";
-        btnHigh.className = "px-2.5 py-0.5 rounded-full text-[11px] font-medium text-cream-300 transition";
-      } else {
-        body.classList.remove('low-fi');
-        btnHigh.className = "px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-forest-600 text-white transition";
-        btnLow.className = "px-2.5 py-0.5 rounded-full text-[11px] font-medium text-cream-300 transition";
-      }
-    }
-
-    function toggleDarkMode() {
-      const isDark = document.body.classList.toggle('dark-mode');
-      document.getElementById('darkmode-icon').className = isDark ? 'fa-solid fa-sun text-amber-300' : 'fa-solid fa-moon text-amber-300';
-      document.getElementById('darkmode-text').innerText = isDark ? 'Light' : 'Dark';
-      try { localStorage.setItem('roambd_dark_mode', isDark ? 'true' : 'false'); } catch (e) {}
-    }
-
-    function showToast(message) {
-      let toast = document.getElementById('roambd-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'roambd-toast';
-        toast.className = 'fixed bottom-20 md:bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 bg-forest-900 text-white px-4 py-3 rounded-full shadow-lg border border-forest-700 text-xs font-bold flex items-center gap-2';
-        document.body.appendChild(toast);
-      }
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-300"></i> <span>${message}</span>`;
-      toast.classList.remove('hidden');
-      clearTimeout(window.toastTimer);
-      window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
-    }
-
-    // ================= 16B. MEANINGFUL END-TO-END WORKFLOW ENGINES =================
-    // A. TOURIST: 64-DISTRICT TRAVEL PASSPORT & ECO-IMPACT TRACKER
-    const PASSPORT_STORAGE_KEY = 'roambd_travel_passport_v1';
-    const ALL_BD_DIVISIONS = ['Dhaka', 'Chattogram', 'Sylhet', 'Khulna', 'Rajshahi', 'Barishal', 'Rangpur', 'Mymensingh'];
-
-    let travelPassportLogs = (() => {
-      try {
-        const saved = JSON.parse(localStorage.getItem(PASSPORT_STORAGE_KEY) || 'null');
-        return Array.isArray(saved) ? saved : [
-          { division: 'Dhaka', spot: 'Lalbagh Fort & Old Dhaka', ecoPoints: 30, date: '2026-10-12' },
-          { division: 'Sylhet', spot: 'Srimangal & Lawachara', ecoPoints: 30, date: '2026-11-02' },
-          { division: 'Chattogram', spot: "Cox's Bazar Marine Drive", ecoPoints: 25, date: '2026-11-15' }
-        ];
-      } catch (e) {
-        return [];
-      }
-    })();
-
-    function renderTravelPassport() {
-      const divGrid = document.getElementById('passport-divisions-grid');
-      const logsList = document.getElementById('passport-logs-list');
-      const scoreEl = document.getElementById('passport-division-score');
-      const ecoEl = document.getElementById('passport-eco-score');
-      const tierEl = document.getElementById('passport-tier-badge');
-      if (!divGrid || !logsList) return;
-
-      const visitedSet = new Set(travelPassportLogs.map(l => l.division));
-      const pct = Math.round((visitedSet.size / ALL_BD_DIVISIONS.length) * 100);
-      const totalEco = travelPassportLogs.reduce((acc, item) => acc + (item.ecoPoints || 15), 0);
-
-      if (scoreEl) scoreEl.innerText = `${visitedSet.size} / 8 (${pct}%)`;
-      if (ecoEl) ecoEl.innerText = `${totalEco} pts`;
-      if (tierEl) {
-        tierEl.innerText = visitedSet.size >= 6 ? 'Tier: National Heritage Ambassador'
-          : visitedSet.size >= 4 ? 'Tier: Bengal Trailblazer'
-          : 'Tier: Regional Explorer';
-      }
-
-      divGrid.innerHTML = ALL_BD_DIVISIONS.map(div => {
-        const done = visitedSet.has(div);
-        return `
-          <div class="p-2.5 rounded-xl border ${done ? 'bg-white border-forest-600 text-forest-900' : 'bg-white/60 border-cream-300 text-slate-400'} flex items-center justify-between">
-            <span class="font-bold text-[11px]">${div}</span>
-            <i class="fa-solid ${done ? 'fa-circle-check text-forest-700' : 'fa-circle text-slate-300'} text-xs"></i>
-          </div>
-        `;
-      }).join('');
-
-      logsList.innerHTML = travelPassportLogs.map(l => `
-        <div class="bg-white px-3 py-2 rounded-xl border border-cream-200 flex items-center justify-between">
-          <div>
-            <span class="font-bold text-slate-800">${l.spot}</span>
-            <span class="text-[10px] text-forest-700 font-bold ml-1.5">(${l.division})</span>
-          </div>
-          <span class="text-[10px] font-mono text-amber-700 font-bold">+${l.ecoPoints} eco pts</span>
-        </div>
-      `).join('');
-    }
-
-    function logTravelPassportVisit(e) {
-      e.preventDefault();
-      const division = document.getElementById('passport-division-input').value;
-      const spot = document.getElementById('passport-spot-input').value.trim();
-      if (!spot) return;
-
-      const checks = document.querySelectorAll('.passport-eco-check:checked').length;
-      const ecoPoints = 10 + (checks * 15);
-      const today = new Date().toISOString().split('T')[0];
-
-      travelPassportLogs.unshift({ division, spot, ecoPoints, date: today });
-      try { localStorage.setItem(PASSPORT_STORAGE_KEY, JSON.stringify(travelPassportLogs)); } catch (err) {}
-
-      document.getElementById('passport-spot-input').value = '';
-      renderTravelPassport();
-      showToast(`Stamped "${spot}" (${division}) to your Travel Passport!`);
-    }
-
-    // B. TOURIST: AUTOMATED PERMIT & SAFETY READINESS PASS GENERATOR
-    function generatePermitReadinessPass(e) {
-      e.preventDefault();
-      const dest = document.getElementById('permit-dest-input').value;
-      const month = document.getElementById('permit-month-input').value;
-      const nat = document.getElementById('permit-nationality-input').value;
-      const groupSize = parseInt(document.getElementById('permit-group-input').value || '1', 10);
-      const output = document.getElementById('permit-pass-output');
-      if (!output) return;
-
-      let status = 'CLEARED FOR TRAVEL';
-      let badgeColor = 'bg-emerald-600 text-white';
-      let readiness = 95;
-      let rules = [];
-      let hotline = 'Tourist Police HQ: +880 1320-169999';
-
-      if (dest === "Saint Martin's Island" && month === 'July') {
-        status = 'SEASONAL MARITIME SUSPENSION';
-        badgeColor = 'bg-red-600 text-white';
-        readiness = 35;
-        rules.push('Tourist ships from Teknaf/Cox’s Bazar are suspended during July monsoon rough-sea window.');
-      }
-      if (dest === 'Sajek Valley') {
-        rules.push('Baghaihat Army Escort Convoy check-in required before 10:30 AM.');
-        hotline = 'Rangamati Tourist Police: +880 1320-160555';
-        if (nat === 'FOREIGN') {
-          status = 'MINISTRY PERMIT REQUIRED';
-          badgeColor = 'bg-amber-600 text-white';
-          readiness = 65;
-          rules.push('Foreign nationals must obtain Rangamati DC Office & Home Ministry clearance 7 days prior.');
-        } else {
-          rules.push('Carry original NID / Smart Card for checkpoint verification.');
-        }
-      } else if (dest === 'Sundarbans') {
-        status = 'FOREST PERMIT MANDATORY';
-        badgeColor = 'bg-amber-600 text-white';
-        readiness = 75;
-        hotline = 'Khulna Forest & Coast Guard: +880 1320-160333';
-        rules.push('Divisional Forest Office (Khulna/Mongla) entry pass & armed forest guard escort required.');
-        if (nat === 'FOREIGN') rules.push('Foreign visitor Forest Dept tariff & passport copy required at Dhangmari/Karamjal.');
-      } else {
-        rules.push('Standard NID / Passport photo ID recommended for hotel check-in.');
-      }
-
-      if (groupSize >= 10) {
-        rules.push(`Group of ${groupSize} travelers: Pre-register manifest with local Tourist Police desk.`);
-      }
-
-      try {
-        localStorage.setItem('roambd_last_permit_pass', JSON.stringify({ dest, month, nat, groupSize, status, readiness }));
-      } catch (err) {}
-
-      output.innerHTML = `
-        <div class="flex items-center justify-between gap-2">
-          <span class="font-extrabold text-forest-950 text-sm">${dest} • ${month}</span>
-          <span class="px-2.5 py-0.5 rounded-full ${badgeColor} font-bold text-[10px]">${status}</span>
-        </div>
-        <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 pt-1">
-          <span>Readiness Score: ${readiness}%</span>
-          <span>Group: ${groupSize} (${nat === 'FOREIGN' ? 'Foreign Passport' : 'BD Citizen'})</span>
-        </div>
-        <ul class="list-disc pl-4 text-slate-700 space-y-1 pt-1">
-          ${rules.map(r => `<li>${r}</li>`).join('')}
-        </ul>
-        <p class="text-[11px] font-bold text-forest-800 pt-1 border-t border-forest-200"><i class="fa-solid fa-phone mr-1"></i> ${hotline}</p>
-      `;
-      showToast('Travel Clearance & Safety Pass generated!');
-    }
-
-    // C. TOURIST: SMART ROUTE & TRANSIT FEASIBILITY ANALYZER
-    function analyzeRouteFeasibility(e) {
-      e.preventDefault();
-      const origin = document.getElementById('route-origin-input').value;
-      const dest = document.getElementById('route-dest-input').value;
-      const days = parseInt(document.getElementById('route-days-input').value || '2', 10);
-      const mode = document.getElementById('route-mode-input').value;
-      const output = document.getElementById('route-feasibility-output');
-      if (!output) return;
-
-      const baseHoursMap = {
-        "Cox's Bazar": { rail: 8.5, bus: 10, flight: 2.5, launch: 12 },
-        "Sajek Valley": { rail: 7.5, bus: 9.5, flight: 4.5, launch: 11 },
-        "Sundarbans": { rail: 6, bus: 7, flight: 3.5, launch: 10 },
-        "Srimangal": { rail: 4.5, bus: 5.5, flight: 3, launch: 7 },
-        "Paharpur": { rail: 6.5, bus: 7.5, flight: 4, launch: 9 }
-      };
-
-      const oneWay = (baseHoursMap[dest] && baseHoursMap[dest][mode]) || 6;
-      const originFactor = origin === 'Dhaka' ? 1 : 0.85;
-      const roundTripHours = Math.round(oneWay * 2 * originFactor * 10) / 10;
-      const awakeHours = days * 14;
-      const transitPct = Math.min(95, Math.round((roundTripHours / awakeHours) * 100));
-
-      let rating = 'OPTIMAL & BALANCED';
-      let badgeClass = 'bg-emerald-600 text-white';
-      let advice = 'Plenty of relaxed exploration time with comfortable rest buffers.';
-
-      if (transitPct > 50) {
-        rating = 'OVERLOADED / RUSHED';
-        badgeClass = 'bg-red-600 text-white';
-        advice = `Warning: ${transitPct}% of your waking trip time is spent in transit. Add +1 day or switch to faster rail/flight.`;
-      } else if (transitPct > 32) {
-        rating = 'MODERATE PACE';
-        badgeClass = 'bg-amber-600 text-white';
-        advice = 'Feasible weekend schedule; book overnight transit to maximize daytime sightseeing.';
-      }
-
-      output.innerHTML = `
-        <div class="flex items-center justify-between gap-2">
-          <span class="font-extrabold text-slate-900">${origin} &harr; ${dest} (${days} Days)</span>
-          <span class="px-2.5 py-0.5 rounded-full ${badgeClass} font-bold text-[10px]">${rating}</span>
-        </div>
-        <div class="space-y-1 pt-1">
-          <div class="flex justify-between text-[11px] font-bold text-slate-700">
-            <span>Est. Round-Trip Transit: ${roundTripHours} hrs</span>
-            <span>Transit Load: ${transitPct}%</span>
-          </div>
-          <div class="w-full h-2 bg-white rounded-full overflow-hidden">
-            <div class="h-full ${transitPct > 50 ? 'bg-red-600' : transitPct > 32 ? 'bg-amber-500' : 'bg-forest-700'}" style="width: ${transitPct}%"></div>
-          </div>
-        </div>
-        <p class="text-slate-700 pt-1">${advice}</p>
-      `;
-      showToast('Route feasibility analyzed!');
-    }
-
-    // D. TOUR GUIDE: EXPEDITION SAFETY & PERMIT BRIEFING GENERATOR
-    function generateGuideExpeditionBriefing(e) {
-      e.preventDefault();
-      const zone = document.getElementById('guide-brief-zone').value;
-      const size = parseInt(document.getElementById('guide-brief-size').value || '6', 10);
-      const profile = document.getElementById('guide-brief-profile').value;
-      const output = document.getElementById('guide-briefing-output');
-      if (!output) return;
-
-      const coGuidesNeeded = size > 8 ? Math.ceil(size / 8) : 1;
-      const lifeJackets = zone.includes('Sundarbans') || zone.includes('Saint Martin') ? size + 2 : 0;
-      const permitNote = profile === 'Foreign Nationals'
-        ? 'Collect Passport & Visa photocopies 72 hrs prior for DC/Forest Office clearance.'
-        : 'Verify NID cards for all adult travelers at entry checkpoint.';
-
-      output.classList.remove('hidden');
-      output.innerHTML = `
-        <div class="flex items-center justify-between">
-          <span class="font-extrabold text-forest-950">Pre-Trip Briefing: ${zone} (${size} Pax)</span>
-          <span class="px-2 py-0.5 rounded-full bg-forest-700 text-white text-[10px] font-bold">${profile}</span>
-        </div>
-        <ul class="list-disc pl-4 text-slate-700 space-y-1 pt-1">
-          <li><strong>Guide Ratio:</strong> ${coGuidesNeeded} Certified Guide(s) required for ${size} travelers.</li>
-          <li><strong>Safety Equipment:</strong> ${lifeJackets > 0 ? `${lifeJackets} Coast-Guard approved life jackets + 2 marine first-aid kits.` : '2 trail first-aid kits, hydration flasks & offline GPS check-in.'}</li>
-          <li><strong>Compliance:</strong> ${permitNote}</li>
-        </ul>
-      `;
-      showToast('Pre-trip expedition safety briefing generated!');
-    }
-
-    // E. ADMIN: NATIONAL 8-DIVISION COVERAGE & GAP ANALYZER
     function renderAdminDivisionCoverage() {
       const grid = document.getElementById('admin-division-coverage-grid');
       const indexEl = document.getElementById('admin-coverage-index');
       if (!grid) return;
 
       let coveredCount = 0;
-      grid.innerHTML = ALL_BD_DIVISIONS.map(div => {
-        const spotCount = destinations.filter(d => (d.district || '').toLowerCase().includes(div.toLowerCase())).length;
-        const guideCount = verifiedGuidesList.filter(g => (g.region || '').toLowerCase().includes(div.toLowerCase())).length;
-        const hasCoverage = spotCount > 0 || guideCount > 0;
-        if (hasCoverage) coveredCount++;
+      const cardsHtml = ALL_BD_DIVISIONS.map(div => {
+        const spotCount = destinations.filter(d => d.district.toLowerCase().includes(div.toLowerCase())).length;
+        const guideCount = verifiedGuidesList.filter(g => g.region.toLowerCase().includes(div.toLowerCase())).length;
+        const isGap = spotCount === 0 && guideCount === 0;
+        if (!isGap) coveredCount++;
 
         return `
-          <div class="p-4 rounded-2xl border ${hasCoverage ? 'bg-cream-50 border-cream-300' : 'bg-red-50/70 border-red-200'} space-y-1.5">
+          <div class="p-4 rounded-2xl border ${isGap ? 'bg-amber-50 border-amber-200' : 'bg-cream-50 border-cream-300'} space-y-1.5">
             <div class="flex items-center justify-between">
               <span class="font-extrabold text-slate-900">${div}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${hasCoverage ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}">
-                ${hasCoverage ? 'Active' : 'Gap Alert'}
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isGap ? 'bg-amber-200 text-amber-950' : 'bg-emerald-100 text-emerald-800'}">
+                ${isGap ? 'Gap Alert' : 'Covered'}
               </span>
             </div>
-            <p class="text-slate-600">Destinations: <strong>${spotCount}</strong> • Guides: <strong>${guideCount}</strong></p>
+            <p class="text-slate-600">Active Spots: <strong>${spotCount}</strong> • Guides: <strong>${guideCount}</strong></p>
           </div>
         `;
       }).join('');
 
-      if (indexEl) {
-        const pct = Math.round((coveredCount / ALL_BD_DIVISIONS.length) * 100);
-        indexEl.innerText = `${pct}% (${coveredCount}/8 Divisions)`;
+      if (indexEl) indexEl.innerText = `${Math.round((coveredCount / 8) * 100)}%`;
+      grid.innerHTML = cardsHtml;
+    }
+
+    function exportAdminAuditCSV() {
+      const rows = [
+        ['ID', 'Title', 'District', 'Category', 'Rating'],
+        ...destinations.map(d => [d.id, `"${d.title}"`, `"${d.district}"`, d.category, d.rating])
+      ];
+      const csvContent = 'data:text/csv;charset=utf-8,' + rows.map(e => e.join(',')).join('\n');
+      const link = document.createElement('a');
+      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('download', 'roambd_directory_report.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      logAdminAction('Exported CSV directory report.');
+      showToast('Exported roambd_directory_report.csv');
+    }
+
+    // ================= 15. PROFILE MODAL, MODALS, THEME & TOAST =================
+    function syncProfileModalUI() {
+      if (!currentUser) return;
+      const initials = currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('profile-card-initials').innerText = initials;
+      document.getElementById('profile-card-name').innerText = currentUser.name;
+      document.getElementById('profile-card-email').innerText = currentUser.email;
+      document.getElementById('profile-card-role').innerText = currentUser.role.toUpperCase();
+
+      document.getElementById('profile-view-gender').innerText = currentUser.gender || 'Not Specified';
+      document.getElementById('profile-view-phone').innerText = currentUser.phone || 'Not Specified';
+      document.getElementById('profile-view-address').innerText = currentUser.address || 'Dhaka, Bangladesh';
+      document.getElementById('profile-view-emergency').innerText = currentUser.emergency || 'Not Specified';
+      document.getElementById('profile-view-bio').innerText = currentUser.bio || '';
+
+      document.getElementById('edit-prof-name').value = currentUser.name;
+      document.getElementById('edit-prof-gender').value = currentUser.gender || 'Not Specified';
+      document.getElementById('edit-prof-phone').value = currentUser.phone || '';
+      document.getElementById('edit-prof-emergency').value = currentUser.emergency || '';
+      document.getElementById('edit-prof-address').value = currentUser.address || '';
+      document.getElementById('edit-prof-bio').value = currentUser.bio || '';
+
+      renderSavedPlacesInProfile();
+    }
+
+    function toggleProfileEditMode() {
+      document.getElementById('profile-view-section').classList.toggle('hidden');
+      document.getElementById('profile-edit-form').classList.toggle('hidden');
+    }
+
+    function saveTouristProfileEdits(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      currentUser.name = document.getElementById('edit-prof-name').value.trim();
+      currentUser.gender = document.getElementById('edit-prof-gender').value;
+      currentUser.phone = document.getElementById('edit-prof-phone').value.trim();
+      currentUser.emergency = document.getElementById('edit-prof-emergency').value.trim();
+      currentUser.address = document.getElementById('edit-prof-address').value.trim();
+      currentUser.bio = document.getElementById('edit-prof-bio').value.trim();
+
+      saveRegisteredUsers(registeredUsers);
+      syncProfileModalUI();
+      document.getElementById('nav-user-name').innerText = currentUser.name;
+      document.getElementById('hero-user-firstname').innerText = currentUser.name.split(' ')[0];
+      toggleProfileEditMode();
+      showToast('Explorer profile updated!');
+    }
+
+    function locateNearestHospital() {
+      const list = document.getElementById('emergency-contacts-list');
+      if (!list) return;
+      list.insertAdjacentHTML('beforeend', `
+        <div class="p-3.5 bg-forest-100 border border-forest-200 rounded-2xl text-xs">
+          <span class="font-extrabold text-forest-900 block">Nearest Government Trauma Centers</span>
+          <span class="text-slate-700">Dhaka Medical College (02-55165088) • Cox's Bazar Sadar Hospital (0341-63254) • Sylhet MAG Osmani Medical (0821-713667)</span>
+        </div>
+      `);
+      showToast('Nearest government hospitals listed.');
+    }
+
+    function openFooterInfoModal(topic) {
+      const data = {
+        about: { tag: 'ABOUT ROAMBD', title: 'About RoamBD', body: '<p>RoamBD is a non-commercial national tourism discovery and traveler safety platform built to showcase all 64 districts of Bangladesh.</p>' },
+        contact: { tag: 'CONTACT DESK', title: 'Get in Touch', body: '<p>24/7 Tourist Police Control Room: <strong>+880 1320-169999</strong><br>Directory Support: <strong>desk@roambd.example.com</strong></p>' },
+        privacy: { tag: 'PRIVACY POLICY', title: 'Traveler Data & Privacy', body: '<p>Your profile, saved places, and trip plans remain private and are never shared with commercial third-party advertisers.</p>' },
+        terms: { tag: 'COMMUNITY ETHICS', title: 'Responsible Travel Code', body: '<p>RoamBD promotes zero-plastic eco-tourism, respect for indigenous hill communities, and preservation of UNESCO heritage sites.</p>' }
+      };
+      const item = data[topic] || data.about;
+      document.getElementById('footer-modal-tag').innerText = item.tag;
+      document.getElementById('footer-modal-title').innerText = item.title;
+      document.getElementById('footer-modal-body').innerHTML = item.body;
+      openModal('footer-info-modal');
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function setFidelity(mode) {
+      const btnHigh = document.getElementById('btn-highfi');
+      const btnLow = document.getElementById('btn-lowfi');
+      if (mode === 'low') {
+        document.body.classList.add('low-fi');
+        btnLow.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-forest-600 text-white transition';
+        btnHigh.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-medium text-cream-300 hover:text-white transition';
+      } else {
+        document.body.classList.remove('low-fi');
+        btnHigh.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-forest-600 text-white transition';
+        btnLow.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-medium text-cream-300 hover:text-white transition';
       }
     }
 
-    // ================= 17. INITIALIZE APPLICATION ON LOAD =================
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('darkmode-icon');
+      const text = document.getElementById('darkmode-text');
+      if (icon) icon.className = isDark ? 'fa-solid fa-sun text-amber-300' : 'fa-solid fa-moon text-amber-300';
+      if (text) text.innerText = isDark ? 'Light' : 'Dark';
+    }
+
+    function showToast(msg) {
+      let toast = document.getElementById('roambd-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'roambd-toast';
+        toast.className = 'fixed bottom-20 md:bottom-6 right-5 z-50 bg-forest-900 text-white text-xs font-bold px-4 py-3 rounded-full shadow-lg border border-forest-700 transition-opacity duration-200';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2800);
+    }
+
+    // ================= 16. INITIALIZE APPLICATION ON LOAD =================
     window.addEventListener('DOMContentLoaded', () => {
-      try {
-        if (localStorage.getItem('roambd_dark_mode') === 'true') {
-          document.body.classList.add('dark-mode');
-          document.getElementById('darkmode-icon').className = 'fa-solid fa-sun text-amber-300';
-          document.getElementById('darkmode-text').innerText = 'Light';
-        }
-      } catch (e) {}
-      registeredUsers = loadRegisteredUsers();
-      syncUserUI();
       renderDestinations(destinations);
       renderGuidesDirectory(verifiedGuidesList);
-      renderPlannerStops(1);
       renderReviews();
+      renderPlannerStops();
       renderTravelPassport();
-      updateDatabaseBadge(false, 'Local Cache Mode');
+      renderSavedPlacesInProfile();
       syncLiveDatabase();
-      openPage('auth');
     });
   </script>
 </body>
