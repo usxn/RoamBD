@@ -7,7 +7,7 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS Client CDN -->
+  <!-- Supabase JS Client CDN (PostgreSQL & Auth Integration) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Leaflet.js Interactive Map CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -17,6 +17,7 @@
   <!-- Google Fonts: Plus Jakarta Sans, Playfair Display & Space Mono -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
+  <!-- Tailwind Custom Palette & Typography Tokens -->
   <script>
     tailwind.config = {
       theme: {
@@ -48,6 +49,7 @@
     }
   </script>
 
+  <!-- Custom Styles: Low-Fi Wireframe Mode, Dark Mode & Micro-Interactions -->
   <style>
     html, body {
       max-width: 100%;
@@ -57,7 +59,7 @@
       color: #17231E;
     }
 
-    /* Wireframe Mode for Prototype Evaluation */
+    /* Low-Fidelity Wireframe Mode for UI/UX Evaluation */
     body.low-fi {
       filter: grayscale(100%);
       font-family: 'Space Mono', monospace !important;
@@ -73,7 +75,7 @@
       filter: contrast(180%) grayscale(100%) opacity(0.35);
     }
 
-    /* Dark Mode Theme */
+    /* Accessible Dark Mode Theme */
     body.dark-mode {
       background-color: #0B110E !important;
       color: #E7ECE9 !important;
@@ -118,13 +120,14 @@
       border-color: #283B32 !important;
     }
 
+    /* Custom Scrollbars & Map Layering */
     .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5CE; border-radius: 9999px; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #leaflet-map-canvas { z-index: 10; }
 
-    /* Refined Editorial Micro-interactions & Modal Animations */
+    /* Modal Entrance & Card Hover Transitions */
     @keyframes modalSlideUp {
       from { opacity: 0; transform: translateY(14px) scale(0.985); }
       to { opacity: 1; transform: translateY(0) scale(1); }
@@ -156,7 +159,7 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <!-- Fidelity Switcher -->
+      <!-- Prototype Fidelity Switcher (High-Fi vs Wireframe) -->
       <div class="flex items-center bg-forest-800/80 p-0.5 rounded-full border border-forest-700">
         <button id="btn-highfi" onclick="setFidelity('high')" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-forest-600 text-white transition">
           High-Fi
@@ -172,7 +175,7 @@
         <span id="darkmode-text" class="hidden sm:inline">Dark</span>
       </button>
 
-      <!-- Emergency SOS Trigger -->
+      <!-- 1-Tap Emergency SOS 999 Trigger -->
       <button onclick="openModal('emergency-modal')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1 transition">
         <i class="fa-solid fa-phone-volume"></i>
         <span>SOS 999</span>
@@ -209,7 +212,7 @@
         </button>
       </div>
 
-      <!-- Center Dedicated Page Tabs -->
+      <!-- Center Navigation Tabs -->
       <div id="tourist-nav-links" class="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-600">
         <button type="button" data-page="home" data-i18n="nav_home" onclick="openPage('home')" class="nav-page-btn text-forest-800 font-bold border-b-2 border-forest-700 pb-1 transition">Home</button>
         <button type="button" data-page="explore" data-i18n="nav_explore" onclick="openPage('explore')" class="nav-page-btn hover:text-forest-800 pb-1 border-b-2 border-transparent transition">Explore</button>
@@ -218,7 +221,7 @@
         <button type="button" data-page="guides" data-i18n="nav_guides" onclick="openPage('guides')" class="nav-page-btn hover:text-forest-800 pb-1 border-b-2 border-transparent transition">Local guides</button>
       </div>
 
-      <!-- Right Actions -->
+      <!-- Right Role Portals, Bilingual Switch & User Profile -->
       <div class="flex items-center gap-2.5">
         <button id="btn-return-admin-portal" onclick="openPage('admin')" class="hidden bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 px-3 py-1.5 rounded-full text-xs font-bold transition items-center gap-1.5">
           <i class="fa-solid fa-sliders text-purple-700"></i>
@@ -230,6 +233,7 @@
           <span class="hidden sm:inline">Guide Portal</span>
         </button>
 
+        <!-- EN / BN Bilingual Switch -->
         <button onclick="toggleLanguagePill()" id="lang-pill-btn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-cream-300 text-xs font-semibold text-slate-700 hover:border-forest-600 transition">
           <span id="lang-pill-text">EN</span>
           <i class="fa-solid fa-language text-[11px] text-forest-700"></i>
@@ -241,7 +245,7 @@
           <span>Sign In</span>
         </button>
 
-        <!-- Explorer Monogram & Name Pill -->
+        <!-- Explorer Monogram & Profile Pill -->
         <button id="nav-profile-pill" onclick="openModal('profile-modal')" class="flex items-center gap-2.5 pl-1.5 pr-3.5 py-1 rounded-full bg-white border border-cream-300 hover:border-forest-600 shadow-2xs transition" title="Open Explorer Profile">
           <span id="nav-user-initials" class="w-7 h-7 rounded-full bg-forest-700 text-white text-[11px] font-bold flex items-center justify-center">TA</span>
           <div class="text-left hidden sm:block leading-tight">
@@ -327,7 +331,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- PAGE 0: SIGN IN & REGISTRATION PORTAL                                 -->
+  <!-- PAGE 0: SIGN IN & REGISTRATION PORTAL (SUPABASE AUTH + RBAC)          -->
   <!-- ===================================================================== -->
   <div id="page-auth" class="app-page flex-grow flex flex-col justify-center items-center px-4 py-8 sm:p-8 bg-cream-100">
     <div class="max-w-md w-full mb-5 flex items-center justify-between px-1">
@@ -406,7 +410,7 @@
         </button>
       </form>
 
-      <!-- TAB 2: REGISTRATION FORM -->
+      <!-- TAB 2: REGISTRATION FORM (TOURIST OR GUIDE PER RULE BR-02) -->
       <form id="register-form" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label for="reg-name" class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
@@ -684,7 +688,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- PAGE 2: DEDICATED EXPLORE DESTINATIONS, STAYS & FOOD PAGE             -->
+  <!-- PAGE 2: EXPLORE DESTINATIONS, STAYS & REGIONAL CULINARY GUIDE         -->
   <!-- ===================================================================== -->
   <div id="page-explore" class="app-page hidden">
     <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-12">
@@ -774,6 +778,7 @@
         </div>
       </section>
 
+      <!-- Accommodations & Regional Food Guide -->
       <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-7 space-y-4">
           <div>
@@ -892,6 +897,7 @@
         </div>
       </section>
 
+      <!-- Community Field Notes & Observations -->
       <section class="space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
@@ -909,7 +915,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- PAGE 3: DEDICATED TRIP PLANNER & ROAM-AI PAGE                         -->
+  <!-- PAGE 3: DEDICATED TRIP PLANNER & ROAM-AI ROUTE BUILDER                -->
   <!-- ===================================================================== -->
   <div id="page-planner" class="app-page hidden">
     <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-8">
@@ -1070,7 +1076,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- PAGE 4: INTERACTIVE LEAFLET.JS NEARBY MAP & SAFETY PAGE               -->
+  <!-- PAGE 4: INTERACTIVE LEAFLET.JS NEARBY MAP & SAFETY HUB                -->
   <!-- ===================================================================== -->
   <div id="page-map" class="app-page hidden">
     <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-16 space-y-6">
@@ -1110,7 +1116,6 @@
         </div>
 
         <div class="lg:col-span-8 relative rounded-3xl border border-cream-300 bg-[#EFECE4] min-h-[400px] sm:min-h-[470px] overflow-hidden shadow-2xs">
-          <!-- Real Leaflet.js Map Canvas -->
           <div id="leaflet-map-canvas" class="w-full h-full min-h-[400px] sm:min-h-[470px]"></div>
 
           <div class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-cream-300 text-[11px] font-bold text-slate-800 shadow-2xs flex items-center gap-1.5">
@@ -1418,7 +1423,7 @@
         <span class="text-[11px] font-semibold text-slate-500">Rule BR-03: Only verified guides appear publicly</span>
       </div>
 
-      <div class="hidden md:block overflow-x-auto">
+      <div class="overflow-x-auto">
         <table class="w-full text-left text-xs">
           <thead class="bg-cream-100 text-slate-500 font-bold border-b border-cream-200">
             <tr>
@@ -1536,14 +1541,14 @@
           <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 flex items-center justify-between">
             <div>
               <p class="font-bold text-slate-900">National Emergency Helpline (999)</p>
-              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-22</span></p>
+              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-23</span></p>
             </div>
             <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">Active</span>
           </div>
           <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-300 flex items-center justify-between">
             <div>
               <p class="font-bold text-slate-900">Tourist Police Control Room (+880 1320-169999)</p>
-              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-22</span></p>
+              <p class="text-[11px] text-slate-500">Last Verified: <span class="hotline-verified-date font-mono font-bold text-forest-700">2026-11-23</span></p>
             </div>
             <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">Active</span>
           </div>
@@ -1698,7 +1703,7 @@
     </div>
   </div>
 
-  <!-- 2. ROAM-AI MODAL -->
+  <!-- 2. ROAM-AI ROUTE BUILDER MODAL -->
   <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-xl w-full p-6 shadow-2xl relative border border-cream-300">
       <button onclick="closeModal('ai-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -1748,7 +1753,7 @@
     </div>
   </div>
 
-  <!-- 3. GUIDE CONTACT MODAL -->
+  <!-- 3. GUIDE CONTACT & REVIEWS MODAL -->
   <div id="guide-contact-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
       <button onclick="closeModal('guide-contact-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -1832,7 +1837,7 @@
     </div>
   </div>
 
-  <!-- 5. FOOD MODAL -->
+  <!-- 5. REGIONAL FOOD GUIDE MODAL -->
   <div id="food-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
       <button onclick="closeModal('food-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -1855,7 +1860,7 @@
     </div>
   </div>
 
-  <!-- 6. EMERGENCY SOS MODAL -->
+  <!-- 6. EMERGENCY SOS 999 MODAL -->
   <div id="emergency-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border-t-2 sm:border-2 border-red-200">
       <button onclick="closeModal('emergency-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -1874,14 +1879,14 @@
         <div class="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between">
           <div>
             <span class="font-extrabold text-red-950 block">National Emergency (999)</span>
-            <span class="text-red-700 text-[11px]">Police, Fire &amp; Ambulance • Verified: 2026-11-22</span>
+            <span class="text-red-700 text-[11px]">Police, Fire &amp; Ambulance • Verified: 2026-11-23</span>
           </div>
           <a href="tel:999" class="bg-red-600 text-white font-bold px-4 py-2 rounded-full text-xs">Call 999</a>
         </div>
         <div class="p-3.5 bg-cream-50 border border-cream-300 rounded-2xl flex items-center justify-between">
           <div>
             <span class="font-bold text-slate-900 block">Tourist Police HQ</span>
-            <span class="text-slate-500 text-[11px]">+880 1320-169999 • Verified: 2026-11-22</span>
+            <span class="text-slate-500 text-[11px]">+880 1320-169999 • Verified: 2026-11-23</span>
           </div>
           <a href="tel:+8801320169999" class="bg-forest-700 text-white font-bold px-4 py-2 rounded-full text-xs">Dial</a>
         </div>
@@ -1897,7 +1902,7 @@
     </div>
   </div>
 
-  <!-- 7. EXPLORER PROFILE MODAL (WITH DYNAMIC WISHLIST) -->
+  <!-- 7. EXPLORER PROFILE MODAL (WITH SAVED WISHLIST & SUPABASE SYNC) -->
   <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar border border-cream-300">
       <button onclick="closeModal('profile-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -2003,7 +2008,7 @@
     </div>
   </div>
 
-  <!-- 8. REVIEW MODAL -->
+  <!-- 8. COMMUNITY FIELD NOTE MODAL -->
   <div id="review-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
       <button onclick="closeModal('review-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -2020,7 +2025,7 @@
     </div>
   </div>
 
-  <!-- 9. ADD DESTINATION MODAL -->
+  <!-- 9. ADD DESTINATION MODAL (ADMIN) -->
   <div id="add-destination-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-cream-300">
       <button onclick="closeModal('add-destination-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
@@ -2102,6 +2107,7 @@
 
   <!-- ================= APPLICATION JAVASCRIPT ================= -->
   <script>
+    // ================= 1. SUPABASE CLOUD POSTGRESQL CONFIGURATION =================
     const SUPABASE_URL = 'https://mezmurkkchbilusigiht.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_yXMNN3Tr7T7b7xBH3uZp7A_XG73GFQ-';
 
@@ -2121,6 +2127,7 @@
       }
     }
 
+    // ================= 2. SESSION, WISHLIST & USER STATE =================
     const STORAGE_KEY = 'roambd_registered_users_v1';
     const WISHLIST_STORAGE_KEY = 'roambd_saved_wishlist_v1';
 
@@ -2206,6 +2213,7 @@
     let currentLang = 'EN';
     let activePage = 'auth';
 
+    // ================= 3. BILINGUAL (EN / BN) TRANSLATION ENGINE =================
     const I18N_DICTIONARY = {
       EN: {
         nav_home: 'Home',
@@ -2253,6 +2261,7 @@
       });
     }
 
+    // ================= 4. CURATED SEED DATASETS =================
     let destinations = [
       {
         id: 1,
@@ -2534,7 +2543,7 @@
       }
     ];
 
-    // ================= SUPABASE LIVE DATA SYNC =================
+    // ================= 5. SUPABASE LIVE POSTGRESQL SYNC =================
     function withTimeout(promise, ms = 2000) {
       return Promise.race([
         promise,
@@ -2632,7 +2641,7 @@
       }
     }
 
-    // ================= DEDICATED PAGE ROUTING =================
+    // ================= 6. CLIENT-SIDE ROUTER & NAVIGATION =================
     function openPage(pageName) {
       activePage = pageName;
       const navbar = document.getElementById('main-navbar');
@@ -2744,6 +2753,7 @@
       return (name || "TA").split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     }
 
+    // ================= 7. WISHLIST & USER PROFILE MANAGEMENT =================
     function renderSavedWishlistInProfile() {
       const labelEl = document.getElementById('profile-saved-count-label');
       const listEl = document.getElementById('profile-saved-places-list');
@@ -2884,7 +2894,7 @@
       showToast('Profile saved to Supabase & local notebook!');
     }
 
-    // ================= AUTHENTICATION LOGIC =================
+    // ================= 8. AUTHENTICATION & REGISTRATION =================
     function showAuthNotification(type, title, message) {
       const alertBox = document.getElementById('auth-alert');
       const alertIcon = document.getElementById('auth-alert-icon');
@@ -2947,12 +2957,6 @@
 
       touristCard.className = role === 'tourist' ? activeClass : inactiveClass;
       guideCard.className = role === 'guide' ? activeClass : inactiveClass;
-    }
-
-    function fillDemoCredentials(email, password) {
-      document.getElementById('signin-email').value = email;
-      document.getElementById('signin-password').value = password;
-      showToast(`Filled credentials for ${email}`);
     }
 
     function checkPasswordStrength(val) {
@@ -3174,6 +3178,39 @@
       }, 450);
     }
 
+    function enterAsGuest() {
+      currentUser = { name: "Traveler", email: "", role: "guest" };
+      syncUserUI();
+      openPage('home');
+      showToast('Exploring RoamBD as a Guest Visitor.');
+    }
+
+    function signOut() {
+      if (supabaseClient) {
+        try { supabaseClient.auth.signOut(); } catch (e) {}
+      }
+      currentUser = null;
+      syncUserUI();
+      openPage('auth');
+      showToast('Signed out safely.');
+    }
+
+    function handleSocialAuth(provider) {
+      currentUser = {
+        name: "Tanvir Ahmed",
+        email: "tanvir.ahmed@example.com",
+        role: "tourist",
+        phone: "+880 1711-223344",
+        gender: "Male",
+        address: "Dhanmondi, Dhaka",
+        bio: `Signed in via ${provider} SSO.`
+      };
+      syncUserUI();
+      openPage('home');
+      showToast(`Signed in with ${provider}!`);
+    }
+
+    // ================= 9. GUIDE REVIEWS & INTERACTIVE TRIP PLANNER =================
     let activeGuideModalName = '';
 
     function setGuideRating(val) {
@@ -3307,38 +3344,6 @@
       showToast('Stop removed from itinerary.');
     }
 
-    function enterAsGuest() {
-      currentUser = { name: "Traveler", email: "", role: "guest" };
-      syncUserUI();
-      openPage('home');
-      showToast('Exploring RoamBD as a Guest Visitor.');
-    }
-
-    function signOut() {
-      if (supabaseClient) {
-        try { supabaseClient.auth.signOut(); } catch (e) {}
-      }
-      currentUser = null;
-      syncUserUI();
-      openPage('auth');
-      showToast('Signed out safely.');
-    }
-
-    function handleSocialAuth(provider) {
-      currentUser = {
-        name: "Tanvir Ahmed",
-        email: "tanvir.ahmed@example.com",
-        role: "tourist",
-        phone: "+880 1711-223344",
-        gender: "Male",
-        address: "Dhanmondi, Dhaka",
-        bio: `Signed in via ${provider} SSO.`
-      };
-      syncUserUI();
-      openPage('home');
-      showToast(`Signed in with ${provider}!`);
-    }
-
     function submitCustomStop(e) {
       e.preventDefault();
       const time = document.getElementById('stop-time-input').value || "18:30";
@@ -3364,7 +3369,7 @@
       document.getElementById('checklist-counter').innerText = `${checked} of ${boxes.length} complete`;
     }
 
-    // ================= DESTINATIONS & GUIDES RENDERING =================
+    // ================= 10. DESTINATIONS & GUIDES DIRECTORY RENDERING =================
     let activeCategory = 'all';
 
     function renderDestinations(items) {
@@ -3527,7 +3532,7 @@
       });
     }
 
-    // ================= MODALS & HELPERS =================
+    // ================= 11. MODALS & AI ROUTE PLANNER =================
     let activeModalDestinationId = null;
 
     function openDestinationModal(id) {
@@ -3554,8 +3559,37 @@
     function runModalAIPlanner() {
       const interest = document.getElementById('modal-ai-interest').value;
       const days = document.getElementById('modal-ai-days').value;
-      document.getElementById('modal-ai-res-header').innerText = `${interest.toUpperCase()} (${days})`;
-      showToast('Curated itinerary ready!');
+      const output = document.getElementById('modal-ai-output');
+
+      const itineraries = {
+        tea: `
+          <span class="font-extrabold text-forest-900 block">TEA GARDENS &amp; NATURE (${days.toUpperCase()})</span>
+          <p class="text-slate-700"><strong>Day 1:</strong> Morning Parabat Express to Srimangal &rarr; Afternoon Madhabpur Lake walk &amp; 7-layer tea tasting.</p>
+          <p class="text-slate-700"><strong>Day 2:</strong> Dawn canopy walk in Lawachara National Park with certified eco-guide.</p>
+          <p class="text-slate-700"><strong>Day 3:</strong> Baikka Beel wetland bird sanctuary &amp; evening return transit.</p>
+        `,
+        beach: `
+          <span class="font-extrabold text-forest-900 block">COASTAL &amp; CORAL ISLANDS (${days.toUpperCase()})</span>
+          <p class="text-slate-700"><strong>Day 1:</strong> Arrive Cox's Bazar &rarr; Sunset walk along Sugandha &amp; Kolatoli Beach.</p>
+          <p class="text-slate-700"><strong>Day 2:</strong> Marine Drive scenic route to Inani Coral Stones &amp; Himchari hilltop viewpoint.</p>
+          <p class="text-slate-700"><strong>Day 3:</strong> Teknaf jetty ferry to Saint Martin's Island &amp; Chhera Dwip tidal lagoon.</p>
+        `,
+        heritage: `
+          <span class="font-extrabold text-forest-900 block">MUGHAL &amp; BUDDHIST HERITAGE (${days.toUpperCase()})</span>
+          <p class="text-slate-700"><strong>Day 1:</strong> Old Dhaka heritage walk: Lalbagh Fort, Ahsan Manzil &amp; Purana Dhaka culinary trail.</p>
+          <p class="text-slate-700"><strong>Day 2:</strong> Padma Bridge express route to Bagerhat Sixty Dome Mosque (UNESCO site).</p>
+          <p class="text-slate-700"><strong>Day 3:</strong> Paharpur Somapura Mahavihara terracotta monastery exploration.</p>
+        `,
+        hills: `
+          <span class="font-extrabold text-forest-900 block">HILL TRACTS &amp; LAKES (${days.toUpperCase()})</span>
+          <p class="text-slate-700"><strong>Day 1:</strong> Rangamati Kaptai Lake wooden boat cruise &amp; Shuvolong Waterfall.</p>
+          <p class="text-slate-700"><strong>Day 2:</strong> Chimbuk Road ridge drive to Nilgiri &amp; Sairu Hill cultural lodge.</p>
+          <p class="text-slate-700"><strong>Day 3:</strong> Sajek Valley sunrise cloud deck at Konglak Peak.</p>
+        `
+      };
+
+      if (output) output.innerHTML = itineraries[interest] || itineraries.tea;
+      showToast('Curated itinerary generated by RoamAI!');
     }
 
     function openDirectoryModal(name, address, phone, email, amenities) {
@@ -3588,7 +3622,7 @@
       openModal('guide-contact-modal');
     }
 
-    // ================= INTERACTIVE LEAFLET.JS GEOSPATIAL MAP =================
+    // ================= 12. INTERACTIVE LEAFLET.JS GEOSPATIAL MAP =================
     let leafletMap = null;
     let leafletMarkersLayer = null;
     let activeMapRegion = 'coxs';
@@ -3842,6 +3876,7 @@
       showToast(`Search radius updated to ${radius}`);
     }
 
+    // ================= 13. COMMUNITY FIELD NOTES =================
     function renderReviews() {
       const container = document.getElementById('reviews-grid');
       if (!container) return;
@@ -3882,6 +3917,7 @@
       showToast("Field note saved to Supabase PostgreSQL!");
     }
 
+    // ================= 14. TOUR GUIDE PORTAL LOGIC =================
     function populateGuideDashboard() {
       if (!currentUser) return;
       document.getElementById('guide-portal-name').innerText = currentUser.name;
@@ -4088,6 +4124,7 @@
       showToast('Guide profile updated across public directory!');
     }
 
+    // ================= 15. SYSTEM ADMIN GOVERNANCE DESK =================
     function approveGuide(btn) {
       const row = btn.closest('tr');
       const name = row.children[0].innerText.trim();
@@ -4116,6 +4153,7 @@
       logAdminAction(`Verified and published local guide "${name}" (${license}).`);
       showToast(`${name} verified & published to Local Guides!`);
     }
+
     function rejectGuide(btn) {
       const name = btn.closest('tr')?.children[0]?.innerText?.trim() || 'Applicant';
       btn.closest('tr').remove();
@@ -4419,6 +4457,7 @@
       openPage('explore');
     }
 
+    // ================= 16. UTILITY MODALS, THEME & TOASTS =================
     function locateNearestHospital() {
       showToast("Nearest Hospitals: Dhaka Medical College (2.4 km) & BSMMU (3.1 km).");
       closeModal('emergency-modal');
@@ -4516,6 +4555,7 @@
       window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
     }
 
+    // ================= 17. INITIALIZE APPLICATION ON LOAD =================
     window.addEventListener('DOMContentLoaded', () => {
       try {
         if (localStorage.getItem('roambd_dark_mode') === 'true') {
